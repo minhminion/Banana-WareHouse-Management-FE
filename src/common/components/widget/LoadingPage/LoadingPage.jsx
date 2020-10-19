@@ -31,7 +31,7 @@ const LoadingPage = ({ isAnimating }) => {
               <stop
                 offset="100%"
                 style={{
-                  stopColor: theme.palette.secondary.dark,
+                  stopColor: theme.palette.secondary.light,
                   stopOpacity: 1,
                 }}
               />

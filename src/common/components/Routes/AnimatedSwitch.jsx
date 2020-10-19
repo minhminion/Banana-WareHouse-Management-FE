@@ -9,7 +9,7 @@ const AnimatedSwitch = ({ location, children }) => {
   return (
     <TransitionGroup>
       <CSSTransition
-        key={location.key}
+        key={location.pathname}
         classNames="slide-fade-in-up"
         timeout={500}
         onEnter={() => {

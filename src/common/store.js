@@ -6,11 +6,12 @@ import thunk from "redux-thunk";
 import uiReducer from "./redux/reducers/uiReducer";
 import { rootReducer } from "../modules";
 import session from "./redux/reducers/session";
+import jwt_decode from "jwt-decode";
 
 const config = {
   key: "shopping",
   storage,
-  blacklist: ["user", "sessions", "member"],
+  blacklist: ["auth", "sessions", "member", "products"],
 };
 const createMiddlewares = (thunk) => {
   const middlewares = [];
@@ -26,11 +27,13 @@ function mapCookieToStorage() {
   let initialState;
   try {
     const user = JSON.parse(getCookie("user"));
+    const token = getCookie("token");
     initialState = {
-      user: {
-        user: user,
+      auth: {
+        info: user,
         exp: getCookie("exp"),
-        token: getCookie("token"),
+        token: token,
+        roleName: jwt_decode(token)?.role,
         refreshToken: getCookie("refreshToken"),
         isSigned: user && true,
       },

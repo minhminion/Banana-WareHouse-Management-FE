@@ -1,3 +1,3 @@
 export const DEFAULT_URL = "http://localhost:3000"
-// export const API_URL = "http://localhost:5000"
-export const API_URL = "https://pacific-coast-88268.herokuapp.com"
+const API_VERSION  = "v1"
+export const DEFAULT_API_URL = `https://localhost:5001/api/${API_VERSION}`

@@ -1,18 +1,30 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core";
+import { formatNumberToReadable, formatVNDToNumber } from "../helper";
 
 export function useForm(initialFValues, validateOnChange = false, validate) {
-  
   const [values, setValues] = useState(initialFValues);
   const [errors, setErrors] = useState({});
 
-  const handleInputChange = (e) => {
+  const setDefaultValues = (values) => {
+    setValues((prev) => ({
+      ...prev,
+      ...values,
+    }));
+  };
+
+  const handleInputChange = (e, isNumber) => {
     const { name, value } = e.target;
+    let newValue = value;
+    if (isNumber === true) {
+      newValue = formatVNDToNumber(value);
+      if (newValue.match(/^0/g)) newValue = "";
+    }
     setValues({
       ...values,
-      [name]: value,
+      [name]: newValue,
     });
-    if (validateOnChange) validate({ [name]: value });
+    if (validateOnChange) validate({ [name]: newValue });
   };
 
   const resetForm = () => {
@@ -27,6 +39,7 @@ export function useForm(initialFValues, validateOnChange = false, validate) {
     setErrors,
     handleInputChange,
     resetForm,
+    setDefaultValues,
   };
 }
 

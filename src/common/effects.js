@@ -8,7 +8,9 @@ import {
   loadEnd,
 } from "./redux/actions/session";
 
+import { MODULE_NAME as MODULE_AUTH } from "../modules/Author/constants/models";
 import storeAccessible from "./utils/storeAccessible";
+// import dayjs from "dayjs";
 
 const TIMEOUT = 5000;
 
@@ -89,29 +91,29 @@ export async function fetchLoading({ url, module, headers, ...options }) {
     });
 }
 
-// export function fetchAuth({ url, headers, ...options }) {
-//   const user = storeAccessible.getState(MODULE_USER);
-//   if (!user || !user.token) {
-//     throw new Error("MISSING_USER_TOKEN");
-//   }
-//   return axios({
-//     method: "GET",
-//     timeout: TIMEOUT,
-//     url,
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: `Bearer ${user.token}`,
-//       ...headers,
-//     },
-//     ...options,
-//   })
-//     .then((response) => {
-//       return response;
-//     })
-//     .catch((error) => {
-//       throw error;
-//     });
-// }
+export function fetchAuth({ url, headers, ...options }) {
+  const user = storeAccessible.getState(MODULE_AUTH);
+  if (!user || !user.token) {
+    throw new Error("MISSING_USER_TOKEN");
+  }
+  return axios({
+    method: "GET",
+    timeout: TIMEOUT,
+    url,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${user.token}`,
+      ...headers,
+    },
+    ...options,
+  })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      throw error;
+    });
+}
 
 // export async function fetchAuthLoading({ url, headers, ...options }) {
 //   try {
@@ -125,7 +127,7 @@ export async function fetchLoading({ url, module, headers, ...options }) {
 //     const { exp } = user;
 //     let token = user.token;
 
-//     if (moment.utc().unix() >= exp) {
+//     if (dayjs.utc().unix() >= exp) {
 //       const result = await axios({
 //         method: "post",
 //         timeout: TIMEOUT,

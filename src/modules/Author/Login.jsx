@@ -108,7 +108,7 @@ const Login = (props) => {
       return Object.values(temp).every((x) => x === "");
   };
 
-  const { values, errors, setErrors, handleInputChange, resetForm } = useForm(
+  const { values, errors, setErrors, handleInputChange } = useForm(
     { email: "", password: "" },
     true,
     validate
@@ -144,7 +144,9 @@ const Login = (props) => {
             Sign in
           </Typography>
           <Form onSubmit={handleSubmit} noValidate>
-            {error && <Alert severity="error">{error}</Alert>}
+            {error && error.ApiErr && (
+              <Alert severity="error">{error.ApiErr}</Alert>
+            )}
             <TextField
               disabled={loading}
               variant="outlined"
@@ -158,7 +160,7 @@ const Login = (props) => {
               autoFocus
               value={values.email}
               helperText={errors.email}
-              error={errors.email}
+              error={errors.email?.length > 0}
               onChange={handleInputChange}
             />
             <TextField
@@ -169,11 +171,11 @@ const Login = (props) => {
               fullWidth
               name="password"
               label="Password"
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               id="password"
               value={values.password}
               helperText={errors.password}
-              error={errors.password}
+              error={errors.password?.length > 0}
               autoComplete="current-password"
               onChange={handleInputChange}
               InputProps={{
