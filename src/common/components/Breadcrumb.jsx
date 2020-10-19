@@ -37,7 +37,7 @@ const CustomBreadcrumbs = (props) => {
         aria-label="breadcrumb"
       >
         <Link color="inherit" component={RouterLink} to="/">
-          Dashboard
+          Thống kê
         </Link>
         {root &&
           root.map((item) => (

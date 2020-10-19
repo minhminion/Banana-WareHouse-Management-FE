@@ -1,18 +1,34 @@
 import { loadingUser, fetchUserSuccess, setError } from "./actions";
+import { fetch } from "../../../common/effects";
+import { ENDPOINTS } from "./models";
 
 export default (dispatch, props) => ({
   login: async (data) => {
     try {
-      const { email, password, remember } = data;
-      const token = "abcdefTOKEN";
-      const info = { id: 1, email: "admin@gmai.com" };
       dispatch(loadingUser());
-      setTimeout(
-        () => dispatch(fetchUserSuccess({ info, token, remember })),
-        3000
-      );
+      const response = await fetch({
+        url: ENDPOINTS.loginUser,
+        method: "POST",
+        data,
+      });
+      if (response.data && response.status === 200) {
+        dispatch(fetchUserSuccess(response.data.data));
+      } else {
+        dispatch(
+          setError({
+            ApiErr: "Lỗi không xác định",
+          })
+        );
+      }
     } catch (error) {
-      dispatch(setError("Some error !!"));
+      console.log("======== Bao Minh: error", error);
+      if (error.response) {
+        dispatch(setError(error.response.data));
+      } else {
+        setError({
+          ApiErr: "Lỗi không xác định",
+        });
+      }
     }
   },
 });

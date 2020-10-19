@@ -43,8 +43,7 @@ const useStyles = makeStyles((theme) => ({
   header: {
     height: 64,
     justifyContent: "center",
-    boxShadow:
-      "0px 5px 5px -3px rgba(0, 0, 0, 0.06), 0px 8px 10px 1px rgba(0, 0, 0, 0.042), 0px 3px 14px 2px rgba(0, 0, 0, 0.036)",
+    boxShadow: theme.boxShadows.main,
   },
   secondaryBar: {
     zIndex: 0,
@@ -143,9 +142,9 @@ const Header = (props) => {
   const { enqueueSnackbar: uploadSnack, closeSnackbar } = useSnackbar();
   const classes = useStyles();
 
-  const user = {
-    displayName: "Admin",
-  };
+  const { info: userInfo, isEmpty: userEmpty } = useSelector(
+    (state) => state.auth
+  );
 
   const dispatch = useDispatch();
 
@@ -255,6 +254,7 @@ const Header = (props) => {
       <input
         id="input-user-img"
         type="file"
+        accept="image/*"
         hidden
         onChange={handleSubmitUserImage}
       />
@@ -287,7 +287,11 @@ const Header = (props) => {
                 flex: "1 1 auto",
               }}
               placeholder="User display name ..."
-              defaultValue={user.displayName}
+              defaultValue={
+                userInfo
+                  ? `${userInfo.lastName} ${userInfo.firstName}`
+                  : "No name"
+              }
               inputProps={{
                 id: "user-display-name",
               }}
@@ -358,8 +362,12 @@ const Header = (props) => {
               >
                 <IconButton className={classes.iconButtonAvatar}>
                   <Avatar
-                    src={user && user.photoURL}
-                    alt={user && (user.displayName || "My Avatar")}
+                    src={userInfo && userInfo.photoURL}
+                    alt={
+                      userInfo &&
+                      (`${userInfo.lastName} ${userInfo.firstName}` ||
+                        "My Avatar")
+                    }
                   />
                 </IconButton>
               </div>
@@ -380,15 +388,17 @@ const Header = (props) => {
                   >
                     <Paper>
                       <ClickAwayListener onClickAway={handleClose}>
-                        {user && !user.isEmpty ? (
+                        {userInfo && !userEmpty ? (
                           <div style={{ width: 354 }}>
                             <div className={classes.userInformation}>
                               <div>
                                 <Avatar
                                   className={classes.userAvatar}
-                                  src={user && user.photoURL}
+                                  src={userInfo && userInfo.photoURL}
                                   alt={
-                                    user && (user.displayName || "My Avatar")
+                                    userInfo &&
+                                    (`${userInfo.lastName} ${userInfo.firstName}` ||
+                                      "My Avatar")
                                   }
                                 />
                                 <div className={classes.changeImageContainer}>
@@ -401,11 +411,14 @@ const Header = (props) => {
                                 </div>
                               </div>
                               <Typography variant="h6">
-                                {user && (user.displayName || "No name")}
+                                {userInfo &&
+                                  (`${userInfo.lastName} ${userInfo.firstName}` ||
+                                    "No name")}
                               </Typography>
                               <Typography variant="subtitle1">
-                                {user &&
-                                  (user.email || "minhminionadmin@gmail.com")}
+                                {userInfo &&
+                                  (userInfo.email ||
+                                    "minhminionadmin@gmail.com")}
                               </Typography>
                             </div>
                             <MenuList

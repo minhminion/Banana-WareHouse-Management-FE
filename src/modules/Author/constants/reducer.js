@@ -2,6 +2,7 @@ import { clearAll } from "../../../common/redux/actions/uiActions";
 import { handleActions } from "redux-actions";
 import * as actions from "./actions";
 import { setCookie } from "../../../common/utils/cookie";
+import jwt_decode from "jwt-decode";
 
 const initialState = {
   isLoading: false,
@@ -9,6 +10,7 @@ const initialState = {
   error: "",
   token: null,
   exp: null,
+  roleName: "",
   refreshToken: null,
   info: {},
 };
@@ -26,20 +28,21 @@ const handler = {
     isLoading: true,
   }),
   [actions.fetchUserSuccess]: (state, action) => {
-    const { remember, token, exp, refreshToken, info } = action.payload;
-    setCookie("user", JSON.stringify(info || {}));
+    const { token, tokenExpireTime, refreshToken, userResponse } = action.payload;
+    setCookie("user", JSON.stringify(userResponse || {}));
     setCookie("token", token);
     setCookie("refreshToken", refreshToken);
-    setCookie("exp", exp);
+    setCookie("exp", tokenExpireTime);
 
     return {
       error: "",
       isSigned: true,
       isLoading: false,
       token: token,
-      exp: exp,
+      exp: tokenExpireTime,
       refreshToken: refreshToken,
-      info: info,
+      roleName: jwt_decode(token)?.role,
+      info: userResponse,
     };
   },
   [actions.setError]: (state, action) => ({

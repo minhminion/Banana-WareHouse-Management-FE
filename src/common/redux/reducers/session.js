@@ -43,7 +43,7 @@ const handlers = {
     return {
       ...state,
       ...{
-        loadingCount: state.loadingCount + 1,
+        loadingCount: 1,
         isLoading: true,
       },
     };

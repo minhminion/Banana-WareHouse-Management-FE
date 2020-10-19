@@ -3,15 +3,20 @@ import { Route, Redirect } from "react-router-dom";
 
 const AuthRoute = ({
   component: Component,
-  isAuthenticated,
-  to = "/login",
+  acceptRoles,
+  roleName,
+  to = "/404",
   ...rest
 }) => {
   return (
     <Route
       {...rest}
       render={(props) =>
-        isAuthenticated ? <Component {...props} /> : <Redirect to={to} />
+        acceptRoles?.find((item) => item === roleName) ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to={to} />
+        )
       }
     />
   );

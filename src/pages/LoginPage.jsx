@@ -4,7 +4,7 @@ import Login from "../modules/Author/Login";
 const LoginPage = () => {
   return (
     <div
-    className="page"
+      className="page"
       style={{
         width: "100%",
         minHeight: "100vh",

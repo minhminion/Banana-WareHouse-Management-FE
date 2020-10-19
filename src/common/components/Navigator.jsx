@@ -27,35 +27,40 @@ import { useDispatch } from "react-redux";
 import { toggleCollapseNavigator } from "../redux/actions/uiActions";
 import { Link, useLocation } from "react-router-dom";
 import { Badge, Collapse, Avatar } from "@material-ui/core";
+import { ENUMS } from "../constants";
+
+const UserRole = ENUMS.USER_ROLE
+
 const menus = [
   {
     id: "Develop",
     showHeader: false,
     children: [
-      { id: "Dashboard", icon: <DashboardIcon />, link: "", isDefault: true },
-      {
-        id: "Inventory",
-        icon: <StoreIcon />,
-        link: "inventory",
-        subNav: [
-          {
-            id: "Export",
-            icon: <IndeterminateCheckBoxIcon />,
-            link: "inventory/export",
-          },
-          {
-            id: "Import",
-            icon: <InputIcon />,
-            link: "inventory/import",
-          },
-        ],
-      },
-      { id: "Products", icon: <ShoppingBasketIcon />, link: "products" },
-      { id: "Members", icon: <GroupIcon />, link: "members" },
+      { id: "Thống kê", icon: <DashboardIcon />, link: "", isDefault: true},
+      // {
+      //   id: "Kho",
+      //   icon: <StoreIcon />,
+      //   link: "inventory",
+      //   subNav: [
+      //     {
+      //       id: "Xuất",
+      //       icon: <IndeterminateCheckBoxIcon />,
+      //       link: "inventory/export",
+      //     },
+      //     {
+      //       id: "Nhập",
+      //       icon: <InputIcon />,
+      //       link: "inventory/import",
+      //     },
+      //   ],
+      // },
+      { id: "Sản phẩm", icon: <ShoppingBasketIcon />, link: "products" },
+      { id: "Đề nghị", icon: <ShoppingBasketIcon />, link: "proposal" },
+      { id: "Nhân viên", icon: <GroupIcon />, link: "members" },
     ],
   },
   {
-    id: "Setting",
+    id: "Chỉnh sửa",
     showHeader: true,
     children: [
       { id: "Analytics", icon: <SettingsIcon />, link: "analytics" },
@@ -204,7 +209,8 @@ function Navigator(props) {
     { id: childId, icon, link, isDefault, subNav },
     step = 1
   ) => {
-    const active = pathName.length > 0 ? pathName === link : isDefault;
+    const active =
+      pathName.length > 0 ? pathName.split("/")[0] === link : isDefault;
     const count = 0;
     return (
       <Fragment key={childId}>

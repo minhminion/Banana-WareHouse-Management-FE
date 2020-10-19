@@ -10,14 +10,13 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     minHeight: "100vh",
+    backgroundColor: "#fffff",
   },
 }));
 
 const MainPage = () => {
   const classes = useStyles();
-  const sessionLoading = useSelector(
-    (state) => state.sessions.sessionLoading
-  );
+  const sessionLoading = useSelector((state) => state.sessions.sessionLoading);
 
   return (
     <Fragment>
