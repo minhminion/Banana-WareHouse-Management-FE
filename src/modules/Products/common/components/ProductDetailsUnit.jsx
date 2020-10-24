@@ -57,6 +57,7 @@ const ProductDetailsUnit = ({
     let newValue = value;
     if (fieldName === "ratioFromDefault") {
       newValue = newValue.match(/(\d+)\.?(\d+)?/g);
+      newValue = newValue?.length > 0 ? newValue[0] : "";
     }
 
     let newUnits = values.productUnits;
@@ -78,7 +79,7 @@ const ProductDetailsUnit = ({
     let newValue = value;
     if (name === "ratioFromDefault") {
       newValue = newValue.match(/(\d+)\.?(\d+)?/g);
-      newValue = newValue.length > 0 ? newValue[0] : "";
+      newValue = newValue?.length > 0 ? newValue[0] : "";
     }
     setNewUnit((prev) => ({
       ...prev,

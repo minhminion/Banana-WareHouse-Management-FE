@@ -113,7 +113,10 @@ const SingleProductDetails = (props) => {
     if (updateUnits.length > 0) {
       await Promise.all(
         updateUnits.map(async (unit) => {
-          await editProductUnit(unit);
+          await editProductUnit({
+            ...unit,
+            ratioFromDefault: parseFloat(unit.ratioFromDefault),
+          });
         })
       );
     }
