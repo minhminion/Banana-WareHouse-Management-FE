@@ -85,6 +85,7 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: theme.spacing(3),
     },
     "& tr": {
+      borderRadius: theme.spacing(2),
       boxShadow: theme.boxShadows.main,
     },
     "& th": {
@@ -198,7 +199,6 @@ const ListProduct = (props) => {
 
   useEffect(() => {
     if (filter) {
-      console.log("======== Bao Minh: ListProduct -> filter", filter);
       fetchProduct({
         ...filter,
         limit: LIMIT_PER_PAGE,
@@ -506,7 +506,7 @@ const ListProduct = (props) => {
               </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>{data && renderTableBody(data, filter)}</TableBody>
+          <TableBody>{data && renderTableBody(data)}</TableBody>
         </Table>
       </TableContainer>
       {/* Pagination */}

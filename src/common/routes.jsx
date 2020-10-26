@@ -6,13 +6,18 @@ import { MODULE_NAME as MODULE_AUTHOR } from "../modules/Author/constants/models
 import MainLayout from "./HOCS/MainLayout";
 import MembersPage from "../pages/MembersPage";
 import AnimatedSwitch from "./components/Routes/AnimatedSwitch";
-import ListProductPage from "../pages/ListProductPage";
-import ProductDetailsPage from "../pages/ProductDetailsPage";
-import ListProposalPage from "../pages/PurchaseProposalPage";
-import AddProductPage from "../pages/AddProductPage";
+// Product Pages
+import ListProductPage from "../pages/Products/ListProductPage";
+import ProductDetailsPage from "../pages/Products/ProductDetailsPage";
+import AddProductPage from "../pages/Products/AddProductPage";
+import EditProductPage from "../pages/Products/EditProductPage";
+
+// Proposal Pages
+import ListProposalPage from "../pages/Proposals/PurchaseProposalPage";
+
 import AuthRoute from "./components/Routes/AuthRoute";
 import { ENUMS } from "./constants/index";
-import EditProductPage from "../pages/EditProductPage";
+import CreateProposal from "../modules/Proposal/CreateProposal";
 
 const Routes = () => {
   const USER_ROLE = ENUMS.USER_ROLE;
@@ -24,6 +29,7 @@ const Routes = () => {
         <AnimatedSwitch>
           <Route exact path="/" component={() => <div>Analytics 1</div>} />
           <Route exact path="/members" component={MembersPage} />
+          {/* Product Pages */}
           <Route exact path="/products" component={ListProductPage} />
           <AuthRoute
             exact
@@ -44,7 +50,23 @@ const Routes = () => {
             path="/products/:productSKU"
             component={ProductDetailsPage}
           />
+          <AuthRoute
+            exact
+            path="/products/:productSKU/edit"
+            component={EditProductPage}
+            roleName={roleName}
+            acceptRoles={[USER_ROLE.Admin]}
+          />
+
+          {/* Proposal Pages */}
           <Route exact path="/proposal" component={ListProposalPage} />
+          <AuthRoute
+            exact
+            path="/proposal/add"
+            component={CreateProposal}
+            roleName={roleName}
+            acceptRoles={[USER_ROLE.Admin]}
+          />
         </AnimatedSwitch>
       </MainLayout>
     );

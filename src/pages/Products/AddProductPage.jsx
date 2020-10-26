@@ -1,6 +1,6 @@
 import React from 'react'
-import CustomBreadcrumbs from '../common/components/Breadcrumb'
-import AddProduct from '../modules/Products/AddProduct'
+import CustomBreadcrumbs from '../../common/components/Breadcrumb'
+import AddProduct from '../../modules/Products/AddProduct'
 
 const AddProductPage = () => {
   return (
