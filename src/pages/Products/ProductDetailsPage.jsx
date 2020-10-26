@@ -1,5 +1,5 @@
 import React from 'react'
-import SingleProductDetails from '../modules/Products/SingleProductDetails'
+import SingleProductDetails from '../../modules/Products/SingleProductDetails'
 
 const ProductDetailsPage = () => {
 

@@ -16,10 +16,10 @@ let theme = createMuiTheme({
   },
   border: ["1px solid rgba(0,0,0,.1)"],
   boxShadows: {
-    // main: "0 7px 30px -10px rgba(150,170,180,0.5)",
     main: "0 4px 10px 0 rgba(20,19,34,.03), 0 0 10px 0 rgba(20,19,34,.02)",
     inset:
       "inset 0 4px 10px 0 rgba(20,19,34,.03), inset 0 0 10px 0 rgba(20,19,34,.02)",
+    // inset: "inset 35px 35px 33px #f7f7f7, inset -35px -35px 33px #ffffff",
     // hover: "0 4px 17px 0 rgba(20,19,34,.1), 0 0 17px 0 rgba(20,19,34,.09)",
     hover:
       "rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 3px 6px, rgba(15, 15, 15, 0.2) 0px 9px 24px",

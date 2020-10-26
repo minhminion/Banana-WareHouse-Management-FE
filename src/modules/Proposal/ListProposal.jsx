@@ -17,7 +17,6 @@ import {
   MenuItem,
   Menu,
   useTheme,
-  Chip,
 } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
 // ICONS
@@ -27,16 +26,14 @@ import AddIcon from "@material-ui/icons/Add";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import PublishIcon from "@material-ui/icons/Publish";
-import EditIcon from "@material-ui/icons/Edit";
-import DeleteIcon from "@material-ui/icons/Delete";
+
 import { getQuery, objectToQueryString } from "../../common/helper";
-import { Link, useLocation, useHistory } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import handler from "./constants/handler";
 import { MODULE_NAME } from "./constants/models";
 import { useSnackbar } from "notistack";
-import dayjs from "dayjs";
-import clsx from "clsx";
+import ListProposalItem from "./common/ListProposalItem";
 
 function randomDate(start, end, startHour, endHour) {
   var date = new Date(+start + Math.random() * (end - start));
@@ -117,6 +114,7 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: theme.spacing(3),
     },
     "& tr": {
+      borderRadius: theme.spacing(2),
       boxShadow: theme.boxShadows.main,
     },
     "& th": {
@@ -172,25 +170,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     "&:hover": {
       background: theme.palette.secondary.main,
-    },
-  },
-  chip: {
-    width: 120,
-    "&.new": {
-      color: theme.palette.common.white,
-      background: theme.palette.success.light,
-    },
-    "&.processing": {
-      color: theme.palette.common.white,
-      background: theme.palette.warning.main,
-    },
-    "&.done": {
-      color: theme.palette.common.white,
-      background: theme.palette.info.main,
-    },
-    "&.delete": {
-      color: theme.palette.common.white,
-      background: theme.palette.error.main,
     },
   },
 }));
@@ -280,73 +259,6 @@ const ListProposal = (props) => {
 
   const iconSelectComponent = (props) => {
     return <ExpandMoreIcon className={props.className + " " + classes.icon} />;
-  };
-
-  const renderStatus = (status) => {
-    let label = "Không tìm thấy";
-    let style = "notfound";
-    switch (status) {
-      case 1:
-        label = "Mới";
-        style = "new";
-        break;
-      case 2:
-        label = "Đang thực hiện";
-        style = "processing";
-        break;
-      case 3:
-        label = "Hoàn tất";
-        style = "done";
-        break;
-      case 4:
-        label = "Hủy";
-        style = "delete";
-        break;
-      default:
-        break;
-    }
-
-    return <Chip className={clsx(classes.chip, style)} label={label} />;
-  };
-
-  const renderTableBody = (rows, pagination) => {
-    const page = (pagination.page - 1) * LIMIT_PER_PAGE;
-    return rows.slice(page, page + LIMIT_PER_PAGE).map((row) => (
-      <TableRow key={row.id}>
-        <TableCell align="left">{row.id}</TableCell>
-        <TableCell component="th" scope="row">
-          <div>
-            <strong>{row.creator.name}</strong>
-            <Typography variant="body2">{row.creator.email}</Typography>
-          </div>
-        </TableCell>
-        <TableCell align="center">{renderStatus(row.status)}</TableCell>
-        <TableCell
-          align="left"
-          style={{
-            color: theme.palette.primary.dark,
-          }}
-        >
-          <strong>{dayjs(row.createdAt).format("HH:mm - DD/mm/YYYY")}</strong>
-        </TableCell>
-        <TableCell align="center">{row.period} giờ</TableCell>
-        {/* Action on row */}
-        <TableCell align="left">
-          <Box mr={1} clone>
-            <Link to={`/products/${row.sku}`}>
-              <IconButton>
-                <EditIcon />
-              </IconButton>
-            </Link>
-          </Box>
-          <Box clone>
-            <IconButton color="secondary">
-              <DeleteIcon />
-            </IconButton>
-          </Box>
-        </TableCell>
-      </TableRow>
-    ));
   };
 
   return (
@@ -440,9 +352,9 @@ const ListProposal = (props) => {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            <MenuItem onClick={handleClose}>
+            <MenuItem onClick={() => history.push("/proposal/add")}>
               <AddIcon style={{ marginRight: 8 }} />
-              Tạo sản phẩm mới
+              Tạo phiếu đề nghị
             </MenuItem>
             <MenuItem onClick={handleClose}>
               <PublishIcon style={{ marginRight: 8 }} />
@@ -460,6 +372,7 @@ const ListProposal = (props) => {
         <Table className={classes.tableRoot} aria-label="simple table">
           <TableHead>
             <TableRow>
+              <TableCell style={{ width: 80 }} align="left"></TableCell>
               <TableCell style={{ width: 180 }} align="left">
                 Mã phiếu
               </TableCell>
@@ -478,7 +391,16 @@ const ListProposal = (props) => {
               </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>{renderTableBody(rows, filter)}</TableBody>
+          {/* <TableBody> */}
+          {rows
+            ?.slice(
+              (filter.page - 1) * LIMIT_PER_PAGE,
+              (filter.page - 1) * LIMIT_PER_PAGE + LIMIT_PER_PAGE
+            )
+            .map((row) => (
+              <ListProposalItem key={row.id} row={row} />
+            ))}
+          {/* </TableBody> */}
         </Table>
       </TableContainer>
       {/* Pagination */}
