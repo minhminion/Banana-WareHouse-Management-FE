@@ -1,37 +1,36 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Grid,
   makeStyles,
-  TextField,
   InputLabel,
   Box,
+  Paper,
+  Button,
 } from "@material-ui/core";
 import clsx from "clsx";
 import { blueGrey } from "@material-ui/core/colors";
 import { useHistory } from "react-router-dom";
 import { useForm } from "../../../common/hooks/useForm";
 import ListProposalProducts from "./components/ListProposalProducts";
+import CKEditor from "@ckeditor/ckeditor5-react";
+import Editor from "../../../common/components/widget/Editor";
+import {
+  DateTimePicker,
+} from "@material-ui/pickers";
+
+// Helper
 import { ENUMS } from "../../../common/constants";
+import parse from "html-react-parser";
+import { titleCase } from "../../../common/helper";
 
 const defaultValues = {
   id: 1,
   creator: "231",
   createdAt: Date.now(),
   period: 2,
-  status: 1,
-  products: [
-    {
-      id: 1,
-      name: "Bưởi Năm Roi",
-      quantity: 2000,
-      action: "deleted"
-    },
-    {
-      id: 2,
-      name: "Bưởi Năm Roi",
-      quantity: 2000,
-    },
-  ],
+  status: ENUMS.PROPOSAL_STATUS.NEW,
+  description: "",
+  purchaseProposalDetails: [],
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -98,6 +97,36 @@ const useStyles = makeStyles((theme) => ({
   },
   productDescription: {
     marginBottom: theme.spacing(3),
+    "& .ck-editor": {
+      boxShadow: theme.boxShadows.main,
+    },
+    "& .ck-toolbar": {
+      border: theme.border[0],
+      borderTopRightRadius: `${theme.spacing(1)}px !important`,
+      borderTopLeftRadius: `${theme.spacing(1)}px !important`,
+    },
+    "& .ck-editor__editable.ck-editor__editable_inline": {
+      borderBottomRightRadius: `${theme.spacing(1)}px !important`,
+      borderBottomLeftRadius: `${theme.spacing(1)}px !important`,
+      minHeight: 200,
+      height: "100%",
+      maxHeight: 400,
+      "&:not(.ck-focused)": {
+        border: theme.border[0],
+      },
+    },
+  },
+  datePicker: {
+    minWidth: 300,
+    background: "white",
+    border: "1px solid rgba(0,0,0,.1)",
+    borderRadius: 8,
+    padding: theme.spacing(1.5),
+    boxShadow: theme.boxShadows.main,
+    "&:focus": {
+      borderRadius: 8,
+      background: "white",
+    },
   },
   actionButton: {
     background: theme.palette.secondary.main,
@@ -120,9 +149,20 @@ const useStyles = makeStyles((theme) => ({
 
 const PROPOSAL_STATUS = ENUMS.PRODUCT_STATUS.AVAILABLE;
 
-const ProposalDetails = (initialValues, isEdit = false, onSubmit) => {
+const ProposalDetails = ({
+  initialValues,
+  isEdit = true,
+  onSubmit,
+  okLabel = "Cập nhật",
+  resetLabel = "Làm mới",
+  cancelLabel = "Hủy",
+}) => {
+  let minDate = new Date();
+  minDate.setDate(minDate.getDate() + 1);
+
   const classes = useStyles();
   const history = useHistory();
+  const [selectedDate, handleDateChange] = useState(minDate);
   const validate = (fieldValues = values) => {
     let temp = { ...errors };
     setErrors({
@@ -161,57 +201,105 @@ const ProposalDetails = (initialValues, isEdit = false, onSubmit) => {
 
   const handleSubmit = () => {
     if (validate()) {
-      const newValues = {
-        id: values.id,
-        name: values.name,
-        status: values.status,
-        description: values.description,
-        defaultUnit: values.defaultUnit,
-        purchasePrice: parseInt(values.purchasePrice),
-        price: parseInt(values.price),
-        productCategoryId: values.productCategoryId,
-        minQuantity: parseInt(values.minQuantity),
-        maxQuantity: parseInt(values.maxQuantity),
-        productUnits: values.productUnits,
-      };
-      onSubmit && onSubmit(newValues);
+      try {
+        const newValues = {
+          deadline: selectedDate,
+          description: values.description || "",
+          status: values.status,
+          purchaseProposalDetails: values.purchaseProposalDetails.map(
+            (product) => ({
+              id: product.id || -1,
+              productId: product.productId,
+              quantity: parseInt(product.quantity),
+              description: product.description || "",
+              action: product.action
+            })
+          ),
+        };
+        onSubmit && onSubmit(newValues);
+      } catch (error) {
+        console.log("======== Bao Minh: handleSubmit -> error", error);
+      }
     }
+  };
+
+  const renderDateItem = (props) => {
+    return (
+      <Button
+        id={props.id}
+        className={classes.datePicker}
+        onClick={props.onClick}
+        disabled={props.disabled}
+        ref={props.inputRef}
+        {...props.InputProps}
+        component={Paper}
+      >
+        {titleCase(props.value)}
+      </Button>
+    );
   };
 
   return (
     <Box className={classes.root}>
       <Grid container spacing={3}>
         <Grid item className={clsx(classes.root, classes.leftSide)}>
-          <TextField
-            disabled={!isEdit}
-            name="name"
-            style={{
-              width: "100%",
-              marginBottom: 24,
-            }}
-            label={"Tên sản phẩm"}
-            value={values.name}
-            helperText={errors.name}
-            error={errors.name?.length > 0}
-            onChange={handleInputChange}
-            placeholder={"Tên sản phẩm"}
-            margin={"normal"}
-            InputLabelProps={{
-              classes: {
-                root: classes.label,
-              },
-              focused: false,
-              shrink: true,
-            }}
-            InputProps={{
-              classes: {
-                root: classes.inputRoot,
-                input: classes.input,
-                disabled: classes.inputDisabled,
-              },
-              disableUnderline: true,
-            }}
-          />
+          {/* Product Deadline and Status */}
+          <Box display="flex" alignItems="center" flexWrap="wrap">
+            <Box
+              style={{ width: "50%" }}
+              className={classes.productDescription}
+            >
+              <InputLabel className={classes.label} style={{ marginBottom: 8 }}>
+                Ngày hết hạn
+              </InputLabel>
+              <DateTimePicker
+                disabled={!isEdit}
+                okLabel="Chọn"
+                cancelLabel="Hủy"
+                TextFieldComponent={renderDateItem}
+                value={selectedDate}
+                placeholder="10/10/2018"
+                onChange={(date) => handleDateChange(date)}
+                minDate={minDate}
+                format="dddd, DD/MM/YYYY - lúc h:mm A"
+              />
+            </Box>
+            <Box
+              style={{ width: "30%", minWidth: 200 }}
+              className={classes.productDescription}
+            >
+              <InputLabel className={classes.label} style={{ marginBottom: 8 }}>
+                Tình trạng
+              </InputLabel>
+              <Paper style={{ padding: "0.825rem 0.5rem" }}>Mới</Paper>
+            </Box>
+          </Box>
+          <Box className={classes.productDescription}>
+            <InputLabel className={classes.label} style={{ marginBottom: 8 }}>
+              Mô tả sản phẩm
+            </InputLabel>
+            {isEdit ? (
+              <CKEditor
+                editor={Editor}
+                data={values.description || ""}
+                onInit={(editor) => {
+                  // You can store the "editor" and use when it is needed.
+                }}
+                onChange={(event, editor) => {
+                  const data = editor.getData();
+                  handleInputChange({
+                    target: { name: "description", value: data },
+                  });
+                }}
+                onBlur={(event, editor) => {}}
+                onFocus={(event, editor) => {}}
+              />
+            ) : (
+              <Box p={2} className="product__description" component={Paper}>
+                {parse(values.description || "")}
+              </Box>
+            )}
+          </Box>
         </Grid>
         <Grid item className={clsx(classes.root, classes.rightSide)}>
           <Box className={classes.productDescription}>
@@ -219,14 +307,49 @@ const ProposalDetails = (initialValues, isEdit = false, onSubmit) => {
               Danh sách sản phẩm
             </InputLabel> */}
             <ListProposalProducts
+              isEdit={isEdit}
               status={PROPOSAL_STATUS}
-              data={values.products}
+              data={values.purchaseProposalDetails}
               errors={errors}
               onChange={handleInputChange}
             />
           </Box>
         </Grid>
       </Grid>
+      {/* Actions Button */}
+      {isEdit && (
+        <Box className={classes.productDescription}>
+          <Box p={1.5} mr={1} clone>
+            <Button
+              // variant="contained"
+              className={classes.actionButton}
+              component={Paper}
+              onClick={handleSubmit}
+            >
+              {okLabel}
+            </Button>
+          </Box>
+          <Box p={1.5} mr={1} clone>
+            <Button
+              // variant="contained"
+              className={clsx(classes.actionButton, "btn__reset")}
+              component={Paper}
+              onClick={handleResetValues}
+            >
+              {resetLabel}
+            </Button>
+          </Box>
+          <Box p={1.5} mr={1} clone>
+            <Button
+              className={clsx(classes.actionButton, "btn__cancel")}
+              component={Paper}
+              onClick={() => history.push("/proposal")}
+            >
+              {cancelLabel}
+            </Button>
+          </Box>
+        </Box>
+      )}
     </Box>
   );
 };

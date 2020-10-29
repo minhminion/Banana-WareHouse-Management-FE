@@ -18,6 +18,8 @@ import ListProposalPage from "../pages/Proposals/PurchaseProposalPage";
 import AuthRoute from "./components/Routes/AuthRoute";
 import { ENUMS } from "./constants/index";
 import CreateProposal from "../modules/Proposal/CreateProposal";
+import ProposalDetailsPage from "../pages/Proposals/ProposalDetailsPage";
+import EditProposalPage from "../pages/Proposals/EditProposalPage";
 
 const Routes = () => {
   const USER_ROLE = ENUMS.USER_ROLE;
@@ -65,7 +67,19 @@ const Routes = () => {
             path="/proposal/add"
             component={CreateProposal}
             roleName={roleName}
-            acceptRoles={[USER_ROLE.Admin]}
+            acceptRoles={[USER_ROLE.Sale]}
+          />
+          <Route
+            exact
+            path="/proposal/:purchaseProposalFormId"
+            component={ProposalDetailsPage}
+          />
+          <AuthRoute
+            exact
+            path="/proposal/:purchaseProposalFormId/edit"
+            component={EditProposalPage}
+            roleName={roleName}
+            acceptRoles={[USER_ROLE.Sale]}
           />
         </AnimatedSwitch>
       </MainLayout>

@@ -132,6 +132,91 @@ theme = {
         height: 32,
       },
     },
+    // Config Date Picker
+    MuiPickersModal: {
+      dialogRootWider: {
+        border: "none !important",
+        minWidth: 375,
+        "& .MuiDialogActions-root > button": {
+          color: `${theme.palette.secondary.main} !important`,
+          "&:hover": {
+            backgroundColor: theme.palette.action.hover,
+          },
+        },
+        "& .MuiPaper-root": {
+          border: "none !important",
+        },
+      },
+    },
+    MuiPickersToolbar: {
+      toolbar: {
+        backgroundColor: theme.palette.secondary.main,
+      },
+    },
+    MuiPickersBasePicker: {
+      pickerView: {
+        maxWidth: "auto",
+      },
+    },
+    MuiPickersToolbarText: {
+      toolbarTxt: {
+        color: "rgba(0,0,0,0.3)",
+      },
+      toolbarBtnSelected: {
+        color: "#ffff !important",
+      },
+    },
+    MuiPickersYear: {
+      root: {
+        "&:focus": {
+          color: theme.palette.secondary.main,
+        },
+      },
+      yearSelected: {
+        color: theme.palette.secondary.main,
+      },
+    },
+    MuiPickersDay: {
+      daySelected: {
+        backgroundColor: theme.palette.secondary.main,
+        color: "#ffff !important",
+        "&:hover": {
+          background: `${theme.palette.secondary.main} !important`,
+        },
+      },
+      current: {
+        color: theme.palette.grey[100],
+      },
+    },
+    MuiPickerDTTabs: {
+      tabs: {
+        margin: 0,
+        backgroundColor: theme.palette.secondary.main,
+        color: "#ffff",
+      },
+    },
+    // Clock
+    MuiPickersClockNumber: {
+      clockNumberSelected: {
+        color: "#ffff",
+      },
+    },
+    MuiPickersClock: {
+      pin: {
+        backgroundColor: theme.palette.secondary.main,
+      },
+    },
+    MuiPickersClockPointer: {
+      pointer: {
+        backgroundColor: theme.palette.secondary.main,
+      },
+      thumb: {
+        borderColor: theme.palette.secondary.main,
+      },
+      noPoint: {
+        backgroundColor: theme.palette.secondary.main,
+      },
+    },
   },
 };
 

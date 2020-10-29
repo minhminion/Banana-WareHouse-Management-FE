@@ -227,6 +227,7 @@ const ProductDetails = ({
     validate
   );
 
+  console.log("======== Bao Minh:  initialValues", initialValues);
   useEffect(() => {
     setDefaultValues(initialValues);
   }, [initialValues]);
@@ -442,7 +443,7 @@ const ProductDetails = ({
           {/* Product Sale price */}
           <Box className={classes.productDescription}>
             <InputLabel className={classes.label} style={{ marginBottom: 8 }}>
-              Giá mua
+              Giá bán
             </InputLabel>
             <Box display="flex" style={{ minWidth: 150 }}>
               <InputBase

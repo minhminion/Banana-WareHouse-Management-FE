@@ -60,10 +60,6 @@ const SingleProductDetails = (props) => {
   };
 
   const updateProductUnit = async (productUnits = []) => {
-    console.log(
-      "======== Bao Minh: updateProductUnit -> productUnits",
-      productUnits
-    );
     let createUnits = [];
     let updateUnits = [];
     let deleteUnits = [];
