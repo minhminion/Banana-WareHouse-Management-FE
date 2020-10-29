@@ -43,4 +43,38 @@ export const objectToQueryString = (obj) => {
       str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
     }
   return str.join("&");
-}
+};
+
+export const titleCase = (str, isLowerCase = false) => {
+  var splitStr = isLowerCase ? str.toLowerCase().split(" ") : str.split(" ");
+  for (var i = 0; i < splitStr.length; i++) {
+    // You do not need to check if i is larger than splitStr length, as your for does that for you
+    // Assign it back to the array
+    splitStr[i] =
+      splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
+  }
+  // Directly return the joined string
+  return splitStr.join(" ");
+};
+
+export const notifyError = (notify, messages) => {
+  const messageType = typeof messages;
+  if (messageType === "string") {
+    notify(messages, {
+      key: messages,
+      autoHideDuration: 2000,
+      variant: "error",
+      preventDuplicate: true,
+    });
+  } else if (messageType === "object") {
+    const listMessage = Object.values(messages);
+    listMessage.forEach((message) => {
+      notify(message, {
+        key: message,
+        autoHideDuration: 2000,
+        variant: "error",
+        preventDuplicate: true,
+      });
+    });
+  }
+};

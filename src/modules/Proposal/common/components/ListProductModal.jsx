@@ -14,7 +14,6 @@ import {
   makeStyles,
   Box,
   useTheme,
-  Link,
   IconButton,
   Checkbox,
   Typography,
@@ -28,6 +27,8 @@ import handler from "../../../Products/constants/handler";
 import { useSelector, useDispatch } from "react-redux";
 import { MODULE_NAME as MODULE_PRODUCT } from "../../../Products/constants/models";
 import Pagination from "@material-ui/lab/Pagination";
+import { useCallback } from "react";
+import { union, uniqBy } from "lodash";
 
 const useStyles = makeStyles((theme) => ({
   tableRoot: {
@@ -73,6 +74,23 @@ const useStyles = makeStyles((theme) => ({
       borderBottomRightRadius: 16,
     },
   },
+  actionButton: {
+    background: theme.palette.secondary.main,
+    width: 120,
+    color: theme.palette.common.white,
+    justifyContent: "center",
+    "&:hover": {
+      background: theme.palette.secondary.main,
+    },
+    "&.btn__cancel": {
+      background: "none",
+      color: theme.palette.common.black,
+    },
+    "&.btn__reset": {
+      background: theme.palette.info.light,
+      color: theme.palette.common.white,
+    },
+  },
 }));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -83,7 +101,7 @@ const ListProductModal = (props) => {
   const {
     onClose,
     open = false,
-    LIMIT_PER_PAGE = 5,
+    LIMIT_PER_PAGE = 4,
     initialValue,
     onChange,
   } = props;
@@ -102,35 +120,7 @@ const ListProductModal = (props) => {
     (state) => state[MODULE_PRODUCT].data
   );
 
-  useEffect(() => {
-    if (filter && open) {
-      fetchProduct({
-        ...filter,
-        limit: LIMIT_PER_PAGE,
-      });
-    }
-  }, [filter, open, fetchProduct, LIMIT_PER_PAGE]);
-
-  useEffect(() => {
-    if (initialValue?.length > 0) {
-      const value = initialValue.reduce((accumulator, currentValue) => {
-        if (currentValue.action !== "deleted")
-          return accumulator.concat(currentValue["id"]);
-        return accumulator;
-      }, []);
-      handleFilter(
-        {
-          target: {
-            name: "id",
-            value: value.join(","),
-          },
-        },
-        "notin"
-      );
-    }
-  }, [initialValue]);
-
-  const handleFilter = (e, condition = "=") => {
+  const handleFilter = useCallback((e, condition = "=") => {
     const { name, value } = e.target;
     let newFilter = filter;
     let extendFilter = {};
@@ -148,7 +138,35 @@ const ListProductModal = (props) => {
       page: 1,
       ...extendFilter,
     });
-  };
+  }, []);
+
+  useEffect(() => {
+    if (initialValue?.length > 0) {
+      const value = initialValue.reduce((accumulator, currentValue) => {
+        if (currentValue.action !== "deleted")
+          return accumulator.concat(currentValue["productId"]);
+        return accumulator;
+      }, []);
+      handleFilter(
+        {
+          target: {
+            name: "id",
+            value: value.join(","),
+          },
+        },
+        "notin"
+      );
+    }
+  }, [initialValue, handleFilter]);
+
+  useEffect(() => {
+    if (open && filter) {
+      fetchProduct({
+        ...filter,
+        limit: LIMIT_PER_PAGE,
+      });
+    }
+  }, [filter, open, fetchProduct, LIMIT_PER_PAGE]);
 
   const handleChangePagination = (e, newPage) => {
     setFilter((prev) => ({
@@ -159,9 +177,17 @@ const ListProductModal = (props) => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
+      const newData = data.reduce((result, product) => {
+        return result.concat({
+          description: "",
+          quantity: 1,
+          productId: product.id,
+          product: product,
+        });
+      }, []);
       setSelected((prev) => ({
         ...prev,
-        [filter.page]: data,
+        [filter.page]: newData,
       }));
       return;
     }
@@ -173,11 +199,20 @@ const ListProductModal = (props) => {
 
   const handleCheckProduct = (e, product) => {
     const selectedInPage = selected[filter.page] || [];
-    const selectedIndex = selectedInPage.indexOf(product);
+    const selectedIndex = selectedInPage.findIndex(
+      (item) => item.productId === product.id
+    );
+    const selectProduct = {
+      description: "",
+      action: "created",
+      quantity: 1,
+      productId: product.id,
+      product: product,
+    };
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selectedInPage, product);
+      newSelected = newSelected.concat(selectedInPage, selectProduct);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selectedInPage.slice(1));
     } else if (selectedIndex === selectedInPage.length - 1) {
@@ -202,32 +237,25 @@ const ListProductModal = (props) => {
     );
 
     if (newProducts.length > 0 || onChange) {
-      newProducts.forEach(function (element) {
-        element.action = "created";
-        element.choiceQuantity = 1;
-      });
-      
       // Get list unique IDs
-      const idsInitialValue = new Set(initialValue.map((d) => d.id));
       const idsNewProduct = new Set(newProducts.map((d) => d.id));
 
-      // Change action of Initial Values to update
-      initialValue.forEach((el) => {
-        if (idsNewProduct.has(el.id)) el.action = "update";
-      });
+      const newValues = uniqBy([...initialValue, ...newProducts], "productId");
 
-      const newValues = [
-        ...initialValue,
-        ...newProducts.filter((product) => !idsInitialValue.has(product.id)),
-      ];
+      // Change action of Initial Values to update
+      newValues.forEach((el) => {
+        if (idsNewProduct.has(el.id) && el.action === "deleted")
+          el.action = "update";
+      });
 
       onChange({
         target: {
-          name: "products",
+          name: "purchaseProposalDetails",
           value: newValues,
         },
       });
       setSelected([]);
+      console.log('======== Bao Minh: handleSubmit -> newValues', newValues)
       onClose();
     }
   };
@@ -235,15 +263,18 @@ const ListProductModal = (props) => {
   const renderTableBody = (rows) => {
     return rows.map((row) => {
       const isItemSelected = selected[filter.page]
-        ? selected[filter.page].findIndex((item) => item.id === row.id) !== -1
+        ? selected[filter.page].findIndex(
+            (item) => item.productId === row.id
+          ) !== -1
         : false;
+      const product = row;
       return (
-        <TableRow key={row.sku}>
+        <TableRow key={product.sku}>
           <TableCell padding="checkbox">
             <Checkbox
               checked={isItemSelected}
-              onChange={(e) => handleCheckProduct(e, row)}
-              inputProps={{ "aria-labelledby": `check_product_${row.id}` }}
+              onChange={(e) => handleCheckProduct(e, product)}
+              inputProps={{ "aria-labelledby": `check_product_${product.id}` }}
             />
           </TableCell>
           <TableCell align="left">
@@ -259,26 +290,26 @@ const ListProductModal = (props) => {
               }}
             />
           </TableCell>
-          <TableCell align="left">{row.sku}</TableCell>
+          <TableCell align="left">{product.sku}</TableCell>
           <TableCell component="th" scope="row">
-            <strong>{row.name}</strong>
+            <strong>{product.name}</strong>
           </TableCell>
           <TableCell align="left">
-            {row.status === 1 ? "Còn hàng" : "Hết hàng"}
+            {product.status === 1 ? "Còn hàng" : "Hết hàng"}
           </TableCell>
           <TableCell align="left">
-            {formatNumberToReadable(row.quantity)}
+            {formatNumberToReadable(product.quantity)}
           </TableCell>
-          <TableCell align="left">{row.defaultUnit}</TableCell>
+          <TableCell align="left">{product.defaultUnit}</TableCell>
           <TableCell
             align="left"
             style={{
               color: theme.palette.primary.dark,
             }}
           >
-            <strong>{formatNumberToVND(row.price)}</strong>
+            <strong>{formatNumberToVND(product.price)}</strong>
           </TableCell>
-          <TableCell align="left">{row.productCategory?.name}</TableCell>
+          <TableCell align="left">{product.productCategory?.name}</TableCell>
           {/* Action on row */}
           <TableCell align="left">
             <Box clone>
@@ -294,14 +325,13 @@ const ListProductModal = (props) => {
     <Dialog
       onClose={onClose}
       maxWidth="lg"
-      // fullScreen
       fullWidth={true}
       TransitionComponent={Transition}
       aria-labelledby="simple-dialog-title"
       open={open}
     >
       <DialogTitle id="simple-dialog-title">Danh sách sản phẩm</DialogTitle>
-      <DialogContent>
+      <DialogContent style={{ minHeight: 710 }}>
         <TableContainer component={Box}>
           <Table className={classes.tableRoot} aria-label="simple table">
             <TableHead>

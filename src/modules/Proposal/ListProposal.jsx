@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import {
   Box,
   Paper,
@@ -8,7 +8,6 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  TableBody,
   makeStyles,
   InputBase,
   IconButton,
@@ -16,9 +15,14 @@ import {
   Select,
   MenuItem,
   Menu,
-  useTheme,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
+import CKEditor from "@ckeditor/ckeditor5-react";
+import Editor from "../../common/components/widget/Editor";
 // ICONS
 import SearchIcon from "@material-ui/icons/Search";
 import FilterListIcon from "@material-ui/icons/FilterList";
@@ -27,51 +31,18 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import PublishIcon from "@material-ui/icons/Publish";
 
-import { getQuery, objectToQueryString } from "../../common/helper";
+import {
+  getQuery,
+  notifyError,
+  objectToQueryString,
+} from "../../common/helper";
 import { useLocation, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import handler from "./constants/handler";
 import { MODULE_NAME } from "./constants/models";
 import { useSnackbar } from "notistack";
 import ListProposalItem from "./common/ListProposalItem";
-
-function randomDate(start, end, startHour, endHour) {
-  var date = new Date(+start + Math.random() * (end - start));
-  var hour = (startHour + Math.random() * (endHour - startHour)) | 0;
-  date.setHours(hour);
-  return date;
-}
-
-function createData(id, creator, createdAt, period, status) {
-  return { id, creator, createdAt, period, status };
-}
-
-function genData(row) {
-  const data = [];
-
-  for (let i = 1; i < row; i++) {
-    let str = "" + i;
-    let pad = "000000";
-    let id = pad.substring(0, pad.length - str.length) + str;
-    data.push(
-      createData(
-        id,
-        {
-          uid: i,
-          email: `example_${i}@gmail.com`,
-          name: `Nguyễn Văn ${i}`,
-        },
-        randomDate(new Date(2020, 0, 1), new Date(), 0, 24).toISOString(),
-        2,
-        Math.floor(Math.random() * 4 + 1)
-      )
-    );
-  }
-
-  return data;
-}
-
-const rows = [...genData(100)];
+import handler from "./constants/handler";
 
 const useStyles = makeStyles((theme) => ({
   select: {
@@ -172,16 +143,38 @@ const useStyles = makeStyles((theme) => ({
       background: theme.palette.secondary.main,
     },
   },
+  dialogRoot: {
+    "& .ck-editor": {
+      boxShadow: theme.boxShadows.main,
+    },
+    "& .ck-toolbar": {
+      border: theme.border[0],
+      borderTopRightRadius: `${theme.spacing(1)}px !important`,
+      borderTopLeftRadius: `${theme.spacing(1)}px !important`,
+    },
+    "& .ck-editor__editable.ck-editor__editable_inline": {
+      borderBottomRightRadius: `${theme.spacing(1)}px !important`,
+      borderBottomLeftRadius: `${theme.spacing(1)}px !important`,
+      minHeight: 200,
+      height: "100%",
+      maxHeight: 400,
+      "&:not(.ck-focused)": {
+        border: theme.border[0],
+      },
+    },
+  },
 }));
 
 const LIMIT_PER_PAGE = 5;
 const ListProposal = (props) => {
-  const theme = useTheme();
+  const editorRef = useRef(null);
+
   const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [selectCancelProposal, setSelectCancelProposal] = useState({});
   const [filter, setFilter] = useState({
     page: 1,
   });
@@ -203,10 +196,14 @@ const ListProposal = (props) => {
     getContentAnchorEl: null,
   };
 
-  // const { fetchProduct } = useMemo(() => handler(dispatch, props), [
-  //   dispatch,
-  //   props,
-  // ]);
+  const { fetchProposal, cancelProposal } = useMemo(
+    () => handler(dispatch, props),
+    [dispatch, props]
+  );
+
+  const { data, currentPage, totalPages, totalItems } = useSelector(
+    (state) => state[MODULE_NAME].data
+  );
 
   const { isLoading } = useSelector((state) => state[MODULE_NAME]);
 
@@ -218,7 +215,10 @@ const ListProposal = (props) => {
 
   useEffect(() => {
     if (filter) {
-      // fetchProduct(filter);
+      fetchProposal({
+        ...filter,
+        limit: LIMIT_PER_PAGE,
+      });
     }
   }, [filter]);
 
@@ -255,6 +255,26 @@ const ListProposal = (props) => {
         page: newPage,
       })}`,
     });
+  };
+
+  const handleCloseCancelProposal = (proposal) => {
+    setSelectCancelProposal({});
+    editorRef.current.setData("")
+  };
+
+  const handleCancelProposal = async () => {
+    if (selectCancelProposal && selectCancelProposal.id && editorRef.current && editorRef.current.getData) {
+      const result = await cancelProposal({
+        ...selectCancelProposal,
+        description: editorRef.current.getData() || "",
+      });
+      if (result.id) {
+        handleCloseCancelProposal()
+        history.push("/proposal");
+      } else {
+        notifyError(enqueueSnackbar, result);
+      }
+    }
   };
 
   const iconSelectComponent = (props) => {
@@ -298,20 +318,6 @@ const ListProposal = (props) => {
               <MenuItem value={5}>Buộc hoàn tất</MenuItem>
             </Select>
           </Box>
-          {/* Select Category
-          <Box mr={1} clone>
-            <Select
-              disableUnderline
-              classes={{ root: classes.select }}
-              MenuProps={menuProps}
-              IconComponent={iconSelectComponent}
-              defaultValue={0}
-            >
-              <MenuItem value={0}>Tất cả danh mục</MenuItem>
-              <MenuItem value={1}>Trái cây Việt Nam</MenuItem>
-              <MenuItem value={2}>Trái cây Mỹ</MenuItem>
-            </Select>
-          </Box> */}
           <Box p={1.5} mr={1} clone>
             <IconButton color="primary" component={Paper}>
               <FilterListIcon />
@@ -386,37 +392,66 @@ const ListProposal = (props) => {
               <TableCell align="center" style={{ width: 100 }}>
                 Thời hạn
               </TableCell>
-              <TableCell style={{ width: 150 }} align="left">
+              <TableCell style={{ width: 150 }} align="center">
                 Thao tác
               </TableCell>
             </TableRow>
           </TableHead>
           {/* <TableBody> */}
-          {rows
-            ?.slice(
-              (filter.page - 1) * LIMIT_PER_PAGE,
-              (filter.page - 1) * LIMIT_PER_PAGE + LIMIT_PER_PAGE
-            )
-            .map((row) => (
-              <ListProposalItem key={row.id} row={row} />
+          {data &&
+            data.map((row) => (
+              <ListProposalItem
+                key={row.id}
+                row={row}
+                onCancel={setSelectCancelProposal}
+              />
             ))}
           {/* </TableBody> */}
         </Table>
       </TableContainer>
       {/* Pagination */}
       <Box mb={5} display="flex" justifyContent="space-between">
-        <Typography>{`Hiển ${(filter.page - 1) * LIMIT_PER_PAGE + 1} -
-                ${filter.page * LIMIT_PER_PAGE + 1} trên ${
-          rows.length
-        } kết quả`}</Typography>
+        {data && (
+          <Typography>{`Hiển ${(currentPage - 1) * LIMIT_PER_PAGE + 1} -
+                ${(currentPage - 1) * LIMIT_PER_PAGE + data.length} trên ${
+            totalItems || 0
+          } kết quả`}</Typography>
+        )}
         <Pagination
-          count={Math.round(rows.length / LIMIT_PER_PAGE)}
+          count={totalPages || 1}
           defaultPage={1}
-          page={parseInt(filter.page)}
+          page={currentPage || 1}
           boundaryCount={2}
           onChange={handleChangePagination}
         />
       </Box>
+
+      <Dialog
+        open={selectCancelProposal && selectCancelProposal.id ? true : false}
+        className={classes.dialogRoot}
+        fullWidth
+        maxWidth="md"
+      >
+        <DialogTitle>Lý do hủy phiếu đề nghị này</DialogTitle>
+        <DialogContent>
+          <CKEditor
+            editor={Editor}
+            onInit={(editor) => {
+              editorRef.current = editor;
+            }}
+            onBlur={(event, editor) => {}}
+            onFocus={(event, editor) => {}}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelProposal} color="primary">
+            Chọn
+          </Button>
+          <Button onClick={handleCloseCancelProposal} color="primary">
+            Hủy
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

@@ -8,7 +8,6 @@ import {
   Typography,
   Chip,
   Box,
-  Link,
   IconButton,
   Collapse,
   useTheme,
@@ -22,6 +21,12 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
+import PageviewIcon from "@material-ui/icons/Pageview";
+
+import { Link } from "react-router-dom";
+import { ENUMS } from "../../../common/constants";
+import { useSelector } from "react-redux";
+import { MODULE_NAME as MODULE_AUTHOR } from "../../Author/constants/models";
 
 const useStyles = makeStyles((theme) => ({
   chip: {
@@ -64,10 +69,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ListProposalItem = ({ row, status }) => {
+const ListProposalItem = ({ row, onCancel }) => {
   const theme = useTheme();
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const { roleName } = useSelector((state) => state[MODULE_AUTHOR]);
 
   const renderStatus = (status) => {
     let label = "Không tìm thấy";
@@ -110,8 +116,10 @@ const ListProposalItem = ({ row, status }) => {
         <TableCell align="left">{row.id}</TableCell>
         <TableCell component="th" scope="row">
           <div>
-            <strong>{row.creator.name}</strong>
-            <Typography variant="body2">{row.creator.email}</Typography>
+            <strong>{row.creator?.name || "Lưu Bảo Minh"}</strong>
+            <Typography variant="body2">
+              {row.creator?.email || "minhminion2015@gmail.com"}
+            </Typography>
           </div>
         </TableCell>
         <TableCell align="center">{renderStatus(row.status)}</TableCell>
@@ -121,23 +129,41 @@ const ListProposalItem = ({ row, status }) => {
             color: theme.palette.primary.dark,
           }}
         >
-          <strong>{dayjs(row.createdAt).format("HH:mm - DD/mm/YYYY")}</strong>
+          <strong>{dayjs(row.createdAt).format("DD/MM/YYYY")}</strong>
         </TableCell>
-        <TableCell align="center">{row.period} giờ</TableCell>
+        <TableCell align="center">
+          {dayjs(row.deadline).format("DD/MM/YYYY")}
+        </TableCell>
         {/* Action on row */}
-        <TableCell align="left">
+        <TableCell align="center">
           <Box mr={1} clone>
-            <Link to={`/products/${row.sku}`}>
+            <Link
+              to={`/proposal/${row.id}${
+                roleName === ENUMS.USER_ROLE.Sale &&
+                row.status !== ENUMS.PROPOSAL_STATUS.CANCELED &&
+                row.status !== ENUMS.PROPOSAL_STATUS.PROCESSING
+                  ? "/edit"
+                  : ""
+              }`}
+            >
               <IconButton>
-                <EditIcon />
+                {roleName === ENUMS.USER_ROLE.Sale &&
+                row.status !== ENUMS.PROPOSAL_STATUS.CANCELED &&
+                row.status !== ENUMS.PROPOSAL_STATUS.PROCESSING ? (
+                  <EditIcon />
+                ) : (
+                  <PageviewIcon />
+                )}
               </IconButton>
             </Link>
           </Box>
-          <Box clone>
-            <IconButton color="secondary">
-              <DeleteIcon />
-            </IconButton>
-          </Box>
+          {roleName === ENUMS.USER_ROLE.Sale && row.status !== ENUMS.PROPOSAL_STATUS.CANCELED && (
+            <Box clone>
+              <IconButton color="secondary" onClick={() => onCancel(row)}>
+                <DeleteIcon />
+              </IconButton>
+            </Box>
+          )}
         </TableCell>
       </TableRow>
       <TableRow style={{ boxShadow: theme.boxShadows.inset }}>

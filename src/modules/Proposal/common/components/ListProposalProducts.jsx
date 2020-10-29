@@ -8,19 +8,20 @@ import {
   Box,
   Table,
   makeStyles,
-  useTheme,
   InputBase,
   IconButton,
   Button,
 } from "@material-ui/core";
-import {
-  formatNumberToVND,
-  formatNumberToReadable,
-} from "../../../../common/helper";
+import { formatNumberToVND } from "../../../../common/helper";
 
-import CloseIcon from "@material-ui/icons/Close";
 import { blueGrey } from "@material-ui/core/colors";
 import ListProductModal from "./ListProductModal";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
+
+// Icons
+import CloseIcon from "@material-ui/icons/Close";
+import InsertCommentIcon from "@material-ui/icons/InsertComment";
+import ProductItemDescription from "./ProductItemDescription";
 
 const useStyles = makeStyles((theme) => ({
   inputRoot: {
@@ -46,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.common.black,
   },
   tableRoot: {
-    // minWidth: 1200,
+    overflow: "hidden",
     borderSpacing: `0px ${theme.spacing(2)}px`,
     borderCollapse: "separate",
     paddingBottom: theme.spacing(2),
@@ -100,16 +101,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ListProposalProducts = ({ data, onChange }) => {
-  console.log('======== Bao Minh: ListProposalProducts -> data', data)
+const ListProposalProducts = ({ data, onChange, isEdit = false }) => {
   const classes = useStyles();
-  const theme = useTheme();
+  const [viewProduct, setViewProduct] = useState({});
   const [openListProduct, setOpenListProduct] = useState(false);
 
-  const handleChangeQuantity = (e, productId) => {
+  const handleChangeProduct = (e, productId) => {
     const { name, value } = e.target;
     const fieldName = name.split("_")[0];
-    const index = data.findIndex((product) => product.id === productId);
+    const index = data.findIndex((product) => product.productId === productId);
     if (index === -1) return;
     let newProducts = data;
     newProducts[index] = {
@@ -117,9 +117,13 @@ const ListProposalProducts = ({ data, onChange }) => {
       [fieldName]: value,
       action: newProducts[index].action !== "created" ? "updated" : "created",
     };
+    console.log(
+      "======== Bao Minh: handleChangeProduct -> newProducts",
+      newProducts
+    );
     onChange({
       target: {
-        name: "products",
+        name: "purchaseProposalDetails",
         value: newProducts,
       },
     });
@@ -129,9 +133,9 @@ const ListProposalProducts = ({ data, onChange }) => {
     if (data) {
       let newUnits;
       if (action === "created") {
-        newUnits = data.filter((unit) => unit.id !== productId);
+        newUnits = data.filter((unit) => unit.productId !== productId);
       } else {
-        const index = data.findIndex((unit) => unit.id === productId);
+        const index = data.findIndex((unit) => unit.productId === productId);
         newUnits = data;
         newUnits[index] = {
           ...newUnits[index],
@@ -140,60 +144,79 @@ const ListProposalProducts = ({ data, onChange }) => {
       }
       onChange({
         target: {
-          name: "products",
+          name: "purchaseProposalDetails",
           value: newUnits,
         },
       });
     }
   };
 
+  const handleCloseViewProduct = () => {
+    setViewProduct({});
+  };
+
   const renderTableBody = (rows) => {
-    return rows.map(
-      (row) =>
+    return rows.map((row) => {
+      const product = row.product;
+      return (
         row.action !== "deleted" && (
-          <TableRow key={row.id}>
-            <TableCell align="left">
-              <img
-                alt=""
-                src={
-                  process.env.PUBLIC_URL +
-                  "/images/products/delicious-banana-blue-background.jpg"
-                }
-                style={{
-                  width: "100%",
-                  borderRadius: 8,
-                }}
-              />
-            </TableCell>
-            <TableCell component="th" scope="row">
-              <strong>{row.name}</strong>
-            </TableCell>
-            <TableCell align="left">
-              <InputBase
-                name={`choiceQuantity_product_${row.id}`}
-                value={formatNumberToVND(row.choiceQuantity || 1)}
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.input,
-                  disabled: classes.inputDisabled,
-                }}
-                onChange={(e) => handleChangeQuantity(e, row.id)}
-              />
-            </TableCell>
-            {/* Action on row */}
-            <TableCell align="center">
-              <Box clone>
-                <IconButton
-                  color="secondary"
-                  onClick={() => handleDeleteProduct(row.id, row.action)}
-                >
-                  <CloseIcon />
-                </IconButton>
-              </Box>
-            </TableCell>
-          </TableRow>
+          <CSSTransition key={product.id} timeout={500} classNames="fade">
+            <TableRow>
+              <TableCell align="left">
+                <img
+                  alt=""
+                  src={
+                    process.env.PUBLIC_URL +
+                    "/images/products/delicious-banana-blue-background.jpg"
+                  }
+                  style={{
+                    width: "100%",
+                    borderRadius: 8,
+                  }}
+                />
+              </TableCell>
+              <TableCell component="th" scope="row">
+                <strong>{product.name}</strong>
+              </TableCell>
+              <TableCell align="left">
+                <InputBase
+                  disabled={!isEdit}
+                  name={`quantity_product_${product.id}`}
+                  error={row.quantity.length === 0}
+                  value={formatNumberToVND(row.quantity)}
+                  classes={{
+                    root: classes.inputRoot,
+                    input: classes.input,
+                    disabled: classes.inputDisabled,
+                  }}
+                  onChange={(e) => handleChangeProduct(e, product.id)}
+                />
+              </TableCell>
+              {/* Action on row */}
+              <TableCell align="center">
+                <Box clone>
+                  <IconButton onClick={() => setViewProduct(row)}>
+                    <InsertCommentIcon />
+                  </IconButton>
+                </Box>
+                {isEdit && (
+                  <Box clone>
+                    <IconButton
+                      color="secondary"
+                      onClick={() =>
+                        handleDeleteProduct(product.id, row.action)
+                      }
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                  </Box>
+                )}
+              </TableCell>
+            </TableRow>
+          </CSSTransition>
         )
-    );
+      );
+    });
   };
 
   return (
@@ -216,19 +239,23 @@ const ListProposalProducts = ({ data, onChange }) => {
               </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TransitionGroup component={TableBody} className="products-list">
             {data && renderTableBody(data)}
-            <TableRow>
-              <TableCell style={{ padding: 0 }} colSpan={4}>
-                <Button
-                  className={classes.buttonAction}
-                  onClick={() => setOpenListProduct(true)}
-                >
-                  Thêm sản phẩm
-                </Button>
-              </TableCell>
-            </TableRow>
-          </TableBody>
+            {isEdit && (
+              <CSSTransition in={true} timeout={500} classNames="fade">
+                <TableRow>
+                  <TableCell style={{ padding: 0 }} colSpan={4}>
+                    <Button
+                      className={classes.buttonAction}
+                      onClick={() => setOpenListProduct(true)}
+                    >
+                      Thêm sản phẩm
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              </CSSTransition>
+            )}
+          </TransitionGroup>
         </Table>
       </TableContainer>
       <ListProductModal
@@ -236,6 +263,12 @@ const ListProposalProducts = ({ data, onChange }) => {
         onChange={onChange}
         onClose={() => setOpenListProduct(false)}
         initialValue={data || []}
+      />
+      <ProductItemDescription
+        isEdit={isEdit}
+        proposalProduct={viewProduct}
+        onClose={handleCloseViewProduct}
+        onSubmit={handleChangeProduct}
       />
     </Fragment>
   );
