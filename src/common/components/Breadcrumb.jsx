@@ -3,8 +3,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useHistory } from "react-router-dom";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import { Box, IconButton } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -16,11 +18,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CustomBreadcrumbs = (props) => {
-  const { title = "Breadcrumbs", root } = props;
+  const { title = "Breadcrumbs", root, disableGoBack = false } = props;
+  const history = useHistory();
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
+      {!disableGoBack && (
+        <Box mr={2} clone>
+          <IconButton onClick={() => history.go(-1)}>
+            <ArrowBackIcon />
+          </IconButton>
+        </Box>
+      )}
       <Typography component="span" color="textPrimary" variant="h6">
         {title}
       </Typography>

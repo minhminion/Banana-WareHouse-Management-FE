@@ -259,18 +259,26 @@ const ListProposal = (props) => {
 
   const handleCloseCancelProposal = (proposal) => {
     setSelectCancelProposal({});
-    editorRef.current.setData("")
+    editorRef.current.setData("");
   };
 
   const handleCancelProposal = async () => {
-    if (selectCancelProposal && selectCancelProposal.id && editorRef.current && editorRef.current.getData) {
+    if (
+      selectCancelProposal &&
+      selectCancelProposal.id &&
+      editorRef.current &&
+      editorRef.current.getData
+    ) {
       const result = await cancelProposal({
         ...selectCancelProposal,
-        description: editorRef.current.getData() || "",
+        exceptionReason: editorRef.current.getData() || "",
       });
       if (result.id) {
-        handleCloseCancelProposal()
-        history.push("/proposal");
+        handleCloseCancelProposal();
+        fetchProposal({
+          ...filter,
+          limit: LIMIT_PER_PAGE,
+        });
       } else {
         notifyError(enqueueSnackbar, result);
       }
@@ -280,7 +288,6 @@ const ListProposal = (props) => {
   const iconSelectComponent = (props) => {
     return <ExpandMoreIcon className={props.className + " " + classes.icon} />;
   };
-
   return (
     <div>
       <Box display="flex" justifyContent="space-between" mb={2}>

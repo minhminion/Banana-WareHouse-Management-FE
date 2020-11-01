@@ -7,7 +7,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import Hidden from "@material-ui/core/Hidden";
 import IconButton from "@material-ui/core/IconButton";
 import Link from "@material-ui/core/Link";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useHistory } from "react-router-dom";
 import MenuIcon from "@material-ui/icons/Menu";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import CameraAltOutlinedIcon from "@material-ui/icons/CameraAltOutlined";
@@ -132,6 +132,7 @@ const anchorOrigin = {
 };
 
 const Header = (props) => {
+  const history = useHistory()
   const { onDrawerToggle } = props;
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
@@ -218,6 +219,11 @@ const Header = (props) => {
   const handleCloseChangeProfile = () => {
     setOpenChangeProfile(false);
   };
+
+  const handleLogout = () => {
+    dispatch(clearAll())
+    history.push("/")
+  }
 
   const handleChangeProfile = async (e) => {
     e.preventDefault();
@@ -432,7 +438,7 @@ const Header = (props) => {
                               <MenuItem onClick={handleClose}>
                                 My account
                               </MenuItem>
-                              <MenuItem onClick={() => dispatch(clearAll())}>
+                              <MenuItem onClick={handleLogout}>
                                 Logout
                               </MenuItem>
                             </MenuList>

@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import React from "react";
 import Bar from "./Bar";
 import Container from "./Container";
-import Spinner from "./Spinner";
 
 const Progress = ({ isAnimating, locationKey }) => {
   return (

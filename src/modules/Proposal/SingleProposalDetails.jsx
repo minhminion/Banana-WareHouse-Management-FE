@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useSnackbar } from "notistack";
 import ProposalDetails from "./common/ProposalDetails";
 import { notifyError } from "../../common/helper";
+import { ENUMS } from "../../common/constants";
 
 const SingleProposalDetails = (props) => {
   const { isEdit = false } = props;
@@ -18,7 +19,8 @@ const SingleProposalDetails = (props) => {
     fetchSingleProposal,
     editProposal,
     addProposalProduct,
-    editProposalProduct
+    deleteProposalProduct,
+    editProposalProduct,
   } = useMemo(() => handler(dispatch, props), [dispatch, props]);
 
   const getProposal = useCallback(
@@ -61,7 +63,7 @@ const SingleProposalDetails = (props) => {
   };
 
   const updateProductUnit = async (purchaseProposalDetails = []) => {
-    console.log('======== Bao Minh: updateProductUnit -> purchaseProposalDetails', purchaseProposalDetails)
+    const purchaseProposalId = parseInt(purchaseProposalFormId);
     let createProposal = [];
     let updateProposal = [];
     let deleteProposal = [];
@@ -83,16 +85,26 @@ const SingleProposalDetails = (props) => {
     });
 
     if (createProposal.length > 0) {
-      const result = await addProposalProduct({
-        purchaseProposalFormId: parseInt(purchaseProposalFormId),
+      await addProposalProduct({
+        purchaseProposalFormId: purchaseProposalId,
         purchaseProposalDetails: [...createProposal],
+      });
+    }
+
+    // Delete Proposal Products
+    if (deleteProposal.length > 0) {
+      await deleteProposalProduct({
+        purchaseProposalFormId: purchaseProposalId,
+        purchaseProposalDetailIds: [
+          ...deleteProposal.map((product) => product.id),
+        ],
       });
     }
 
     // Update Proposal Products
     if (updateProposal.length > 0) {
-      const result = await editProposalProduct({
-        purchaseProposalFormId: parseInt(purchaseProposalFormId),
+      await editProposalProduct({
+        purchaseProposalFormId: purchaseProposalId,
         purchaseProposalDetails: [...updateProposal],
       });
     }
@@ -104,7 +116,11 @@ const SingleProposalDetails = (props) => {
         ...initialValues,
         ...initialValues.product,
       }}
-      isEdit={isEdit}
+      isEdit={
+        isEdit &&
+        (initialValues?.status === ENUMS.PROPOSAL_STATUS.NEW ||
+          initialValues?.status === ENUMS.PROPOSAL_STATUS.PROCESSING)
+      }
       onSubmit={(values) => isEdit && handleEditProposal(values)}
     />
   ) : (

@@ -28,7 +28,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { MODULE_NAME as MODULE_PRODUCT } from "../../../Products/constants/models";
 import Pagination from "@material-ui/lab/Pagination";
 import { useCallback } from "react";
-import { union, uniqBy } from "lodash";
+import { uniqBy } from "lodash";
 
 const useStyles = makeStyles((theme) => ({
   tableRoot: {
@@ -255,7 +255,7 @@ const ListProductModal = (props) => {
         },
       });
       setSelected([]);
-      console.log('======== Bao Minh: handleSubmit -> newValues', newValues)
+      console.log("======== Bao Minh: handleSubmit -> newValues", newValues);
       onClose();
     }
   };
