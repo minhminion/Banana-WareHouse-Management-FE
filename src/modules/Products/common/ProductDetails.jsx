@@ -227,9 +227,8 @@ const ProductDetails = ({
     validate
   );
 
-  console.log("======== Bao Minh:  initialValues", initialValues);
   useEffect(() => {
-    setDefaultValues(initialValues);
+    setDefaultValues({ ...initialValues });
   }, [initialValues]);
 
   const handleResetValues = () => {
@@ -345,8 +344,6 @@ const ProductDetails = ({
         </Grid>
         {/* Right side */}
         <Grid item className={clsx(classes.root, classes.rightSide)}>
-          {/* Product status
-          <ProductDetailsStatus classes={classes} isEdit={isEdit} /> */}
           {/* Product amount */}
           <Box className={classes.productDescription}>
             <InputLabel className={classes.label} style={{ marginBottom: 8 }}>

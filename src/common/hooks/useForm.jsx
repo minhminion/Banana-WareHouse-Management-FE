@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core";
 import _ from "lodash";
-import { formatNumberToReadable, formatVNDToNumber } from "../helper";
+import { formatVNDToNumber } from "../helper";
 
 export function useForm(initialFValues, validateOnChange = false, validate) {
   const [values, setValues] = useState(initialFValues);
@@ -11,7 +11,7 @@ export function useForm(initialFValues, validateOnChange = false, validate) {
     const newValue = _.cloneDeep(defaultValues);
     setValues((prev) => ({
       ...prev,
-      ...newValue
+      ...newValue,
     }));
   };
 

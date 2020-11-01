@@ -7,4 +7,5 @@ export const ENDPOINTS = {
   getSingleProposal:(proposalId) => `${DEFAULT_API_URL}/${MODULE_NAME}/${proposalId}`,
   addProposalProduct:(proposalId) => `${DEFAULT_API_URL}/${MODULE_NAME}/${proposalId}/purchaseProposalDetails`,
   editProposalProduct:(proposalId) => `${DEFAULT_API_URL}/${MODULE_NAME}/${proposalId}/purchaseProposalDetails/bulkUpdate`,
+  deleteProposalProduct:(proposalId) => `${DEFAULT_API_URL}/${MODULE_NAME}/${proposalId}/purchaseProposalDetails/bulkDelete`,
 };

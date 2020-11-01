@@ -67,6 +67,9 @@ export default (dispatch, props) => ({
           description: data.description,
           deadline: data.deadline,
           status: data.status,
+          ...(data.exceptionReason
+            ? { exceptionReason: data.exceptionReason }
+            : {}),
         },
       });
       if (response.status === 204) {
@@ -109,6 +112,22 @@ export default (dispatch, props) => ({
       });
       if (response.data && response.status === 201) {
         return response.data.data;
+      } else {
+        return "Lỗi không xác định !";
+      }
+    } catch (error) {
+      return error?.response?.data;
+    }
+  },
+  deleteProposalProduct: async (data) => {
+    try {
+      const response = await fetchAuth({
+        url: ENDPOINTS.deleteProposalProduct(data.purchaseProposalFormId),
+        method: "DELETE",
+        data,
+      });
+      if (response.data && response.status === 204) {
+        return true;
       } else {
         return "Lỗi không xác định !";
       }

@@ -9,15 +9,12 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 // ICONS
-import IndeterminateCheckBoxIcon from "@material-ui/icons/IndeterminateCheckBox";
-import InputIcon from "@material-ui/icons/Input";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
 import GroupIcon from "@material-ui/icons/Group";
-import PermMediaOutlinedIcon from "@material-ui/icons/PhotoSizeSelectActual";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
-import StoreIcon from "@material-ui/icons/Store";
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import TimerIcon from "@material-ui/icons/Timer";
 import SettingsIcon from "@material-ui/icons/Settings";
 import PhonelinkSetupIcon from "@material-ui/icons/PhonelinkSetup";
@@ -27,35 +24,15 @@ import { useDispatch } from "react-redux";
 import { toggleCollapseNavigator } from "../redux/actions/uiActions";
 import { Link, useLocation } from "react-router-dom";
 import { Badge, Collapse, Avatar } from "@material-ui/core";
-import { ENUMS } from "../constants";
-
-const UserRole = ENUMS.USER_ROLE
 
 const menus = [
   {
     id: "Develop",
     showHeader: false,
     children: [
-      { id: "Thống kê", icon: <DashboardIcon />, link: "", isDefault: true},
-      // {
-      //   id: "Kho",
-      //   icon: <StoreIcon />,
-      //   link: "inventory",
-      //   subNav: [
-      //     {
-      //       id: "Xuất",
-      //       icon: <IndeterminateCheckBoxIcon />,
-      //       link: "inventory/export",
-      //     },
-      //     {
-      //       id: "Nhập",
-      //       icon: <InputIcon />,
-      //       link: "inventory/import",
-      //     },
-      //   ],
-      // },
+      { id: "Thống kê", icon: <DashboardIcon />, link: "", isDefault: true },
       { id: "Sản phẩm", icon: <ShoppingBasketIcon />, link: "products" },
-      { id: "Đề nghị", icon: <ShoppingBasketIcon />, link: "proposal" },
+      { id: "Đề nghị nhập hàng", icon: <AssignmentIcon />, link: "proposal" },
       { id: "Nhân viên", icon: <GroupIcon />, link: "members" },
     ],
   },

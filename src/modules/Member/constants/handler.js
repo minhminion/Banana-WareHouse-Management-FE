@@ -1,9 +1,5 @@
-import {
-  fetchMemberPending,
-  fetchMemberSuccess,
-  fetchMemberFailure,
-} from "./actions";
-import { fetchLoading, loading, loadingProcess } from "../../../common/effects";
+import { fetchMemberSuccess, fetchMemberFailure } from "./actions";
+import { loadingProcess } from "../../../common/effects";
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 

@@ -9,8 +9,6 @@ import {
   FormControl,
   InputLabel,
 } from "@material-ui/core";
-import { useDispatch } from "react-redux";
-import { setFilter } from "../constants/actions";
 
 function getStyles(name, personName, theme) {
   return {

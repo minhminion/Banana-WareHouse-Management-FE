@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment } from "react";
 import { BrowserRouter } from "react-router-dom";
 import Routes from "../routes";
 import { ThemeProvider, CssBaseline, makeStyles } from "@material-ui/core";

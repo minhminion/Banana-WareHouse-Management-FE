@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import ProposalDetails from "./common/ProposalDetails";
 import handler from "./constants/handler";
+import { notifyError } from "../../common/helper";
 
 const CreateProposal = (props) => {
   const history = useHistory();
@@ -26,14 +27,12 @@ const CreateProposal = (props) => {
     if (result.id) {
       history.go(-1);
     } else {
-      enqueueSnackbar(result.ApiErr, {
-        variant: "error",
-      });
+      notifyError(enqueueSnackbar, result);
     }
   };
 
   // return <ProposalDetails onSubmit={handleSubmit} okLabel="Tạo phiếu"/>;
-  return <ProposalDetails onSubmit={handleSubmit} okLabel="Tạo phiếu"/>;
+  return <ProposalDetails onSubmit={handleSubmit} okLabel="Tạo phiếu" />;
 };
 
 export default CreateProposal;

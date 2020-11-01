@@ -14,17 +14,18 @@ import { useForm } from "../../../common/hooks/useForm";
 import ListProposalProducts from "./components/ListProposalProducts";
 import CKEditor from "@ckeditor/ckeditor5-react";
 import Editor from "../../../common/components/widget/Editor";
-import {
-  DateTimePicker,
-} from "@material-ui/pickers";
+import { DateTimePicker } from "@material-ui/pickers";
+import Alert from "@material-ui/lab/Alert";
 
 // Helper
 import { ENUMS } from "../../../common/constants";
 import parse from "html-react-parser";
 import { titleCase } from "../../../common/helper";
+import ProposalStatusStepper from "./components/ProposalStatusStepper";
+import ProposalStatus from "./components/ProposalStatus";
+import useConfirm from "../../../common/hooks/useConfirm/useConfirm";
 
 const defaultValues = {
-  id: 1,
   creator: "231",
   createdAt: Date.now(),
   period: 2,
@@ -41,6 +42,9 @@ const useStyles = makeStyles((theme) => ({
     },
     "& .MuiFormControl-marginNormal": {
       marginTop: 0,
+    },
+    "& .MuiAlert-message p": {
+      margin: 0,
     },
   },
   leftSide: {
@@ -147,7 +151,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PROPOSAL_STATUS = ENUMS.PRODUCT_STATUS.AVAILABLE;
+const PROPOSAL_STATUS = ENUMS.PROPOSAL_STATUS;
 
 const ProposalDetails = ({
   initialValues,
@@ -162,6 +166,7 @@ const ProposalDetails = ({
 
   const classes = useStyles();
   const history = useHistory();
+  const confirm = useConfirm();
   const [selectedDate, handleDateChange] = useState(minDate);
   const validate = (fieldValues = values) => {
     let temp = { ...errors };
@@ -199,6 +204,46 @@ const ProposalDetails = ({
     setDefaultValues(initialValues || defaultValues);
   };
 
+  const getStatusConfirmContent = (value) => {
+    let content = {
+      title: "Thay đổi trạng thái phiếu đề nghị ?",
+      description: "Hành động này sẽ không thể hoàn tác",
+      confirmationText: "Xác nhận",
+      cancellationText: "Hủy",
+    };
+    switch (value) {
+      case PROPOSAL_STATUS.CANCELED:
+      case PROPOSAL_STATUS.FORCE_DONE:
+        content = {
+          ...content,
+          input: true,
+          inputLabel: "Lý do",
+        };
+        break;
+      default:
+        break;
+    }
+
+    return content;
+  };
+
+  const handleChangeStatus = (e) => {
+    const { value: status } = e.target;
+
+    confirm(getStatusConfirmContent(status))
+      .then((inputValue) => {
+        let newValue = {
+          deadline: selectedDate,
+          status: status,
+          ...(inputValue ? { exceptionReason: inputValue } : {}),
+        };
+        onSubmit && onSubmit(newValue);
+      })
+      .catch(() => {
+        /* ... */
+      });
+  };
+
   const handleSubmit = () => {
     if (validate()) {
       try {
@@ -212,14 +257,12 @@ const ProposalDetails = ({
               productId: product.productId,
               quantity: parseInt(product.quantity),
               description: product.description || "",
-              action: product.action
+              action: product.action,
             })
           ),
         };
         onSubmit && onSubmit(newValues);
-      } catch (error) {
-        console.log("======== Bao Minh: handleSubmit -> error", error);
-      }
+      } catch (error) {}
     }
   };
 
@@ -241,8 +284,18 @@ const ProposalDetails = ({
 
   return (
     <Box className={classes.root}>
+      {values.id && <ProposalStatusStepper status={values.status} />}
+
       <Grid container spacing={3}>
         <Grid item className={clsx(classes.root, classes.leftSide)}>
+          {(values.status === ENUMS.PROPOSAL_STATUS.CANCELED ||
+            values.status === ENUMS.PROPOSAL_STATUS.FORCE_DONE) && (
+            <Box clone mb={2}>
+              <Alert severity="error">
+                {parse(initialValues?.exceptionReason || "")}
+              </Alert>
+            </Box>
+          )}
           {/* Product Deadline and Status */}
           <Box display="flex" alignItems="center" flexWrap="wrap">
             <Box
@@ -264,42 +317,76 @@ const ProposalDetails = ({
                 format="dddd, DD/MM/YYYY - lúc h:mm A"
               />
             </Box>
-            <Box
+            <ProposalStatus
+              value={values.status}
+              onChange={handleChangeStatus}
+              classes={classes}
+              isEdit={isEdit && values.id}
               style={{ width: "30%", minWidth: 200 }}
-              className={classes.productDescription}
-            >
+            />
+          </Box>
+          {(initialValues?.description || isEdit) && (
+            <Box className={classes.productDescription}>
               <InputLabel className={classes.label} style={{ marginBottom: 8 }}>
-                Tình trạng
+                Mô tả sản phẩm
               </InputLabel>
-              <Paper style={{ padding: "0.825rem 0.5rem" }}>Mới</Paper>
+              {isEdit ? (
+                <CKEditor
+                  editor={Editor}
+                  data={values.description || ""}
+                  onInit={(editor) => {
+                    // You can store the "editor" and use when it is needed.
+                  }}
+                  onChange={(event, editor) => {
+                    const data = editor.getData();
+                    handleInputChange({
+                      target: { name: "description", value: data },
+                    });
+                  }}
+                  onBlur={(event, editor) => {}}
+                  onFocus={(event, editor) => {}}
+                />
+              ) : (
+                <Box p={2} className="product__description" component={Paper}>
+                  {parse(values.description || "")}
+                </Box>
+              )}
             </Box>
-          </Box>
-          <Box className={classes.productDescription}>
-            <InputLabel className={classes.label} style={{ marginBottom: 8 }}>
-              Mô tả sản phẩm
-            </InputLabel>
-            {isEdit ? (
-              <CKEditor
-                editor={Editor}
-                data={values.description || ""}
-                onInit={(editor) => {
-                  // You can store the "editor" and use when it is needed.
-                }}
-                onChange={(event, editor) => {
-                  const data = editor.getData();
-                  handleInputChange({
-                    target: { name: "description", value: data },
-                  });
-                }}
-                onBlur={(event, editor) => {}}
-                onFocus={(event, editor) => {}}
-              />
-            ) : (
-              <Box p={2} className="product__description" component={Paper}>
-                {parse(values.description || "")}
+          )}
+          {/* Actions Button */}
+          {isEdit && (
+            <Box className={classes.productDescription}>
+              <Box p={1.5} mr={1} clone>
+                <Button
+                  // variant="contained"
+                  className={classes.actionButton}
+                  component={Paper}
+                  onClick={handleSubmit}
+                >
+                  {okLabel}
+                </Button>
               </Box>
-            )}
-          </Box>
+              <Box p={1.5} mr={1} clone>
+                <Button
+                  // variant="contained"
+                  className={clsx(classes.actionButton, "btn__reset")}
+                  component={Paper}
+                  onClick={handleResetValues}
+                >
+                  {resetLabel}
+                </Button>
+              </Box>
+              <Box p={1.5} mr={1} clone>
+                <Button
+                  className={clsx(classes.actionButton, "btn__cancel")}
+                  component={Paper}
+                  onClick={() => history.push("/proposal")}
+                >
+                  {cancelLabel}
+                </Button>
+              </Box>
+            </Box>
+          )}
         </Grid>
         <Grid item className={clsx(classes.root, classes.rightSide)}>
           <Box className={classes.productDescription}>
@@ -307,7 +394,7 @@ const ProposalDetails = ({
               Danh sách sản phẩm
             </InputLabel> */}
             <ListProposalProducts
-              isEdit={isEdit}
+              isEdit={isEdit && values.status === ENUMS.PROPOSAL_STATUS.NEW}
               status={PROPOSAL_STATUS}
               data={values.purchaseProposalDetails}
               errors={errors}
@@ -316,40 +403,6 @@ const ProposalDetails = ({
           </Box>
         </Grid>
       </Grid>
-      {/* Actions Button */}
-      {isEdit && (
-        <Box className={classes.productDescription}>
-          <Box p={1.5} mr={1} clone>
-            <Button
-              // variant="contained"
-              className={classes.actionButton}
-              component={Paper}
-              onClick={handleSubmit}
-            >
-              {okLabel}
-            </Button>
-          </Box>
-          <Box p={1.5} mr={1} clone>
-            <Button
-              // variant="contained"
-              className={clsx(classes.actionButton, "btn__reset")}
-              component={Paper}
-              onClick={handleResetValues}
-            >
-              {resetLabel}
-            </Button>
-          </Box>
-          <Box p={1.5} mr={1} clone>
-            <Button
-              className={clsx(classes.actionButton, "btn__cancel")}
-              component={Paper}
-              onClick={() => history.push("/proposal")}
-            >
-              {cancelLabel}
-            </Button>
-          </Box>
-        </Box>
-      )}
     </Box>
   );
 };

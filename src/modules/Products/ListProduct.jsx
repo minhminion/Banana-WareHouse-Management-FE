@@ -28,7 +28,9 @@ import GetAppIcon from "@material-ui/icons/GetApp";
 import PublishIcon from "@material-ui/icons/Publish";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
-import PageviewIcon from "@material-ui/icons/Pageview";
+import InfoIcon from "@material-ui/icons/Info";
+
+// Helper
 import {
   formatNumberToVND,
   formatNumberToReadable,
@@ -339,7 +341,7 @@ const ListProduct = (props) => {
                 {roleName === ENUMS.USER_ROLE.Admin ? (
                   <EditIcon />
                 ) : (
-                  <PageviewIcon />
+                  <InfoIcon />
                 )}
               </IconButton>
             </Link>

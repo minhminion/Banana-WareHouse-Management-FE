@@ -17,11 +17,11 @@ import dayjs from "dayjs";
 import clsx from "clsx";
 
 import EditIcon from "@material-ui/icons/Edit";
-import DeleteIcon from "@material-ui/icons/Delete";
+import BlockIcon from "@material-ui/icons/Block";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
-import PageviewIcon from "@material-ui/icons/Pageview";
+import InfoIcon from "@material-ui/icons/Info";
 
 import { Link } from "react-router-dom";
 import { ENUMS } from "../../../common/constants";
@@ -46,6 +46,10 @@ const useStyles = makeStyles((theme) => ({
     "&.delete": {
       color: theme.palette.common.white,
       background: theme.palette.error.main,
+    },
+    "&.force__done": {
+      color: theme.palette.common.white,
+      background: "#b19cd9",
     },
   },
   expandTable: {
@@ -76,24 +80,29 @@ const ListProposalItem = ({ row, onCancel }) => {
   const { roleName } = useSelector((state) => state[MODULE_AUTHOR]);
 
   const renderStatus = (status) => {
+    const proposalStatus = ENUMS.PROPOSAL_STATUS;
     let label = "Không tìm thấy";
     let style = "notfound";
     switch (status) {
-      case 1:
+      case proposalStatus.NEW:
         label = "Mới";
         style = "new";
         break;
-      case 2:
+      case proposalStatus.PROCESSING:
         label = "Đang thực hiện";
         style = "processing";
         break;
-      case 3:
+      case proposalStatus.DONE:
         label = "Hoàn tất";
         style = "done";
         break;
-      case 4:
+      case proposalStatus.CANCELED:
         label = "Hủy";
         style = "delete";
+        break;
+      case proposalStatus.FORCE_DONE:
+        label = "Buộc hoàn tất";
+        style = "force__done";
         break;
       default:
         break;
@@ -116,9 +125,11 @@ const ListProposalItem = ({ row, onCancel }) => {
         <TableCell align="left">{row.id}</TableCell>
         <TableCell component="th" scope="row">
           <div>
-            <strong>{row.creator?.name || "Lưu Bảo Minh"}</strong>
+            <strong>
+              {`${row.user?.lastName} ${row.user?.firstName}` || "Lưu Bảo Minh"}
+            </strong>
             <Typography variant="body2">
-              {row.creator?.email || "minhminion2015@gmail.com"}
+              {row.user?.email || "minhminion2015@gmail.com"}
             </Typography>
           </div>
         </TableCell>
@@ -141,7 +152,8 @@ const ListProposalItem = ({ row, onCancel }) => {
               to={`/proposal/${row.id}${
                 roleName === ENUMS.USER_ROLE.Sale &&
                 row.status !== ENUMS.PROPOSAL_STATUS.CANCELED &&
-                row.status !== ENUMS.PROPOSAL_STATUS.PROCESSING
+                row.status !== ENUMS.PROPOSAL_STATUS.DONE &&
+                row.status !== ENUMS.PROPOSAL_STATUS.FORCE_DONE
                   ? "/edit"
                   : ""
               }`}
@@ -149,21 +161,24 @@ const ListProposalItem = ({ row, onCancel }) => {
               <IconButton>
                 {roleName === ENUMS.USER_ROLE.Sale &&
                 row.status !== ENUMS.PROPOSAL_STATUS.CANCELED &&
-                row.status !== ENUMS.PROPOSAL_STATUS.PROCESSING ? (
+                row.status !== ENUMS.PROPOSAL_STATUS.DONE &&
+                row.status !== ENUMS.PROPOSAL_STATUS.FORCE_DONE ? (
                   <EditIcon />
                 ) : (
-                  <PageviewIcon />
+                  <InfoIcon />
                 )}
               </IconButton>
             </Link>
           </Box>
-          {roleName === ENUMS.USER_ROLE.Sale && row.status !== ENUMS.PROPOSAL_STATUS.CANCELED && (
-            <Box clone>
-              <IconButton color="secondary" onClick={() => onCancel(row)}>
-                <DeleteIcon />
-              </IconButton>
-            </Box>
-          )}
+          {roleName === ENUMS.USER_ROLE.Sale &&
+            (row.status === ENUMS.PROPOSAL_STATUS.NEW ||
+              row.status === ENUMS.PROPOSAL_STATUS.PROCESSING) && (
+              <Box clone>
+                <IconButton color="secondary" onClick={() => onCancel(row)}>
+                  <BlockIcon />
+                </IconButton>
+              </Box>
+            )}
         </TableCell>
       </TableRow>
       <TableRow style={{ boxShadow: theme.boxShadows.inset }}>

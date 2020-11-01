@@ -20,7 +20,7 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 // Icons
 import CloseIcon from "@material-ui/icons/Close";
-import InsertCommentIcon from "@material-ui/icons/InsertComment";
+import NoteIcon from '@material-ui/icons/Note';
 import ProductItemDescription from "./ProductItemDescription";
 
 const useStyles = makeStyles((theme) => ({
@@ -117,10 +117,6 @@ const ListProposalProducts = ({ data, onChange, isEdit = false }) => {
       [fieldName]: value,
       action: newProducts[index].action !== "created" ? "updated" : "created",
     };
-    console.log(
-      "======== Bao Minh: handleChangeProduct -> newProducts",
-      newProducts
-    );
     onChange({
       target: {
         name: "purchaseProposalDetails",
@@ -196,7 +192,7 @@ const ListProposalProducts = ({ data, onChange, isEdit = false }) => {
               <TableCell align="center">
                 <Box clone>
                   <IconButton onClick={() => setViewProduct(row)}>
-                    <InsertCommentIcon />
+                    <NoteIcon />
                   </IconButton>
                 </Box>
                 {isEdit && (
