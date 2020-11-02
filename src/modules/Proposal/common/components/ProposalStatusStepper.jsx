@@ -19,9 +19,7 @@ function getSteps() {
 
 const Connector = withStyles((theme) => ({
   alternativeLabel: {
-    top: 10,
-    left: "calc(-50% + 16px)",
-    right: "calc(50% + 16px)",
+    top: 18,
   },
   active: {
     "& $line": {
@@ -35,7 +33,7 @@ const Connector = withStyles((theme) => ({
   },
   line: {
     borderColor: "#eaeaf0",
-    borderTopWidth: 3,
+    borderTopWidth: 4,
     borderRadius: 1,
   },
 }))(StepConnector);
@@ -44,48 +42,68 @@ const useStepIconStyles = makeStyles((theme) => ({
   root: {
     color: "#eaeaf0",
     display: "flex",
-    height: 22,
     alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "50%",
+    width: 40,
+    height: 40,
+    backgroundColor: "#eaeaf0",
   },
   active: {
-    color: theme.palette.success.main,
+    color: theme.palette.common.white,
+    backgroundColor: theme.palette.success.main,
   },
   circle: {
     width: 8,
     height: 8,
     borderRadius: "50%",
-    backgroundColor: "currentColor",
+    backgroundColor: theme.palette.common.white,
   },
   completed: {
-    color: theme.palette.success.main,
+    color: theme.palette.common.white,
+    backgroundColor: theme.palette.success.main,
     zIndex: 1,
-    fontSize: 18,
+    fontSize: 24,
   },
   canceled: {
-    color: theme.palette.error.main,
+    color: theme.palette.common.white,
+    backgroundColor: theme.palette.error.dark,
     zIndex: 1,
-    fontSize: 18,
-  }
+    fontSize: 24,
+  },
+  forceDone: {
+    color: theme.palette.common.white,
+    backgroundColor: "#b19cd9",
+    zIndex: 1,
+    fontSize: 24,
+  },
 }));
 
 function StepIcon(props) {
   const classes = useStepIconStyles();
-  const { active, completed, canceled } = props;
+  const { active, completed, canceled, forceDone } = props;
 
   return (
-    <div
+    <Box
       className={clsx(classes.root, {
         [classes.active]: active,
+        [classes.completed]: completed,
+        [classes.canceled]: canceled,
+        [classes.forceDone]: forceDone,
       })}
     >
       {canceled ? (
         <Close className={classes.canceled} />
       ) : completed ? (
-        <Check className={classes.completed} />
+        <Check
+          className={clsx(classes.completed, {
+            [classes.forceDone]: forceDone,
+          })}
+        />
       ) : (
         <div className={classes.circle} />
       )}
-    </div>
+    </Box>
   );
 }
 
@@ -110,7 +128,7 @@ const ProposalStatusStepper = ({ status }) => {
         return 1;
       case PROPOSAL_STATUS.DONE:
       case PROPOSAL_STATUS.FORCE_DONE:
-        return 2;
+        return 3;
       default:
         return 0;
     }
@@ -136,27 +154,28 @@ const ProposalStatusStepper = ({ status }) => {
           const stepProps = {};
           const labelProps = {};
           if (isStepForceDone(index)) {
-            labelProps.optional = (
-              <Typography
-                variant="caption"
-                align="center"
-                style={{ display: "block" }}
-              >
-                Buộc dừng
-              </Typography>
-            );
+            // labelProps.optional = (
+            //   <Typography
+            //     variant="caption"
+            //     align="center"
+            //     style={{ display: "block" }}
+            //   >
+            //     Buộc hoàn tất
+            //   </Typography>
+            // );
+            label = "Buộc hoàn tất"
           } else if (isStepCancel(index)) {
             labelProps.error = true;
             label = "Hủy";
           }
-          // if (isStepSkipped(index)) {
-          //   stepProps.completed = false;
-          // }
           return (
             <Step key={`${label}-${index}`} {...stepProps}>
               <StepLabel
                 {...labelProps}
-                StepIconProps={{ canceled: isStepCancel(index) }}
+                StepIconProps={{
+                  canceled: isStepCancel(index),
+                  forceDone: isStepForceDone(index),
+                }}
                 StepIconComponent={StepIcon}
               >
                 {label}
