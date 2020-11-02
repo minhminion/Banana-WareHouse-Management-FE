@@ -197,11 +197,15 @@ const ProposalDetails = ({
   );
 
   useEffect(() => {
-    setDefaultValues(initialValues);
+    handleResetValues();
   }, [initialValues]);
 
   const handleResetValues = () => {
-    setDefaultValues(initialValues || defaultValues);
+    if (initialValues) {
+      setDefaultValues(initialValues);
+    } else {
+      setDefaultValues(defaultValues);
+    }
   };
 
   const getStatusConfirmContent = (value) => {
@@ -284,18 +288,18 @@ const ProposalDetails = ({
 
   return (
     <Box className={classes.root}>
+      {(values.status === ENUMS.PROPOSAL_STATUS.CANCELED ||
+        values.status === ENUMS.PROPOSAL_STATUS.FORCE_DONE) && (
+        <Box clone mb={2}>
+          <Alert severity="error">
+            {parse(initialValues?.exceptionReason || "")}
+          </Alert>
+        </Box>
+      )}
       {values.id && <ProposalStatusStepper status={values.status} />}
 
       <Grid container spacing={3}>
         <Grid item className={clsx(classes.root, classes.leftSide)}>
-          {(values.status === ENUMS.PROPOSAL_STATUS.CANCELED ||
-            values.status === ENUMS.PROPOSAL_STATUS.FORCE_DONE) && (
-            <Box clone mb={2}>
-              <Alert severity="error">
-                {parse(initialValues?.exceptionReason || "")}
-              </Alert>
-            </Box>
-          )}
           {/* Product Deadline and Status */}
           <Box display="flex" alignItems="center" flexWrap="wrap">
             <Box

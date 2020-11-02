@@ -10,6 +10,8 @@ import DayJsUtils from "@date-io/dayjs";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import locale from "dayjs/locale/vi";
 
+import ConfirmProvider from "../hooks/useConfirm/ConfirmProvider";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -25,15 +27,17 @@ const MainPage = () => {
   return (
     <Fragment>
       <ThemeProvider theme={theme}>
-        <MuiPickersUtilsProvider utils={DayJsUtils} locale={locale}>
-          <LoadingPage isAnimating={sessionLoading} />
-          <div className={classes.root}>
-            <CssBaseline />
-            <BrowserRouter>
-              <Routes />
-            </BrowserRouter>
-          </div>
-        </MuiPickersUtilsProvider>
+        <ConfirmProvider>
+          <MuiPickersUtilsProvider utils={DayJsUtils} locale={locale}>
+            <LoadingPage isAnimating={sessionLoading} />
+            <div className={classes.root}>
+              <CssBaseline />
+              <BrowserRouter>
+                <Routes />
+              </BrowserRouter>
+            </div>
+          </MuiPickersUtilsProvider>
+        </ConfirmProvider>
       </ThemeProvider>
     </Fragment>
   );

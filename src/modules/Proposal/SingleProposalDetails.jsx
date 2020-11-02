@@ -37,7 +37,7 @@ const SingleProposalDetails = (props) => {
 
   useEffect(() => {
     getProposal(purchaseProposalFormId);
-  }, [purchaseProposalFormId, getProposal]);
+  }, [purchaseProposalFormId]);
 
   const handleEditProposal = async (values) => {
     enqueueSnackbar(`Đang cập nhật sản phẩm...`, {
