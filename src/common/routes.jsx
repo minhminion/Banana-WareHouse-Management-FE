@@ -20,6 +20,7 @@ import { ENUMS } from "./constants/index";
 import CreateProposal from "../modules/Proposal/CreateProposal";
 import ProposalDetailsPage from "../pages/Proposals/ProposalDetailsPage";
 import EditProposalPage from "../pages/Proposals/EditProposalPage";
+import NotFoundPage from "../pages/NotFoundPage";
 
 const Routes = () => {
   const USER_ROLE = ENUMS.USER_ROLE;
@@ -80,6 +81,11 @@ const Routes = () => {
             component={EditProposalPage}
             roleName={roleName}
             acceptRoles={[USER_ROLE.Sale]}
+          />
+          <Route
+            exact
+            path="*"
+            component={NotFoundPage}
           />
         </AnimatedSwitch>
       </MainLayout>
