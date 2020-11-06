@@ -11,7 +11,6 @@ import clsx from "clsx";
 import { blueGrey } from "@material-ui/core/colors";
 import { useHistory } from "react-router-dom";
 import { useForm } from "../../../common/hooks/useForm";
-import ListProposalProducts from "./components/ListProposalProducts";
 import CKEditor from "@ckeditor/ckeditor5-react";
 import Editor from "../../../common/components/widget/Editor";
 import { DateTimePicker } from "@material-ui/pickers";
@@ -21,17 +20,18 @@ import Alert from "@material-ui/lab/Alert";
 import { ENUMS } from "../../../common/constants";
 import parse from "html-react-parser";
 import { titleCase } from "../../../common/helper";
-import ProposalStatusStepper from "./components/ProposalStatusStepper";
-import ProposalStatus from "./components/ProposalStatus";
 import useConfirm from "../../../common/hooks/useConfirm/useConfirm";
+import GoodsReceivingNoteStatusStepper from "./components/GoodsReceivingNoteStatusStepper";
+import GoodsReceivingNoteStatus from "./components/GoodsReceivingNoteStatus";
+import ListGoodsReceivingNoteProducts from "./components/ListGoodsReceivingNoteProducts";
 
 const defaultValues = {
   creator: "231",
   createdAt: Date.now(),
   period: 2,
-  status: ENUMS.PROPOSAL_STATUS.NEW,
+  status: ENUMS.GOOD_RECEIVING_STATUS.NEW,
   description: "",
-  purchaseProposalDetails: [],
+  goodsReceivingNoteDetails: [],
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -151,9 +151,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PROPOSAL_STATUS = ENUMS.PROPOSAL_STATUS;
+const GOOD_RECEIVING_STATUS = ENUMS.GOOD_RECEIVING_STATUS;
 
-const ProposalDetails = ({
+const GoodsReceivingNoteDetails = ({
   initialValues,
   isEdit = true,
   onSubmit,
@@ -216,8 +216,8 @@ const ProposalDetails = ({
       cancellationText: "Hủy",
     };
     switch (value) {
-      case PROPOSAL_STATUS.CANCELED:
-      case PROPOSAL_STATUS.FORCE_DONE:
+      case GOOD_RECEIVING_STATUS.CANCELED:
+      case GOOD_RECEIVING_STATUS.FORCE_DONE:
         content = {
           ...content,
           input: true,
@@ -255,7 +255,7 @@ const ProposalDetails = ({
           deadline: selectedDate,
           description: values.description || "",
           status: values.status,
-          purchaseProposalDetails: values.purchaseProposalDetails.map(
+          goodsReceivingNoteDetails: values.goodsReceivingNoteDetails.map(
             (product) => ({
               id: product.id || -1,
               productId: product.productId,
@@ -288,51 +288,30 @@ const ProposalDetails = ({
 
   return (
     <Box className={classes.root}>
-      {(values.status === ENUMS.PROPOSAL_STATUS.CANCELED ||
-        values.status === ENUMS.PROPOSAL_STATUS.FORCE_DONE) && (
+      {values.status === ENUMS.GOOD_RECEIVING_STATUS.CANCELED && (
         <Box clone mb={2}>
           <Alert severity="error">
             {parse(initialValues?.exceptionReason || "")}
           </Alert>
         </Box>
       )}
-      {values.id && <ProposalStatusStepper status={values.status} />}
+      {values.id && <GoodsReceivingNoteStatusStepper status={values.status} />}
 
       <Grid container spacing={3}>
         <Grid item className={clsx(classes.root, classes.leftSide)}>
           {/* Product Deadline and Status */}
-          <Box display="flex" alignItems="center" flexWrap="wrap">
-            <Box
-              style={{ width: "50%" }}
-              className={classes.productDescription}
-            >
-              <InputLabel className={classes.label} style={{ marginBottom: 8 }}>
-                Ngày hết hạn
-              </InputLabel>
-              <DateTimePicker
-                disabled={!isEdit}
-                okLabel="Chọn"
-                cancelLabel="Hủy"
-                TextFieldComponent={renderDateItem}
-                value={selectedDate}
-                placeholder="10/10/2018"
-                onChange={(date) => handleDateChange(date)}
-                minDate={minDate}
-                format="dddd, DD/MM/YYYY - lúc h:mm A"
-              />
-            </Box>
-            <ProposalStatus
-              value={values.status}
-              onChange={handleChangeStatus}
-              classes={classes}
-              isEdit={isEdit && values.id}
-              style={{ width: "30%", minWidth: 200 }}
-            />
-          </Box>
+
+          <GoodsReceivingNoteStatus
+            value={values.status}
+            onChange={handleChangeStatus}
+            classes={classes}
+            isEdit={isEdit && values.id}
+            style={{ width: "100%", minWidth: 200 }}
+          />
           {(initialValues?.description || isEdit) && (
             <Box className={classes.productDescription}>
               <InputLabel className={classes.label} style={{ marginBottom: 8 }}>
-                Mô tả phiếu đề nghị
+                Mô tả phiếu nhập hàng
               </InputLabel>
               {isEdit ? (
                 <CKEditor
@@ -397,10 +376,10 @@ const ProposalDetails = ({
             {/* <InputLabel className={classes.label} style={{ marginBottom: 8 }}>
               Danh sách sản phẩm
             </InputLabel> */}
-            <ListProposalProducts
+            <ListGoodsReceivingNoteProducts
               isEdit={isEdit && values.status === ENUMS.PROPOSAL_STATUS.NEW}
-              status={PROPOSAL_STATUS}
-              data={values.purchaseProposalDetails}
+              status={GOOD_RECEIVING_STATUS}
+              data={values.goodsReceivingNoteDetails}
               errors={errors}
               onChange={handleInputChange}
             />
@@ -411,4 +390,4 @@ const ProposalDetails = ({
   );
 };
 
-export default ProposalDetails;
+export default GoodsReceivingNoteDetails;

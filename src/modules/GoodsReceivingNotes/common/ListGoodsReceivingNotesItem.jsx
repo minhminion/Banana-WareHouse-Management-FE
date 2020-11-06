@@ -35,7 +35,11 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.common.white,
       background: theme.palette.success.light,
     },
-    "&.processing": {
+    "&.pending": {
+      color: theme.palette.common.white,
+      background: "#b19cd9",
+    },
+    "&.approved": {
       color: theme.palette.common.white,
       background: theme.palette.warning.main,
     },
@@ -43,13 +47,9 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.common.white,
       background: theme.palette.info.main,
     },
-    "&.delete": {
+    "&.canceled": {
       color: theme.palette.common.white,
       background: theme.palette.error.main,
-    },
-    "&.force__done": {
-      color: theme.palette.common.white,
-      background: "#b19cd9",
     },
   },
   expandTable: {
@@ -73,55 +73,57 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ListProposalItem = ({ row, onCancel }) => {
+const ListGoodsReceivingNotesItem = ({ row, onCancel }) => {
   const theme = useTheme();
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const { roleName } = useSelector((state) => state[MODULE_AUTHOR]);
   const isAuth =
-    roleName === ENUMS.USER_ROLE.Boss || roleName === ENUMS.USER_ROLE.Sale;
+    roleName === ENUMS.USER_ROLE.Boss ||
+    roleName === ENUMS.USER_ROLE.WarehouseKeeper ||
+    roleName === ENUMS.USER_ROLE.WarehouseKeeperManager;
 
   const isEditable = (rowStatus) => {
     return (
       isAuth &&
-      rowStatus !== ENUMS.PROPOSAL_STATUS.CANCELED &&
-      rowStatus !== ENUMS.PROPOSAL_STATUS.DONE &&
-      rowStatus !== ENUMS.PROPOSAL_STATUS.FORCE_DONE
+      rowStatus !== ENUMS.GOOD_RECEIVING_STATUS.CANCELED &&
+      rowStatus !== ENUMS.GOOD_RECEIVING_STATUS.DONE
     );
   };
 
-  const isAbleToDelete = (rowStatus) => {
+  const isAbleToCancel = (rowStatus) => {
     return (
       isAuth &&
-      (rowStatus === ENUMS.PROPOSAL_STATUS.NEW ||
-        rowStatus === ENUMS.PROPOSAL_STATUS.PROCESSING)
+      (rowStatus === ENUMS.GOOD_RECEIVING_STATUS.NEW ||
+        rowStatus === ENUMS.GOOD_RECEIVING_STATUS.PENDING ||
+        rowStatus === ENUMS.GOOD_RECEIVING_STATUS.APPROVED)
     );
   };
 
   const renderStatus = (status) => {
-    const proposalStatus = ENUMS.PROPOSAL_STATUS;
+    const goodsReceivingNotesStatus = ENUMS.GOOD_RECEIVING_STATUS;
     let label = "Không tìm thấy";
     let style = "notfound";
     switch (status) {
-      case proposalStatus.NEW:
+      case goodsReceivingNotesStatus.NEW:
         label = "Mới";
         style = "new";
         break;
-      case proposalStatus.PROCESSING:
-        label = "Đang thực hiện";
-        style = "processing";
+      case goodsReceivingNotesStatus.PENDING:
+        label = "Đang chờ xử lý";
+        style = "pending";
         break;
-      case proposalStatus.DONE:
+      case goodsReceivingNotesStatus.APPROVED:
+        label = "Xác nhận";
+        style = "approved";
+        break;
+      case goodsReceivingNotesStatus.DONE:
         label = "Hoàn tất";
         style = "done";
         break;
-      case proposalStatus.CANCELED:
+      case goodsReceivingNotesStatus.CANCELED:
         label = "Hủy";
-        style = "delete";
-        break;
-      case proposalStatus.FORCE_DONE:
-        label = "Buộc hoàn tất";
-        style = "force__done";
+        style = "canceled";
         break;
       default:
         break;
@@ -132,7 +134,7 @@ const ListProposalItem = ({ row, onCancel }) => {
   return (
     <TableBody>
       <TableRow style={{ marginBottom: 0 }}>
-        <TableCell>
+        {/* <TableCell>
           <IconButton
             aria-label="expand row"
             size="small"
@@ -140,8 +142,8 @@ const ListProposalItem = ({ row, onCancel }) => {
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
-        </TableCell>
-        <TableCell align="left">{row.id}</TableCell>
+        </TableCell> */}
+        <TableCell align="center">{row.id}</TableCell>
         <TableCell component="th" scope="row">
           <div>
             <strong>
@@ -149,6 +151,16 @@ const ListProposalItem = ({ row, onCancel }) => {
             </strong>
             <Typography variant="body2">
               {row.user?.email || "minhminion2015@gmail.com"}
+            </Typography>
+          </div>
+        </TableCell>
+        <TableCell component="th" scope="row">
+          <div>
+            <strong>
+              {row.supplierName || "Min da poet"}
+            </strong>
+            <Typography variant="body2">
+              #{row.supplierId || "minhminion2015@gmail.com"}
             </Typography>
           </div>
         </TableCell>
@@ -161,21 +173,20 @@ const ListProposalItem = ({ row, onCancel }) => {
         >
           <strong>{dayjs(row.createdAt).format("DD/MM/YYYY")}</strong>
         </TableCell>
-        <TableCell align="center">
-          {dayjs(row.deadline).format("DD/MM/YYYY")}
-        </TableCell>
         {/* Action on row */}
         <TableCell align="center">
           <Box mr={1} clone>
             <Link
-              to={`/proposal/${row.id}${isEditable(row.status) ? "/edit" : ""}`}
+              to={`/goods-receiving-notes/${row.id}${
+                isEditable(row.status) ? "/edit" : ""
+              }`}
             >
               <IconButton>
                 {isEditable(row.status) ? <EditIcon /> : <InfoIcon />}
               </IconButton>
             </Link>
           </Box>
-          {isAbleToDelete(row.status) && (
+          {isAbleToCancel(row.status) && (
             <Box clone>
               <IconButton color="secondary" onClick={() => onCancel(row)}>
                 <BlockIcon />
@@ -184,7 +195,7 @@ const ListProposalItem = ({ row, onCancel }) => {
           )}
         </TableCell>
       </TableRow>
-      <TableRow style={{ boxShadow: theme.boxShadows.inset }}>
+      {/* <TableRow style={{ boxShadow: theme.boxShadows.inset }}>
         <TableCell
           className={clsx(classes.expandCell, open ? "expended" : "collapsed")}
           colSpan={7}
@@ -223,9 +234,9 @@ const ListProposalItem = ({ row, onCancel }) => {
             </Box>
           </Collapse>
         </TableCell>
-      </TableRow>
+      </TableRow> */}
     </TableBody>
   );
 };
 
-export default ListProposalItem;
+export default ListGoodsReceivingNotesItem;

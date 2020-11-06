@@ -1,4 +1,5 @@
 export const USER_ROLE = {
+  Boss: "Boss",
   Sale: "Sale",
   WarehouseKeeper: "WarehouseKeeper",
   WarehouseKeeperManager: "WarehouseKeeperManager",
@@ -20,3 +21,11 @@ export const PROPOSAL_STATUS = {
   CANCELED: 4,
   FORCE_DONE: 5,
 };
+
+export const GOOD_RECEIVING_STATUS = {
+  NEW: 1, 
+  PENDING: 2,
+  APPROVED:3,
+  DONE: 4,
+  CANCELED: 5
+}

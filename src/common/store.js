@@ -4,14 +4,14 @@ import { getCookie } from "./utils/cookie";
 import { persistCombineReducers, persistStore } from "redux-persist";
 import thunk from "redux-thunk";
 import uiReducer from "./redux/reducers/uiReducer";
-import { rootReducer } from "../modules";
+import { rootReducer, rootModules } from "../modules";
 import session from "./redux/reducers/session";
 import jwt_decode from "jwt-decode";
 
 const config = {
   key: "shopping",
   storage,
-  blacklist: ["auth", "sessions", "member", "products"],
+  blacklist: ["sessions", ...rootModules],
 };
 const createMiddlewares = (thunk) => {
   const middlewares = [];
@@ -39,7 +39,6 @@ function mapCookieToStorage() {
       },
     };
   } catch (err) {
-    console.log("======== Bao Minh: mapCookieToStorage -> err", err);
     initialState = undefined;
   }
   return initialState;
@@ -59,7 +58,6 @@ const composeEnhancers =
 
 const buildStore = (reducers) => {
   const initialState = mapCookieToStorage();
-  console.log("======== Bao Minh: buildStore -> initialState", initialState);
   const store = createStore(
     createReducers(reducers),
     initialState,

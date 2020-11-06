@@ -6,6 +6,8 @@ import { MODULE_NAME as MODULE_AUTHOR } from "../modules/Author/constants/models
 import MainLayout from "./HOCS/MainLayout";
 import MembersPage from "../pages/MembersPage";
 import AnimatedSwitch from "./components/Routes/AnimatedSwitch";
+import AuthRoute from "./components/Routes/AuthRoute";
+import { ENUMS } from "./constants/index";
 // Product Pages
 import ListProductPage from "../pages/Products/ListProductPage";
 import ProductDetailsPage from "../pages/Products/ProductDetailsPage";
@@ -14,13 +16,14 @@ import EditProductPage from "../pages/Products/EditProductPage";
 
 // Proposal Pages
 import ListProposalPage from "../pages/Proposals/PurchaseProposalPage";
-
-import AuthRoute from "./components/Routes/AuthRoute";
-import { ENUMS } from "./constants/index";
 import CreateProposal from "../modules/Proposal/CreateProposal";
 import ProposalDetailsPage from "../pages/Proposals/ProposalDetailsPage";
 import EditProposalPage from "../pages/Proposals/EditProposalPage";
 import NotFoundPage from "../pages/NotFoundPage";
+
+// Goods Receiving Notes Pages
+import ListGoodsReceivingNotesPage from "../pages/GoodsReceivingNotes/ListGoodsReceivingNotesPage";
+import AddGoodsReceivingNotePage from "../pages/GoodsReceivingNotes/AddGoodsReceivingNotePage";
 
 const Routes = () => {
   const USER_ROLE = ENUMS.USER_ROLE;
@@ -82,11 +85,23 @@ const Routes = () => {
             roleName={roleName}
             acceptRoles={[USER_ROLE.Sale]}
           />
+
+          {/* Goods Receiving Notes */}
           <Route
             exact
-            path="*"
-            component={NotFoundPage}
+            path="/goods-receiving-notes"
+            component={ListGoodsReceivingNotesPage}
           />
+          <AuthRoute
+            exact
+            path="/goods-receiving-notes/add"
+            component={AddGoodsReceivingNotePage}
+            roleName={roleName}
+            acceptRoles={[USER_ROLE.WarehouseKeeper, USER_ROLE.WarehouseKeeperManager]}
+          />
+
+          {/* 404 Not Found */}
+          <Route exact path="*" component={NotFoundPage} />
         </AnimatedSwitch>
       </MainLayout>
     );
