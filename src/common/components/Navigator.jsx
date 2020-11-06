@@ -20,6 +20,7 @@ import SettingsIcon from "@material-ui/icons/Settings";
 import PhonelinkSetupIcon from "@material-ui/icons/PhonelinkSetup";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
+import CallReceivedIcon from '@material-ui/icons/CallReceived';
 import { useDispatch } from "react-redux";
 import { toggleCollapseNavigator } from "../redux/actions/uiActions";
 import { Link, useLocation } from "react-router-dom";
@@ -33,6 +34,7 @@ const menus = [
       { id: "Thống kê", icon: <DashboardIcon />, link: "", isDefault: true },
       { id: "Sản phẩm", icon: <ShoppingBasketIcon />, link: "products" },
       { id: "Đề nghị nhập hàng", icon: <AssignmentIcon />, link: "proposal" },
+      { id: "Phiếu nhập hàng", icon: <CallReceivedIcon />, link: "goods-receiving-notes" },
       { id: "Nhân viên", icon: <GroupIcon />, link: "members" },
     ],
   },
