@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import {
-  Table,
-  TableHead,
   TableRow,
   TableCell,
   TableBody,
@@ -9,7 +7,6 @@ import {
   Chip,
   Box,
   IconButton,
-  Collapse,
   useTheme,
   makeStyles,
 } from "@material-ui/core";
@@ -18,9 +15,6 @@ import clsx from "clsx";
 
 import EditIcon from "@material-ui/icons/Edit";
 import BlockIcon from "@material-ui/icons/Block";
-import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
-import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import InfoIcon from "@material-ui/icons/Info";
 
 import { Link } from "react-router-dom";

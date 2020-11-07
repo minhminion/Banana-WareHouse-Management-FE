@@ -250,12 +250,11 @@ const ListProductModal = (props) => {
 
       onChange({
         target: {
-          name: "purchaseProposalDetails",
+          name: "goodsReceivingNoteDetails",
           value: newValues,
         },
       });
       setSelected([]);
-      console.log("======== Bao Minh: handleSubmit -> newValues", newValues);
       onClose();
     }
   };

@@ -5,7 +5,6 @@ import {
   StepConnector,
   StepLabel,
   Stepper,
-  Typography,
   withStyles,
 } from "@material-ui/core";
 import React from "react";
@@ -14,7 +13,7 @@ import { Check, Close } from "@material-ui/icons";
 import { ENUMS } from "../../../../common/constants";
 
 function getSteps() {
-  return ["Mới", "Đang thực hiện", "Hoàn tất"];
+  return ["Mới", "Chở xử lý", "Đã xác nhận", "Hoàn tất"];
 }
 
 const Connector = withStyles((theme) => ({
@@ -135,12 +134,8 @@ const GoodsReceivingNoteStatusStepper = ({ status }) => {
     }
   };
 
-  const isStepForceDone = (step) => {
-    return step === 2 && status === GOOD_RECEIVING_STATUS.DONE;
-  };
-
   const isStepCancel = (step) => {
-    return step === 1 && status === GOOD_RECEIVING_STATUS.CANCELED;
+    return step === 3 && status === GOOD_RECEIVING_STATUS.CANCELED;
   };
 
   return (
@@ -154,18 +149,7 @@ const GoodsReceivingNoteStatusStepper = ({ status }) => {
         {steps.map((label, index) => {
           const stepProps = {};
           const labelProps = {};
-          if (isStepForceDone(index)) {
-            // labelProps.optional = (
-            //   <Typography
-            //     variant="caption"
-            //     align="center"
-            //     style={{ display: "block" }}
-            //   >
-            //     Buộc hoàn tất
-            //   </Typography>
-            // );
-            label = "Buộc hoàn tất"
-          } else if (isStepCancel(index)) {
+          if (isStepCancel(index)) {
             labelProps.error = true;
             label = "Hủy";
           }
@@ -175,7 +159,6 @@ const GoodsReceivingNoteStatusStepper = ({ status }) => {
                 {...labelProps}
                 StepIconProps={{
                   canceled: isStepCancel(index),
-                  forceDone: isStepForceDone(index),
                 }}
                 StepIconComponent={StepIcon}
               >

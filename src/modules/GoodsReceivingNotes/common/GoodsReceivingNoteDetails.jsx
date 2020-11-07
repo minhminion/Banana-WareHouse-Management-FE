@@ -13,7 +13,6 @@ import { useHistory } from "react-router-dom";
 import { useForm } from "../../../common/hooks/useForm";
 import CKEditor from "@ckeditor/ckeditor5-react";
 import Editor from "../../../common/components/widget/Editor";
-import { DateTimePicker } from "@material-ui/pickers";
 import Alert from "@material-ui/lab/Alert";
 
 // Helper
@@ -31,7 +30,36 @@ const defaultValues = {
   period: 2,
   status: ENUMS.GOOD_RECEIVING_STATUS.NEW,
   description: "",
-  goodsReceivingNoteDetails: [],
+  goodsReceivingNoteDetails: [
+    {
+      id: 73,
+      productId: 2,
+      goodsReceivingNotesId: 30,
+      quantity: 52,
+      description: "",
+      createdAt: "2020-11-05T07:36:45.0206537",
+      lastModifiedAt: "2020-11-05T07:36:45.0206601",
+      product: {
+        id: 2,
+        name: "Bưởi Đoan Hùng",
+        sku: "SP-TCVN-00002",
+        description: null,
+        defaultUnit: "Kg",
+        purchasePrice: 20000,
+        price: 60000,
+        status: 1,
+        quantity: 259,
+        productCategoryId: 1,
+        minQuantity: 0,
+        maxQuantity: 1000,
+        lastSaledDate: "0001-01-01T00:00:00",
+        createdAt: "0001-01-01T00:00:00",
+        lastModifiedAt: "0001-01-01T00:00:00",
+        productCategory: null,
+        productUnits: [],
+      },
+    },
+  ],
 };
 
 const useStyles = makeStyles((theme) => ({
