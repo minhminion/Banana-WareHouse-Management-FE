@@ -6,8 +6,8 @@ import {
   makeStyles,
   InputLabel,
 } from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { ENUMS } from "../../../../common/constants";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const useStyles = makeStyles((theme) => ({
   select: {
@@ -85,6 +85,7 @@ const GoodsReceivingNoteStatus = ({
         break;
       case GOOD_RECEIVING_STATUS.PENDING:
         listMenu = [
+          GOOD_RECEIVING_STATUS.NEW,
           GOOD_RECEIVING_STATUS.PENDING,
           GOOD_RECEIVING_STATUS.APPROVED,
           GOOD_RECEIVING_STATUS.CANCELED,
@@ -102,7 +103,9 @@ const GoodsReceivingNoteStatus = ({
     }
 
     return listMenu.map((item) => (
-      <MenuItem key={item} value={item}>{getMenuContent(item)}</MenuItem>
+      <MenuItem key={item} value={item}>
+        {getMenuContent(item)}
+      </MenuItem>
     ));
   };
 
@@ -118,7 +121,8 @@ const GoodsReceivingNoteStatus = ({
       <Select
         disabled={
           !isEdit ||
-          (value !== GOOD_RECEIVING_STATUS.NEW && value !== GOOD_RECEIVING_STATUS.PENDING)
+          (value !== GOOD_RECEIVING_STATUS.NEW &&
+            value !== GOOD_RECEIVING_STATUS.PENDING)
         }
         disableUnderline
         name="status"
