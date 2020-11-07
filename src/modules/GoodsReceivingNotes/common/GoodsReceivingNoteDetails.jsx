@@ -23,6 +23,7 @@ import useConfirm from "../../../common/hooks/useConfirm/useConfirm";
 import GoodsReceivingNoteStatusStepper from "./components/GoodsReceivingNoteStatusStepper";
 import GoodsReceivingNoteStatus from "./components/GoodsReceivingNoteStatus";
 import ListGoodsReceivingNoteProducts from "./components/ListGoodsReceivingNoteProducts";
+import GoodsReceivingNoteSupplier from "./components/GoodsReceivingNoteSupplier";
 
 const defaultValues = {
   creator: "231",
@@ -30,6 +31,7 @@ const defaultValues = {
   period: 2,
   status: ENUMS.GOOD_RECEIVING_STATUS.NEW,
   description: "",
+  supplierId: 1,
   goodsReceivingNoteDetails: [
     {
       id: 73,
@@ -61,6 +63,16 @@ const defaultValues = {
     },
   ],
 };
+
+const createSupplier = (id, name, email, phoneNumber) => {
+  return {id, name, email, phoneNumber }
+}
+
+const suppliers = [
+  createSupplier(1, "Angimex", "abc@gmail.com", "0903060504"),
+  createSupplier(2, "TH True Milk", "abc@gmail.com", "0903060504"),
+  createSupplier(3, "Coca cola", "abc@gmail.com", "0903060504")
+]
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -238,14 +250,13 @@ const GoodsReceivingNoteDetails = ({
 
   const getStatusConfirmContent = (value) => {
     let content = {
-      title: "Thay đổi trạng thái phiếu đề nghị ?",
+      title: "Thay đổi trạng thái phiếu nhập hàng ?",
       description: "Hành động này sẽ không thể hoàn tác",
       confirmationText: "Xác nhận",
       cancellationText: "Hủy",
     };
     switch (value) {
       case GOOD_RECEIVING_STATUS.CANCELED:
-      case GOOD_RECEIVING_STATUS.FORCE_DONE:
         content = {
           ...content,
           input: true,
@@ -336,6 +347,16 @@ const GoodsReceivingNoteDetails = ({
             isEdit={isEdit && values.id}
             style={{ width: "100%", minWidth: 200 }}
           />
+
+          <GoodsReceivingNoteSupplier
+            value={values.supplierId}
+            onChange={handleInputChange}
+            classes={classes}
+            isEdit={isEdit && values.status === GOOD_RECEIVING_STATUS.NEW}
+            style={{ width: "100%", minWidth: 200 }}
+            suppliers={suppliers}
+          />
+
           {(initialValues?.description || isEdit) && (
             <Box className={classes.productDescription}>
               <InputLabel className={classes.label} style={{ marginBottom: 8 }}>
