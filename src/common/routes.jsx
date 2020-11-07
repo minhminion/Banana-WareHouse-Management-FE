@@ -24,6 +24,8 @@ import NotFoundPage from "../pages/NotFoundPage";
 // Goods Receiving Notes Pages
 import ListGoodsReceivingNotesPage from "../pages/GoodsReceivingNotes/ListGoodsReceivingNotesPage";
 import AddGoodsReceivingNotePage from "../pages/GoodsReceivingNotes/AddGoodsReceivingNotePage";
+import GoodsReceivingNoteDetailsPage from "../pages/GoodsReceivingNotes/GoodsReceivingNoteDetailsPage";
+import EditGoodsReceivingNotePage from "../pages/GoodsReceivingNotes/EditGoodsReceivingNotePage";
 
 const Routes = () => {
   const USER_ROLE = ENUMS.USER_ROLE;
@@ -96,6 +98,18 @@ const Routes = () => {
             exact
             path="/goods-receiving-notes/add"
             component={AddGoodsReceivingNotePage}
+            roleName={roleName}
+            acceptRoles={[USER_ROLE.WarehouseKeeper, USER_ROLE.WarehouseKeeperManager]}
+          />
+          <Route
+            exact
+            path="/goods-receiving-notes/:goodsReceivingNotesId"
+            component={GoodsReceivingNoteDetailsPage}
+          />
+          <AuthRoute
+            exact
+            path="/goods-receiving-notes/:goodsReceivingNotesId/edit"
+            component={EditGoodsReceivingNotePage}
             roleName={roleName}
             acceptRoles={[USER_ROLE.WarehouseKeeper, USER_ROLE.WarehouseKeeperManager]}
           />

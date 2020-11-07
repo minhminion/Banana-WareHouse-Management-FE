@@ -86,6 +86,13 @@ const GoodsReceivingNoteStatus = ({
       case GOOD_RECEIVING_STATUS.PENDING:
         listMenu = [
           GOOD_RECEIVING_STATUS.PENDING,
+          GOOD_RECEIVING_STATUS.APPROVED,
+          GOOD_RECEIVING_STATUS.CANCELED,
+        ];
+        break;
+      case GOOD_RECEIVING_STATUS.APPROVED:
+        listMenu = [
+          GOOD_RECEIVING_STATUS.APPROVED,
           GOOD_RECEIVING_STATUS.DONE,
           GOOD_RECEIVING_STATUS.CANCELED,
         ];
@@ -106,7 +113,7 @@ const GoodsReceivingNoteStatus = ({
   return (
     <Box style={{ ...style }} className={classesStyle.productDescription}>
       <InputLabel className={classesStyle.label} style={{ marginBottom: 8 }}>
-        Trạng thái
+        Tình trạng phiếu
       </InputLabel>
       <Select
         disabled={
