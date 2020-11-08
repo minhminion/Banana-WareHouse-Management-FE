@@ -19,6 +19,8 @@ const ConfirmationDialog = ({
     description,
     input,
     inputLabel,
+    inputValue = "",
+    inputMultiline = true,
     confirmationText,
     cancellationText,
     dialogProps,
@@ -28,6 +30,12 @@ const ConfirmationDialog = ({
 
   const inputRef = useRef(null);
 
+  const handleOnEnter = (e) => {
+    if (e.key === "Enter") {
+      onConfirm(inputRef.current?.value);
+    }
+  };
+
   return (
     <Dialog fullWidth {...dialogProps} open={open} onClose={onClose}>
       {title && <DialogTitle>{title}</DialogTitle>}
@@ -36,10 +44,13 @@ const ConfirmationDialog = ({
           {description && <DialogContentText>{description}</DialogContentText>}
           {input && (
             <TextField
+              onKeyPress={handleOnEnter}
+              autoFocus
+              defaultValue={inputValue}
               inputRef={inputRef}
               style={{ width: "100%" }}
               label={inputLabel}
-              multiline
+              multiline={inputMultiline}
               rows={4}
               variant="outlined"
             />

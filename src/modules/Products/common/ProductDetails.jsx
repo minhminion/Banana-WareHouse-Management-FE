@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+
+import React, { useEffect, useMemo, useState } from "react";
 import {
   makeStyles,
   TextField,
@@ -25,6 +26,8 @@ import { formatNumberToVND } from "../../../common/helper";
 import { useForm } from "../../../common/hooks/useForm";
 import { useHistory } from "react-router-dom";
 import { ENUMS } from "../../../common/constants";
+import handler from "../constants/handler";
+import { useDispatch } from "react-redux";
 
 const defaultValues = {
   name: "",
@@ -167,16 +170,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProductDetails = ({
-  initialValues,
-  isEdit = false,
-  onSubmit,
-  okLabel = "Cập nhật",
-  resetLabel = "Làm mới",
-  cancelLabel = "Hủy",
-}) => {
+const ProductDetails = (props) => {
+  const {
+    initialValues,
+    isEdit = false,
+    onSubmit,
+    okLabel = "Cập nhật",
+    resetLabel = "Làm mới",
+    cancelLabel = "Hủy",
+  } = props;
   const classes = useStyles();
   const history = useHistory();
+
   const validate = (fieldValues = values) => {
     let temp = { ...errors };
     if ("name" in fieldValues) {

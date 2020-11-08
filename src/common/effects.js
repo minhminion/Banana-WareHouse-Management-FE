@@ -10,9 +10,8 @@ import {
 
 import { MODULE_NAME as MODULE_AUTH } from "../modules/Author/constants/models";
 import storeAccessible from "./utils/storeAccessible";
+import { TIMEOUT } from "./config";
 // import dayjs from "dayjs";
-
-const TIMEOUT = 5000;
 
 export async function loading(fetchingProcess, done = undefined) {
   storeAccessible.dispatch(loadStart({ config: { key: "loading" } }));

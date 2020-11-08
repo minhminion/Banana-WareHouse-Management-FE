@@ -10,14 +10,11 @@ export default (dispatch, props) => ({
   fetchProduct: async (params) => {
     try {
       dispatch(fetchProductsPending());
-      // setTimeout(() => dispatch(fetchProductsSuccess({})), 2000);
       const response = await fetchAuth({
         url: ENDPOINTS.getProducts,
         method: "GET",
         params: {
           ...params,
-          // "filters[status]": 1,
-          // "filterConditions[status]": "=",
         },
       });
       if (response.data && response.status === 200) {
@@ -82,7 +79,7 @@ export default (dispatch, props) => ({
   addProductUnit: async (data) => {
     try {
       const response = await fetchAuth({
-        url: ENDPOINTS.apiProductUnits,
+        url: ENDPOINTS.apiProductCategories,
         method: "POST",
         data,
       });
@@ -115,9 +112,75 @@ export default (dispatch, props) => ({
       const response = await fetchAuth({
         url: ENDPOINTS.apiProductUnitsWithParams(data.id),
         method: "PUT",
-        data
+        data,
       });
       if (response.data && response.status === 201) {
+        return true;
+      } else {
+        return "Lỗi không xác định !";
+      }
+    } catch (error) {
+      return error?.response?.data;
+    }
+  },
+
+  // Product Categories
+  getProductCategories: async () => {
+    try {
+      const response = await fetchAuth({
+        url: ENDPOINTS.apiProductCategories,
+        method: "GET",
+      });
+      if (response.data && response.status === 200) {
+        return response.data.data;
+      } else {
+        return "Lỗi không xác định !";
+      }
+    } catch (error) {
+      return error?.response?.data;
+    }
+  },
+  addProductCategory: async (categoryName) => {
+    try {
+      const response = await fetchAuth({
+        url: ENDPOINTS.apiProductCategories,
+        method: "POST",
+        data: {
+          name: categoryName
+        },
+      });
+      if (response.data && response.status === 201) {
+        return response.data;
+      } else {
+        return "Lỗi không xác định !";
+      }
+    } catch (error) {
+      return error?.response?.data;
+    }
+  },
+  deleteProductCategory: async (categoryId) => {
+    try {
+      const response = await fetchAuth({
+        url: ENDPOINTS.apiProductCategoriesWithParams(categoryId),
+        method: "DELETE",
+      });
+      if (response.status === 204) {
+        return true;
+      } else {
+        return "Lỗi không xác định !";
+      }
+    } catch (error) {
+      return error?.response?.data;
+    }
+  },
+  editProductCategory: async (data) => {
+    try {
+      const response = await fetchAuth({
+        url: ENDPOINTS.apiProductCategoriesWithParams(data.id),
+        method: "PUT",
+        data,
+      });
+      if (response.status === 204) {
         return true;
       } else {
         return "Lỗi không xác định !";
