@@ -96,7 +96,12 @@ const ProposalStatus = ({
     }
 
     return listMenu.map((item) => (
-      <MenuItem key={item} value={item}>{getMenuContent(item)}</MenuItem>
+      <MenuItem
+        key={item}
+        value={item}
+      >
+        {getMenuContent(item)}
+      </MenuItem>
     ));
   };
 

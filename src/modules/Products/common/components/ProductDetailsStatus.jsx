@@ -62,7 +62,10 @@ const ProductDetailsStatus = ({
 
   return (
     <Box style={{ ...style }} className={classesStyle.productDescription}>
-      <InputLabel className={classesStyle.label} style={{ marginBottom: 8 }}>
+      <InputLabel
+        className={classesStyle.label}
+        style={{ marginBottom: 8, height: 30, lineHeight: 1.7 }}
+      >
         Trạng thái
       </InputLabel>
       <Select
