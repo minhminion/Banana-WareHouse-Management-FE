@@ -1,4 +1,3 @@
-
 import React, { useEffect, useMemo, useState } from "react";
 import {
   makeStyles,
@@ -301,7 +300,7 @@ const ProductDetails = (props) => {
               onChange={handleInputChange}
               style={{ width: "50%" }}
               classes={classes}
-              isEdit={isEdit}
+              isEdit={isEdit && values.id}
             />
             <ProductDetailsCategory
               value={values.productCategoryId}
@@ -311,6 +310,92 @@ const ProductDetails = (props) => {
               isEdit={isEdit}
             />
           </Box>
+          {values.id && (
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <TextField
+                disabled={true}
+                name="name"
+                style={{
+                  width: "30%",
+                  marginBottom: 24,
+                }}
+                label={"Số lượng đặt mua"}
+                value={values.quantityOrdered}
+                margin={"normal"}
+                InputLabelProps={{
+                  classes: {
+                    root: classes.label,
+                  },
+                  focused: false,
+                  shrink: true,
+                }}
+                InputProps={{
+                  classes: {
+                    root: classes.inputRoot,
+                    input: classes.input,
+                    disabled: classes.inputDisabled,
+                  },
+                  disableUnderline: true,
+                }}
+              />
+              <TextField
+                disabled={true}
+                name="name"
+                style={{
+                  width: "30%",
+                  marginBottom: 24,
+                }}
+                label={"Số lượng bán"}
+                value={values.quantityForSale}
+                margin={"normal"}
+                InputLabelProps={{
+                  classes: {
+                    root: classes.label,
+                  },
+                  focused: false,
+                  shrink: true,
+                }}
+                InputProps={{
+                  classes: {
+                    root: classes.inputRoot,
+                    input: classes.input,
+                    disabled: classes.inputDisabled,
+                  },
+                  disableUnderline: true,
+                }}
+              />
+              <TextField
+                disabled={true}
+                name="name"
+                style={{
+                  width: "30%",
+                  marginBottom: 24,
+                }}
+                label={"Số lượng trả về"}
+                value={values.quantityReturned}
+                margin={"normal"}
+                InputLabelProps={{
+                  classes: {
+                    root: classes.label,
+                  },
+                  focused: false,
+                  shrink: true,
+                }}
+                InputProps={{
+                  classes: {
+                    root: classes.inputRoot,
+                    input: classes.input,
+                    disabled: classes.inputDisabled,
+                  },
+                  disableUnderline: true,
+                }}
+              />
+            </Box>
+          )}
           {/* Product description */}
           <Box className={classes.productDescription}>
             <InputLabel className={classes.label} style={{ marginBottom: 8 }}>

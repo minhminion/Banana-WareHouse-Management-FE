@@ -18,6 +18,7 @@ import { useDispatch } from "react-redux";
 import handler from "../../constants/handler";
 import { notifyError } from "../../../../common/helper";
 import { useSnackbar } from "notistack";
+import { values } from "lodash";
 
 const useStyles = makeStyles((theme) => ({
   select: {
@@ -99,6 +100,13 @@ const ProductDetailsCategory = (props) => {
       .then(async (inputValue) => {
         const result = await addProductCategory(inputValue);
         if (result.id) {
+          enqueueSnackbar("Đã thêm loại sản phẩm mới", {
+            variant: "success",
+          });
+          onChange({
+            target: "productCategoryId",
+            value: result.id,
+          });
           setCategories((prev) => [result, ...prev]);
         } else {
           notifyError(enqueueSnackbar, result);
@@ -129,8 +137,10 @@ const ProductDetailsCategory = (props) => {
           const index = categories?.indexOf(contextPos.category);
           let newCategories = categories;
           newCategories[index].name = inputValue;
+          enqueueSnackbar("Đã sửa loại sản phẩm", {
+            variant: "success",
+          });
           setCategories(newCategories);
-
           onChange({
             target: "productCategoryId",
             value: contextPos.category.id,
@@ -144,23 +154,31 @@ const ProductDetailsCategory = (props) => {
       });
   };
 
-  const handleDeleteCategory = async () => {
-    const result = await deleteProductCategory(contextPos.category.id);
-    if (result === true) {
-      const newCategories = categories.filter(
-        (category) => category.id !== contextPos.category.id
-      );
-      if (contextPos.category.id === selectRef.current.value) {
-        console.log("Run select again");
-        onChange({
-          target: "productCategoryId",
-          value: 2,
+  const handleDeleteCategory = () => {
+    confirm({
+      title: "Xóa loại sản phẩm",
+      confirmationText: "Xác nhận",
+      cancellationText: "Hủy",
+    }).then(async () => {
+      const result = await deleteProductCategory(contextPos.category.id);
+      if (result === true) {
+        const newCategories = categories.filter(
+          (category) => category.id !== contextPos.category.id
+        );
+        enqueueSnackbar("Đã xóa loại sản phẩm", {
+          variant: "success",
         });
+        if (contextPos.category.id === selectRef.current.value) {
+          onChange({
+            target: "productCategoryId",
+            value: 2,
+          });
+        }
+        setCategories(newCategories);
+      } else {
+        notifyError(enqueueSnackbar, result);
       }
-      setCategories(newCategories);
-    } else {
-      notifyError(enqueueSnackbar, result);
-    }
+    });
 
     handleCloseContext();
   };
@@ -229,13 +247,17 @@ const ProductDetailsCategory = (props) => {
       </Menu>
       <InputLabel className={classesStyle.label} style={{ marginBottom: 8 }}>
         Danh mục sản phẩm
-        <Box ml={1} clone>
-          <IconButton size="small" onClick={handleAddCategory}>
-            <AddIcon />
-          </IconButton>
-        </Box>
+        {isEdit && (
+          <Box ml={1} clone>
+            <IconButton size="small" onClick={handleAddCategory}>
+              <AddIcon />
+            </IconButton>
+          </Box>
+        )}
       </InputLabel>
       <Select
+        displayEmpty
+        style={{ width: "100%" }}
         placeholder="Vui lòng chọn loại sản phẩm"
         inputRef={selectRef}
         disabled={!isEdit}
