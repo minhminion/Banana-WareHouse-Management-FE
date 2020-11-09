@@ -1,7 +1,12 @@
 import { DEFAULT_API_URL } from "../../../common/config";
 
-export const MODULE_NAME = "goodsReceivingNotes"
+export const MODULE_NAME = "goodsReceivingNotes";
 
 export const ENDPOINTS = {
-  getGoodsReceivingNotes: `${DEFAULT_API_URL}/${MODULE_NAME}`,
+  apiGoodsReceivingNotes: `${DEFAULT_API_URL}/${MODULE_NAME}`,
+  apiGoodsReceivingNotesWithParams: (goodsReceivingNoteId) =>
+    `${DEFAULT_API_URL}/${MODULE_NAME}/${goodsReceivingNoteId}`,
+
+  apiGoodsReceivingNotesDetails: (goodsReceivingNoteId) =>
+    `${DEFAULT_API_URL}/${MODULE_NAME}/${goodsReceivingNoteId}/goodsReceivingDetails`,
 };

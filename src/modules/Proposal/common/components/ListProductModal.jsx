@@ -176,7 +176,7 @@ const ListProductModal = (props) => {
   };
 
   const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
+    if (data && event.target.checked) {
       const newData = data.reduce((result, product) => {
         return result.concat({
           description: "",

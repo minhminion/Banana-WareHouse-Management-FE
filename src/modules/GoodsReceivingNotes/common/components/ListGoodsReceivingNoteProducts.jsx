@@ -20,7 +20,7 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 // Icons
 import CloseIcon from "@material-ui/icons/Close";
-import NoteIcon from '@material-ui/icons/Note';
+import NoteIcon from "@material-ui/icons/Note";
 import ProductItemDescription from "./ProductItemDescription";
 
 const useStyles = makeStyles((theme) => ({
@@ -101,7 +101,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ListGoodsReceivingNoteProducts = ({ data, onChange, isEdit = false }) => {
+const ListGoodsReceivingNoteProducts = ({
+  listProduct,
+  data,
+  onChange,
+  isEdit = false,
+}) => {
   const classes = useStyles();
   const [viewProduct, setViewProduct] = useState({});
   const [openListProduct, setOpenListProduct] = useState(false);
@@ -119,7 +124,7 @@ const ListGoodsReceivingNoteProducts = ({ data, onChange, isEdit = false }) => {
     };
     onChange({
       target: {
-        name: "purchaseProposalDetails",
+        name: "goodsReceivingDetails",
         value: newProducts,
       },
     });
@@ -140,7 +145,7 @@ const ListGoodsReceivingNoteProducts = ({ data, onChange, isEdit = false }) => {
       }
       onChange({
         target: {
-          name: "purchaseProposalDetails",
+          name: "goodsReceivingDetails",
           value: newUnits,
         },
       });
@@ -255,10 +260,11 @@ const ListGoodsReceivingNoteProducts = ({ data, onChange, isEdit = false }) => {
         </Table>
       </TableContainer>
       <ListProductModal
+        listProducts={listProduct}
+        initialValue={[...data]}
         open={openListProduct}
         onChange={onChange}
         onClose={() => setOpenListProduct(false)}
-        initialValue={data || []}
       />
       <ProductItemDescription
         isEdit={isEdit}

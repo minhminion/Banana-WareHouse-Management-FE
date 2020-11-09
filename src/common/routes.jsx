@@ -96,7 +96,7 @@ const Routes = () => {
           />
           <AuthRoute
             exact
-            path="/goods-receiving-notes/add"
+            path="/goods-receiving-notes/:purchaseProposalFormId/add/"
             component={AddGoodsReceivingNotePage}
             roleName={roleName}
             acceptRoles={[USER_ROLE.WarehouseKeeper, USER_ROLE.WarehouseKeeperManager]}
