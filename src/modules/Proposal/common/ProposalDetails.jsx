@@ -24,6 +24,8 @@ import { titleCase } from "../../../common/helper";
 import ProposalStatusStepper from "./components/ProposalStatusStepper";
 import ProposalStatus from "./components/ProposalStatus";
 import useConfirm from "../../../common/hooks/useConfirm/useConfirm";
+import { MODULE_NAME as MODULE_AUTHOR } from "../../Author/constants/models";
+import { useSelector } from "react-redux";
 
 const defaultValues = {
   creator: "231",
@@ -152,6 +154,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PROPOSAL_STATUS = ENUMS.PROPOSAL_STATUS;
+const USER_ROLE = ENUMS.USER_ROLE;
 
 const ProposalDetails = ({
   initialValues,
@@ -168,6 +171,8 @@ const ProposalDetails = ({
   const history = useHistory();
   const confirm = useConfirm();
   const [selectedDate, handleDateChange] = useState(minDate);
+  const { roleName } = useSelector((state) => state[MODULE_AUTHOR]);
+
   const validate = (fieldValues = values) => {
     let temp = { ...errors };
     setErrors({
@@ -199,6 +204,15 @@ const ProposalDetails = ({
   useEffect(() => {
     handleResetValues();
   }, [initialValues]);
+
+  const canCreateGoodsReceivingNotes = () => {
+    return (
+      values.status === PROPOSAL_STATUS.PROCESSING &&
+      (roleName === USER_ROLE.Boss ||
+        roleName === USER_ROLE.WarehouseKeeper ||
+        roleName === USER_ROLE.WarehouseKeeperManager)
+    );
+  };
 
   const handleResetValues = () => {
     if (initialValues) {
@@ -389,6 +403,20 @@ const ProposalDetails = ({
                   {cancelLabel}
                 </Button>
               </Box>
+            </Box>
+          )}
+          {canCreateGoodsReceivingNotes() && (
+            <Box p={1.5} mr={1} clone>
+              <Button
+                style={{ width: "100%" }}
+                className={clsx(classes.actionButton)}
+                component={Paper}
+                onClick={() =>
+                  history.push(`/goods-receiving-notes/${values.id}/add`)
+                }
+              >
+                Tạo phiếu nhập hàng
+              </Button>
             </Box>
           )}
         </Grid>

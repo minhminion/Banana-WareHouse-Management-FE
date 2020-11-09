@@ -28,7 +28,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { MODULE_NAME as MODULE_PRODUCT } from "../../../Products/constants/models";
 import Pagination from "@material-ui/lab/Pagination";
 import { useCallback } from "react";
-import { uniqBy } from "lodash";
+import { uniqBy, difference } from "lodash";
 
 const useStyles = makeStyles((theme) => ({
   tableRoot: {
@@ -99,10 +99,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const ListProductModal = (props) => {
   const {
+    listProducts = [],
     onClose,
     open = false,
     LIMIT_PER_PAGE = 4,
-    initialValue,
+    initialValue = [],
     onChange,
   } = props;
   const theme = useTheme();
@@ -141,23 +142,29 @@ const ListProductModal = (props) => {
   }, []);
 
   useEffect(() => {
+    let filterById = [];
     if (initialValue?.length > 0) {
       const value = initialValue.reduce((accumulator, currentValue) => {
-        if (currentValue.action !== "deleted")
+        if (currentValue.action !== "deleted") {
           return accumulator.concat(currentValue["productId"]);
+        }
         return accumulator;
       }, []);
-      handleFilter(
-        {
-          target: {
-            name: "id",
-            value: value.join(","),
-          },
-        },
-        "notin"
-      );
+
+      filterById = difference(listProducts, value);
+    } else {
+      filterById = listProducts;
     }
-  }, [initialValue, handleFilter]);
+    handleFilter(
+      {
+        target: {
+          name: "id",
+          value: filterById.join(","),
+        },
+      },
+      "in"
+    );
+  }, [initialValue, handleFilter, listProducts]);
 
   useEffect(() => {
     if (open && filter) {
@@ -168,6 +175,20 @@ const ListProductModal = (props) => {
     }
   }, [filter, open, fetchProduct, LIMIT_PER_PAGE]);
 
+  useEffect(() => {
+    if (listProducts) {
+      handleFilter(
+        {
+          target: {
+            name: "id",
+            value: listProducts.join(","),
+          },
+        },
+        "in"
+      );
+    }
+  }, [listProducts]);
+
   const handleChangePagination = (e, newPage) => {
     setFilter((prev) => ({
       ...prev,
@@ -176,7 +197,7 @@ const ListProductModal = (props) => {
   };
 
   const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
+    if (data && event.target.checked) {
       const newData = data.reduce((result, product) => {
         return result.concat({
           description: "",
@@ -238,19 +259,19 @@ const ListProductModal = (props) => {
 
     if (newProducts.length > 0 || onChange) {
       // Get list unique IDs
-      const idsNewProduct = new Set(newProducts.map((d) => d.id));
+      const idsNewProduct = new Set(newProducts.map((d) => d.productId));
 
-      const newValues = uniqBy([...initialValue, ...newProducts], "productId");
+      let newValues = uniqBy([...initialValue, ...newProducts], "productId");
 
       // Change action of Initial Values to update
       newValues.forEach((el) => {
-        if (idsNewProduct.has(el.id) && el.action === "deleted")
+        if (idsNewProduct.has(el.productId) && el.action === "deleted")
           el.action = "update";
       });
 
       onChange({
         target: {
-          name: "goodsReceivingNoteDetails",
+          name: "goodsReceivingDetails",
           value: newValues,
         },
       });

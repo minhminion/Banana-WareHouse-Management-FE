@@ -172,7 +172,7 @@ const ListGoodsReceivingNotesItem = ({ row, onCancel }) => {
           <Box mr={1} clone>
             <Link
               to={`/goods-receiving-notes/${row.id}${
-                isEditable(row.status) ? "/edit" : ""
+                isEditable(row.status) ? `/edit` : ""
               }`}
             >
               <IconButton>

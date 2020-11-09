@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   Grid,
   makeStyles,
@@ -18,7 +18,6 @@ import Alert from "@material-ui/lab/Alert";
 // Helper
 import { ENUMS } from "../../../common/constants";
 import parse from "html-react-parser";
-import { titleCase } from "../../../common/helper";
 import useConfirm from "../../../common/hooks/useConfirm/useConfirm";
 import GoodsReceivingNoteStatusStepper from "./components/GoodsReceivingNoteStatusStepper";
 import GoodsReceivingNoteStatus from "./components/GoodsReceivingNoteStatus";
@@ -32,47 +31,18 @@ const defaultValues = {
   status: ENUMS.GOOD_RECEIVING_STATUS.NEW,
   description: "",
   supplierId: 1,
-  goodsReceivingNoteDetails: [
-    {
-      id: 73,
-      productId: 2,
-      goodsReceivingNotesId: 30,
-      quantity: 52,
-      description: "",
-      createdAt: "2020-11-05T07:36:45.0206537",
-      lastModifiedAt: "2020-11-05T07:36:45.0206601",
-      product: {
-        id: 2,
-        name: "Bưởi Đoan Hùng",
-        sku: "SP-TCVN-00002",
-        description: null,
-        defaultUnit: "Kg",
-        purchasePrice: 20000,
-        price: 60000,
-        status: 1,
-        quantity: 259,
-        productCategoryId: 1,
-        minQuantity: 0,
-        maxQuantity: 1000,
-        lastSaledDate: "0001-01-01T00:00:00",
-        createdAt: "0001-01-01T00:00:00",
-        lastModifiedAt: "0001-01-01T00:00:00",
-        productCategory: null,
-        productUnits: [],
-      },
-    },
-  ],
+  goodsReceivingDetails: [],
 };
 
 const createSupplier = (id, name, email, phoneNumber) => {
-  return {id, name, email, phoneNumber }
-}
+  return { id, name, email, phoneNumber };
+};
 
 const suppliers = [
   createSupplier(1, "Angimex", "abc@gmail.com", "0903060504"),
   createSupplier(2, "TH True Milk", "abc@gmail.com", "0903060504"),
-  createSupplier(3, "Coca cola", "abc@gmail.com", "0903060504")
-]
+  createSupplier(3, "Coca cola", "abc@gmail.com", "0903060504"),
+];
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -194,6 +164,7 @@ const useStyles = makeStyles((theme) => ({
 const GOOD_RECEIVING_STATUS = ENUMS.GOOD_RECEIVING_STATUS;
 
 const GoodsReceivingNoteDetails = ({
+  proposalDetails,
   initialValues,
   isEdit = true,
   onSubmit,
@@ -207,7 +178,6 @@ const GoodsReceivingNoteDetails = ({
   const classes = useStyles();
   const history = useHistory();
   const confirm = useConfirm();
-  const [selectedDate, handleDateChange] = useState(minDate);
   const validate = (fieldValues = values) => {
     let temp = { ...errors };
     setErrors({
@@ -276,7 +246,7 @@ const GoodsReceivingNoteDetails = ({
     confirm(getStatusConfirmContent(status))
       .then((inputValue) => {
         let newValue = {
-          deadline: selectedDate,
+          ...initialValues,
           status: status,
           ...(inputValue ? { exceptionReason: inputValue } : {}),
         };
@@ -291,10 +261,16 @@ const GoodsReceivingNoteDetails = ({
     if (validate()) {
       try {
         const newValues = {
-          deadline: selectedDate,
           description: values.description || "",
           status: values.status,
-          goodsReceivingNoteDetails: values.goodsReceivingNoteDetails.map(
+          ...(values.supplierId !== 0
+            ? {
+                supplierId: values.supplierId,
+              }
+            : {
+                supplierName: values.supplierName,
+              }),
+          goodsReceivingDetails: values.goodsReceivingDetails.map(
             (product) => ({
               id: product.id || -1,
               productId: product.productId,
@@ -307,22 +283,6 @@ const GoodsReceivingNoteDetails = ({
         onSubmit && onSubmit(newValues);
       } catch (error) {}
     }
-  };
-
-  const renderDateItem = (props) => {
-    return (
-      <Button
-        id={props.id}
-        className={classes.datePicker}
-        onClick={props.onClick}
-        disabled={props.disabled}
-        ref={props.inputRef}
-        {...props.InputProps}
-        component={Paper}
-      >
-        {titleCase(props.value)}
-      </Button>
-    );
   };
 
   return (
@@ -349,7 +309,10 @@ const GoodsReceivingNoteDetails = ({
           />
 
           <GoodsReceivingNoteSupplier
-            value={values.supplierId}
+            value={{
+              id: values.supplierId,
+              name: values.supplierName,
+            }}
             onChange={handleInputChange}
             classes={classes}
             isEdit={isEdit && values.status === GOOD_RECEIVING_STATUS.NEW}
@@ -426,9 +389,10 @@ const GoodsReceivingNoteDetails = ({
               Danh sách sản phẩm
             </InputLabel> */}
             <ListGoodsReceivingNoteProducts
+              listProduct={proposalDetails}
               isEdit={isEdit && values.status === ENUMS.PROPOSAL_STATUS.NEW}
               status={GOOD_RECEIVING_STATUS}
-              data={values.goodsReceivingNoteDetails}
+              data={values.goodsReceivingDetails}
               errors={errors}
               onChange={handleInputChange}
             />

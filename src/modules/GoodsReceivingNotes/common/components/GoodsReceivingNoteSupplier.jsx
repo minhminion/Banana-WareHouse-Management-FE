@@ -2,14 +2,17 @@ import {
   Box,
   Divider,
   IconButton,
+  InputBase,
   InputLabel,
   makeStyles,
   MenuItem,
   Select,
+  TextField,
   Tooltip,
   Typography,
 } from "@material-ui/core";
 import React from "react";
+import clsx from "clsx";
 
 import AddIcon from "@material-ui/icons/Add";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -27,6 +30,10 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: 8,
       background: "white",
     },
+    transition: ".2s all ease-out",
+  },
+  externalSelect: {
+    minWidth: 300,
   },
   icon: {
     right: 12,
@@ -79,6 +86,9 @@ const GoodsReceivingNoteSupplier = ({
   const iconSelectComponent = (props) => {
     return <ExpandMoreIcon className={props.className + " " + classes.icon} />;
   };
+
+  const isExternalSupplier = value.id === 0;
+
   return (
     <Box style={{ ...style }} className={classesStyle.productDescription}>
       <InputLabel className={classesStyle.label} style={{ marginBottom: 8 }}>
@@ -89,21 +99,44 @@ const GoodsReceivingNoteSupplier = ({
           </IconButton>
         </Tooltip>
       </InputLabel>
-      <Select
-        disabled={!isEdit}
-        disableUnderline
-        name="supplierId"
-        classes={{ root: classes.select }}
-        MenuProps={menuProps}
-        IconComponent={iconSelectComponent}
-        value={value}
-        onChange={onChange}
-      >
-        <MenuItem key={0} value={0}>
-          Nhà cung cấp ngoài hệ thống
-        </MenuItem>
-        {suppliers && renderMenuItem(suppliers)}
-      </Select>
+      <Box display="flex">
+        <Select
+          style={{ marginRight: 16 }}
+          disabled={!isEdit}
+          disableUnderline
+          name="supplierId"
+          classes={{
+            root: clsx(classes.select, {
+              [classes.externalSelect]: isExternalSupplier,
+            }),
+          }}
+          MenuProps={menuProps}
+          IconComponent={iconSelectComponent}
+          value={value.id}
+          onChange={onChange}
+        >
+          <MenuItem key={0} value={0}>
+            Nhà cung cấp ngoài hệ thống
+          </MenuItem>
+          {suppliers && renderMenuItem(suppliers)}
+        </Select>
+        {isExternalSupplier && (
+          <InputBase
+            name="supplierName"
+            autoFocus={isExternalSupplier}
+            style={{ height: 46 }}
+            disabled={!isEdit}
+            placeholder="Tên nhà cung cấp ngoài"
+            value={value.name}
+            classes={{
+              root: classesStyle.inputRoot,
+              input: classesStyle.input,
+              disabled: classesStyle.inputDisabled,
+            }}
+            onChange={onChange}
+          />
+        )}
+      </Box>
     </Box>
   );
 };
