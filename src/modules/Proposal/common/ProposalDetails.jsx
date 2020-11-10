@@ -208,9 +208,11 @@ const ProposalDetails = ({
   const canCreateGoodsReceivingNotes = () => {
     return (
       values.status === PROPOSAL_STATUS.PROCESSING &&
-      (roleName === USER_ROLE.Boss ||
-        roleName === USER_ROLE.WarehouseKeeper ||
-        roleName === USER_ROLE.WarehouseKeeperManager)
+      [
+        USER_ROLE.Boss,
+        USER_ROLE.WarehouseKeeper,
+        USER_ROLE.WarehouseKeeperManager,
+      ].indexOf(roleName) !== -1
     );
   };
 
@@ -251,6 +253,7 @@ const ProposalDetails = ({
     confirm(getStatusConfirmContent(status))
       .then((inputValue) => {
         let newValue = {
+          ...values,
           deadline: selectedDate,
           status: status,
           ...(inputValue ? { exceptionReason: inputValue } : {}),
@@ -273,7 +276,7 @@ const ProposalDetails = ({
             (product) => ({
               id: product.id || -1,
               productId: product.productId,
-              quantity: parseInt(product.quantity),
+              quantity: parseFloat(product.quantity),
               description: product.description || "",
               action: product.action,
             })

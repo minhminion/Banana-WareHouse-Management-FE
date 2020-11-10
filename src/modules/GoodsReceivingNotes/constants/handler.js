@@ -6,40 +6,6 @@ import {
   fetchGoodsReceivingNotesSuccess,
 } from "./actions";
 
-const createData = (id, user, status, supplierName, supplierId, createdAt) => {
-  return { id, user, status, supplierName, supplierId, createdAt };
-};
-
-const randomDate = (start, end) => {
-  return new Date(
-    start.getTime() + Math.random() * (end.getTime() - start.getTime())
-  );
-};
-
-const generateData = (page, numRow) => {
-  let data = [];
-  for (let i = 1 + numRow * (page - 1); i <= numRow * page; i++) {
-    const status = Math.floor(Math.random() * 5) + 1; // 1 -> 5
-    const createdAt = randomDate(new Date(2012, 0, 1), new Date());
-    data.push(
-      createData(
-        i,
-        {
-          email: "phantantrung@gmail.com",
-          firstName: "Trung",
-          lastName: "Phan Tấn",
-          id: "c95c6655-ca3f-4971-ad8f-74b43918f4f4",
-        },
-        status,
-        "Coca Cola",
-        Math.floor(Math.random() * 9999) + 1000,
-        createdAt
-      )
-    );
-  }
-  return data;
-};
-
 export default (dispatch, props) => ({
   fetchGoodsReceivingNotes: async (params) => {
     try {
@@ -125,7 +91,39 @@ export default (dispatch, props) => ({
         data,
       });
       if (response.data && response.status === 201) {
-        return response.data.data;
+        return true;
+      } else {
+        return "Lỗi không xác định !";
+      }
+    } catch (error) {
+      return error?.response?.data;
+    }
+  },
+  deleteGoodsReceivingDetails: async (data) => {
+    try {
+      const response = await fetchAuth({
+        url: ENDPOINTS.apiDeleteGoodsReceivingNotesDetails(data.goodsReceivingNoteId),
+        method: "DELETE",
+        data,
+      });
+      if (response.status === 204) {
+        return true;
+      } else {
+        return "Lỗi không xác định !";
+      }
+    } catch (error) {
+      return error?.response?.data;
+    }
+  },
+  editGoodsReceivingDetails: async (data) => {
+    try {
+      const response = await fetchAuth({
+        url: ENDPOINTS.apiUpdateGoodsReceivingNotesDetails(data.goodsReceivingNoteId),
+        method: "PUT",
+        data,
+      });
+      if (response.status === 204) {
+        return true;
       } else {
         return "Lỗi không xác định !";
       }

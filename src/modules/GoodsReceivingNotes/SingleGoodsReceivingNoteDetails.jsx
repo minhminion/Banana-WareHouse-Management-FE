@@ -36,6 +36,8 @@ const SingleGoodsReceivingNoteDetails = (props) => {
     fetchSingleGoodsReceivingNotes,
     editGoodsReceivingNote,
     addGoodsReceivingDetails,
+    deleteGoodsReceivingDetails,
+    editGoodsReceivingDetails,
   } = useMemo(() => handler(dispatch, props), [dispatch, props]);
 
   const getSingleGoodsReceivingNotes = useCallback(
@@ -88,15 +90,20 @@ const SingleGoodsReceivingNoteDetails = (props) => {
       ...values,
       id: +goodsReceivingNotesId,
     });
-    await updateGoodsReceivingDetails(values.goodsReceivingDetails);
+    const details = await updateGoodsReceivingDetails(
+      values.goodsReceivingDetails
+    );
+    console.log('======== Bao Minh: SingleGoodsReceivingNoteDetails -> details', details)
     closeSnackbar("updating-goods-receiving-notes");
-    if (result.id) {
+    if (result.id && details.length === 0) {
       enqueueSnackbar("Cập nhật thành công !", {
         variant: "success",
       });
       getSingleGoodsReceivingNotes(goodsReceivingNotesId);
     } else {
-      notifyError(enqueueSnackbar, result);
+      let errors = { details };
+      if (!result.id) errors["result"] = result;
+      notifyError(enqueueSnackbar, errors);
     }
   };
 
@@ -104,6 +111,8 @@ const SingleGoodsReceivingNoteDetails = (props) => {
     let createProduct = [];
     let updateProduct = [];
     let deleteProduct = [];
+
+    let errors = [];
 
     goodsReceivingDetails.forEach((product) => {
       switch (product.action) {
@@ -122,29 +131,47 @@ const SingleGoodsReceivingNoteDetails = (props) => {
     });
 
     if (createProduct.length > 0) {
-      await addGoodsReceivingDetails({
+      const result = await addGoodsReceivingDetails({
         goodsReceivingNoteId: +goodsReceivingNotesId,
         goodsReceivingDetails: [...createProduct],
       });
+      if (result !== true) {
+        errors.push(result?.ApiErr || result);
+      }
     }
 
-    // // Delete Proposal Products
-    // if (deleteProposal.length > 0) {
-    //   await deleteProposalProduct({
-    //     goodsReceivingNoteId: purchaseProposalId,
-    //     purchaseProposalDetailIds: [
-    //       ...deleteProposal.map((product) => product.id),
-    //     ],
-    //   });
-    // }
+    // Delete Proposal Products
+    if (deleteProduct.length > 0) {
+      const result = await deleteGoodsReceivingDetails({
+        goodsReceivingNoteId: +goodsReceivingNotesId,
+        goodsReceivingDetailIds: [
+          ...deleteProduct.map((product) => product.id),
+        ],
+      });
+      if (result !== true) {
+        errors.push(result?.ApiErr || result);
+      }
+    }
 
-    // // Update Proposal Products
-    // if (updateProposal.length > 0) {
-    //   await editProposalProduct({
-    //     goodsReceivingNoteId: purchaseProposalId,
-    //     goodsReceivingDetails: [...updateProposal],
-    //   });
-    // }
+    // Update Proposal Products
+    if (updateProduct.length > 0) {
+      const result = await editGoodsReceivingDetails({
+        goodsReceivingNoteId: +goodsReceivingNotesId,
+        goodsReceivingDetails: [
+          ...updateProduct.map((product) => ({
+            id: product.id,
+            quantity: product.quantity,
+            description: product.description,
+            singlePurchasePrice: product.singlePurchasePrice,
+          })),
+        ],
+      });
+      if (result !== true) {
+        errors.push(result?.ApiErr || result);
+      }
+    }
+
+    return errors;
   };
 
   return initialValues?.id ? (

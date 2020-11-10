@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   TableRow,
   TableCell,
@@ -70,7 +70,6 @@ const useStyles = makeStyles((theme) => ({
 const ListGoodsReceivingNotesItem = ({ row, onCancel }) => {
   const theme = useTheme();
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
   const { roleName } = useSelector((state) => state[MODULE_AUTHOR]);
   const isAuth =
     roleName === ENUMS.USER_ROLE.Boss ||
@@ -104,7 +103,7 @@ const ListGoodsReceivingNotesItem = ({ row, onCancel }) => {
         style = "new";
         break;
       case goodsReceivingNotesStatus.PENDING:
-        label = "Đang chờ xử lý";
+        label = "Chờ xác nhận";
         style = "pending";
         break;
       case goodsReceivingNotesStatus.APPROVED:
@@ -189,46 +188,6 @@ const ListGoodsReceivingNotesItem = ({ row, onCancel }) => {
           )}
         </TableCell>
       </TableRow>
-      {/* <TableRow style={{ boxShadow: theme.boxShadows.inset }}>
-        <TableCell
-          className={clsx(classes.expandCell, open ? "expended" : "collapsed")}
-          colSpan={7}
-        >
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box margin={1}>
-              <Typography variant="h6">Danh sách phiếu nhập</Typography>
-              <Table
-                size="small"
-                aria-label="purchases"
-                className={classes.expandTable}
-              >
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Mã phiếu nhập kho</TableCell>
-                    <TableCell>Tình trạng</TableCell>
-                    <TableCell align="left">Ngày tạo</TableCell>
-                    <TableCell align="left">Tổng tiền (đ)</TableCell>
-                    <TableCell align="left"></TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>1</TableCell>
-                    <TableCell>Đang thực hiện</TableCell>
-                    <TableCell align="left">20/11</TableCell>
-                    <TableCell align="left">1,000,000</TableCell>
-                    <TableCell align="left">
-                      <IconButton>
-                        <ArrowForwardIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow> */}
     </TableBody>
   );
 };

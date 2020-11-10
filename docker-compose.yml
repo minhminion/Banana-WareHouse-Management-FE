@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   portal:
-    container_name: "portal"
+    container_name: "fruit_warehouse_management_fe"
     stdin_open: true
     tty: true
     build: 
@@ -9,8 +9,8 @@ services:
       dockerfile: Dockerfile.dev
     ports: 
       - 3000:3000
-    volumes: 
-      - "/app/node_modules"
-      - ".:/app"
+    # volumes: 
+    #   - "/app/node_modules"
+    #   - ".:/app"
     environment:
       - CHOKIDAR_USEPOLLING=true

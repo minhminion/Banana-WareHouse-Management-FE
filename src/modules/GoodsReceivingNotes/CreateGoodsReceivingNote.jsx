@@ -34,10 +34,6 @@ const CreateGoodsReceivingNote = (props) => {
       persist: true,
       preventDuplicate: true,
     });
-    // setTimeout(() => {
-    //   closeSnackbar("creating-goods-receiving-note");
-    //   history.go(-1);
-    // }, 1000);
     const result = await createGoodsReceivingNote({
       ...values,
       purchaseProposalFormId: +purchaseProposalFormId,

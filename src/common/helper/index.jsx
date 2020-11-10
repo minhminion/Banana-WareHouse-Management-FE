@@ -1,3 +1,5 @@
+import parse from "html-react-parser";
+
 export const formatBytes = (bytes, decimals = 2) => {
   if (bytes === 0) return "0 Bytes";
 
@@ -12,7 +14,7 @@ export const formatBytes = (bytes, decimals = 2) => {
 
 export const formatVNDToNumber = (n) => {
   // format number 1.234.567 to 1000000
-  return n.replace(/[^0-9.-]+/g, "");
+  return n.replace(/,/g, "");
 };
 export const formatNumberToVND = (n) => {
   // format number 1000000 to 1.234.567
@@ -60,21 +62,16 @@ export const titleCase = (str, isLowerCase = false) => {
 export const notifyError = (notify, messages) => {
   const messageType = typeof messages;
   if (messageType === "string") {
-    notify(messages, {
+    notify(parse(messages), {
       key: messages,
-      autoHideDuration: 2000,
       variant: "error",
       preventDuplicate: true,
+      autoHideDuration: 3000,
     });
   } else if (messageType === "object") {
     const listMessage = Object.values(messages);
     listMessage.forEach((message) => {
-      notify(message, {
-        key: message,
-        autoHideDuration: 2000,
-        variant: "error",
-        preventDuplicate: true,
-      });
+      notifyError(notify, message);
     });
   }
 };

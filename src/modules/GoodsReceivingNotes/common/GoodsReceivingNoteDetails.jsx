@@ -6,6 +6,7 @@ import {
   Box,
   Paper,
   Button,
+  TextField,
 } from "@material-ui/core";
 import clsx from "clsx";
 import { blueGrey } from "@material-ui/core/colors";
@@ -23,6 +24,7 @@ import GoodsReceivingNoteStatusStepper from "./components/GoodsReceivingNoteStat
 import GoodsReceivingNoteStatus from "./components/GoodsReceivingNoteStatus";
 import ListGoodsReceivingNoteProducts from "./components/ListGoodsReceivingNoteProducts";
 import GoodsReceivingNoteSupplier from "./components/GoodsReceivingNoteSupplier";
+import { formatNumberToVND, formatVNDToNumber } from "../../../common/helper";
 
 const defaultValues = {
   creator: "231",
@@ -31,6 +33,7 @@ const defaultValues = {
   status: ENUMS.GOOD_RECEIVING_STATUS.NEW,
   description: "",
   supplierId: 1,
+  totalPrice: 0,
   goodsReceivingDetails: [],
 };
 
@@ -58,13 +61,13 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   leftSide: {
-    width: "calc(100% - 550px)",
+    width: "calc(100% - 700px)",
     [theme.breakpoints.down("sm")]: {
       width: "100%",
     },
   },
   rightSide: {
-    width: 550,
+    width: 700,
     [theme.breakpoints.down("sm")]: {
       width: "100%",
     },
@@ -240,6 +243,16 @@ const GoodsReceivingNoteDetails = ({
     return content;
   };
 
+  const getTotalPrice = (products) => {
+    return products.reduce((totalPrice, receivingProduct) => {
+      if (receivingProduct.action === "deleted") return totalPrice;
+      const total =
+        +(receivingProduct.singlePurchasePrice + "").replace(/,/g, "") *
+        parseFloat(receivingProduct.quantity);
+      return totalPrice + Math.round(total);
+    }, 0);
+  };
+
   const handleChangeStatus = (e) => {
     const { value: status } = e.target;
 
@@ -273,10 +286,14 @@ const GoodsReceivingNoteDetails = ({
           goodsReceivingDetails: values.goodsReceivingDetails.map(
             (product) => ({
               id: product.id || -1,
-              productId: product.productId,
-              quantity: parseInt(product.quantity),
+              productId: +product.productId,
+              quantity: parseFloat(product.quantity),
               description: product.description || "",
               action: product.action,
+              singlePurchasePrice: +(product.singlePurchasePrice + "").replace(
+                /,/g,
+                ""
+              ),
             })
           ),
         };
@@ -300,13 +317,50 @@ const GoodsReceivingNoteDetails = ({
         <Grid item className={clsx(classes.root, classes.leftSide)}>
           {/* Product Deadline and Status */}
 
-          <GoodsReceivingNoteStatus
-            value={values.status}
-            onChange={handleChangeStatus}
-            classes={classes}
-            isEdit={isEdit && values.id}
-            style={{ width: "100%", minWidth: 200 }}
-          />
+          <Box
+            className={classes.productDescription}
+            display="flex"
+            justifyContent="space-between"
+          >
+            <GoodsReceivingNoteStatus
+              value={values.status}
+              onChange={handleChangeStatus}
+              classes={classes}
+              isEdit={isEdit && values.id}
+              style={{ width: "35%", minWidth: 50 }}
+            />
+            {/* Goods Receiving Notes Total Price */}
+            <TextField
+              disabled
+              name="name"
+              style={{
+                width: "60%",
+                minWidth: "calc(70% - 50px)",
+                marginBottom: 24,
+              }}
+              label={"Tổng giá phiếu"}
+              value={formatNumberToVND(
+                getTotalPrice(values.goodsReceivingDetails) || values.totalPrice
+              )}
+              margin={"normal"}
+              InputLabelProps={{
+                classes: {
+                  root: classes.label,
+                },
+                focused: false,
+                shrink: true,
+              }}
+              InputProps={{
+                classes: {
+                  root: classes.inputRoot,
+                  input: classes.input,
+                  disabled: classes.inputDisabled,
+                },
+                style: { height: 45 },
+                disableUnderline: true,
+              }}
+            />
+          </Box>
 
           <GoodsReceivingNoteSupplier
             value={{

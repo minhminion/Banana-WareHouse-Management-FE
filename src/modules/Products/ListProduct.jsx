@@ -17,6 +17,10 @@ import {
   MenuItem,
   Menu,
   useTheme,
+  Popover,
+  Chip,
+  List,
+  ListItem,
 } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
 // ICONS
@@ -45,6 +49,7 @@ import { MODULE_NAME as MODULE_AUTHOR } from "../Author/constants/models";
 import { useSnackbar } from "notistack";
 import { ENUMS } from "../../common/constants";
 import { Form } from "../../common/hooks/useForm";
+import clsx from "clsx";
 
 const useStyles = makeStyles((theme) => ({
   select: {
@@ -146,6 +151,25 @@ const useStyles = makeStyles((theme) => ({
       background: theme.palette.secondary.main,
     },
   },
+  chip: {
+    width: 120,
+    "&.available": {
+      color: theme.palette.common.white,
+      background: theme.palette.success.light,
+    },
+    "&.hided": {
+      color: theme.palette.common.white,
+      background: "#b19cd9",
+    },
+    "&.locked": {
+      color: theme.palette.common.white,
+      background: theme.palette.warning.main,
+    },
+    "&.unavailable": {
+      color: theme.palette.common.white,
+      background: theme.palette.error.main,
+    },
+  },
 }));
 
 const LIMIT_PER_PAGE = 5;
@@ -154,6 +178,11 @@ const ListProduct = (props) => {
   const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
+  const [contextPos, setContextPos] = useState({
+    quantityDetails: null,
+    mouseX: null,
+    mouseY: null,
+  });
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [anchorEl, setAnchorEl] = useState(null);
   const [filter, setFilter] = useState({
@@ -289,8 +318,59 @@ const ListProduct = (props) => {
     });
   };
 
+  // Popover context
+  const handleOpenContext = (e, quantityDetails) => {
+    e.preventDefault();
+    setContextPos({
+      quantityDetails: quantityDetails,
+      mouseX: e.clientX - 2,
+      mouseY: e.clientY - 4,
+    });
+  };
+
+  const handleCloseContext = () => {
+    setContextPos({
+      quantityDetails: null,
+      mouseX: null,
+      mouseY: null,
+    });
+  };
+
   const iconSelectComponent = (props) => {
     return <ExpandMoreIcon className={props.className + " " + classes.icon} />;
+  };
+
+  const isCancelable = () => {
+    return (
+      roleName === ENUMS.USER_ROLE.Boss || roleName === ENUMS.USER_ROLE.Admin
+    );
+  };
+
+  const renderStatus = (status) => {
+    const productStatus = ENUMS.PRODUCT_STATUS;
+    let label = "Không tìm thấy";
+    let style = "notfound";
+    switch (status) {
+      case productStatus.AVAILABLE:
+        label = "Còn hàng";
+        style = "available";
+        break;
+      case productStatus.HIDED:
+        label = "Đã ẫn";
+        style = "hided";
+        break;
+      case productStatus.LOCKED:
+        label = "Đã khóa";
+        style = "locked";
+        break;
+      case productStatus.UNAVAILABLE:
+        label = "Ngưng bán";
+        style = "unavailable";
+        break;
+      default:
+        break;
+    }
+    return <Chip className={clsx(classes.chip, style)} label={label} />;
   };
 
   const renderTableBody = (rows) => {
@@ -313,13 +393,22 @@ const ListProduct = (props) => {
         <TableCell component="th" scope="row">
           <strong>{row.name}</strong>
         </TableCell>
-        <TableCell align="left">
-          {row.status === 1 ? "Còn hàng" : "Hết hàng"}
-        </TableCell>
+        <TableCell align="center">{renderStatus(row.status)}</TableCell>
         <TableCell align="left">
           {formatNumberToReadable(row.quantity)}
+          <IconButton
+            onClick={(e) =>
+              handleOpenContext(e, {
+                quantityOrdered: row.quantityOrdered,
+                quantityForSale: row.quantityForSale,
+                quantityReturned: row.quantityReturned,
+              })
+            }
+          >
+            <ExpandMoreIcon />
+          </IconButton>
         </TableCell>
-        <TableCell align="left">{row.defaultUnit}</TableCell>
+        <TableCell align="center">{row.defaultUnit}</TableCell>
         <TableCell
           align="left"
           style={{
@@ -328,9 +417,9 @@ const ListProduct = (props) => {
         >
           <strong>{formatNumberToVND(row.price)}</strong>
         </TableCell>
-        <TableCell align="left">{row.productCategory?.name}</TableCell>
+        <TableCell align="center">{row.productCategory?.name}</TableCell>
         {/* Action on row */}
-        <TableCell align="left">
+        <TableCell align="center">
           <Box mr={1} clone>
             <Link
               to={`/products/${row.sku}${
@@ -346,11 +435,13 @@ const ListProduct = (props) => {
               </IconButton>
             </Link>
           </Box>
-          <Box clone>
-            <IconButton color="secondary">
-              <DeleteIcon />
-            </IconButton>
-          </Box>
+          {isCancelable() && (
+            <Box clone>
+              <IconButton color="secondary">
+                <DeleteIcon />
+              </IconButton>
+            </Box>
+          )}
         </TableCell>
       </TableRow>
     ));
@@ -358,6 +449,34 @@ const ListProduct = (props) => {
 
   return (
     <div>
+      <Popover
+        style={{ zIndex: 9999 }}
+        open={contextPos.mouseY !== null}
+        onClose={handleCloseContext}
+        anchorReference="anchorPosition"
+        anchorPosition={
+          contextPos.mouseY !== null && contextPos.mouseX !== null
+            ? { top: contextPos.mouseY, left: contextPos.mouseX }
+            : undefined
+        }
+      >
+        {contextPos.quantityDetails && (
+          <List dense>
+            <ListItem>
+              <strong style={{ marginRight: 8 }}>Số lượng đặt mua:</strong>
+              {contextPos.quantityDetails?.quantityOrdered}
+            </ListItem>
+            <ListItem>
+              <strong style={{ marginRight: 8 }}>Số lượng bán:</strong>
+              {contextPos.quantityDetails?.quantityForSale}
+            </ListItem>
+            <ListItem>
+              <strong style={{ marginRight: 8 }}>Số lượng trả về:</strong>
+              {contextPos.quantityDetails?.quantityReturned}
+            </ListItem>
+          </List>
+        )}
+      </Popover>
       <Box display="flex" justifyContent="space-between" mb={2}>
         <div style={{ display: "flex", flexFlow: "wrap" }}>
           <Box mr={1} clone>
@@ -488,22 +607,22 @@ const ListProduct = (props) => {
                 Mã SKU
               </TableCell>
               <TableCell>Tên sản phẩm</TableCell>
-              <TableCell style={{ width: 100 }} align="left">
+              <TableCell style={{ width: 100 }} align="center">
                 Tình trạng
               </TableCell>
               <TableCell align="left" style={{ width: 100 }}>
                 Số lượng
               </TableCell>
-              <TableCell align="left" style={{ width: 100 }}>
+              <TableCell align="center" style={{ width: 100 }}>
                 ĐVT
               </TableCell>
               <TableCell align="left" style={{ width: 120 }}>
                 Giá bán (đ)
               </TableCell>
-              <TableCell align="left" style={{ width: 200 }}>
+              <TableCell align="center" style={{ width: 200 }}>
                 Danh mục
               </TableCell>
-              <TableCell style={{ width: 150 }} align="left">
+              <TableCell style={{ width: 150 }} align="center">
                 Thao tác
               </TableCell>
             </TableRow>

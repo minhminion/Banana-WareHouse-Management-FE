@@ -40,9 +40,11 @@ import { useLocation, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import handler from "./constants/handler";
 import { MODULE_NAME } from "./constants/models";
+import { MODULE_NAME as MODULE_AUTHOR } from "../Author/constants/models";
 import { useSnackbar } from "notistack";
 import ListProposalItem from "./common/ListProposalItem";
 import handler from "./constants/handler";
+import { ENUMS } from "../../common/constants";
 
 const useStyles = makeStyles((theme) => ({
   select: {
@@ -165,6 +167,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const USER_ROLE = ENUMS.USER_ROLE;
 const LIMIT_PER_PAGE = 5;
 const ListProposal = (props) => {
   const editorRef = useRef(null);
@@ -206,6 +209,7 @@ const ListProposal = (props) => {
   );
 
   const { isLoading } = useSelector((state) => state[MODULE_NAME]);
+  const { roleName } = useSelector((state) => state[MODULE_AUTHOR]);
 
   useEffect(() => {
     if (location.search) {
@@ -226,7 +230,7 @@ const ListProposal = (props) => {
     if (isLoading) {
       enqueueSnackbar(`Đang tải...`, {
         variant: "info",
-        key: "loading-product",
+        key: "loading-proposal",
         persist: true,
         anchorOrigin: {
           vertical: "top",
@@ -234,7 +238,7 @@ const ListProposal = (props) => {
         },
       });
     } else {
-      closeSnackbar("loading-product");
+      closeSnackbar("loading-proposal");
     }
   }, [isLoading, enqueueSnackbar, closeSnackbar]);
 
@@ -331,54 +335,57 @@ const ListProposal = (props) => {
             </IconButton>
           </Box>
         </div>
-        <div>
-          <Box p={1.5} mr={1} clone>
-            <Button
-              // variant="contained"
-              className={classes.actionButton}
-              component={Paper}
-              onClick={handleClick}
+        {[USER_ROLE.Sale, USER_ROLE.Boss].indexOf(roleName) !== -1 && (
+          <div>
+            <Box p={1.5} mr={1} clone>
+              <Button
+                // variant="contained"
+                className={classes.actionButton}
+                component={Paper}
+                onClick={handleClick}
+              >
+                <span>Thêm</span>
+                <ExpandMoreIcon
+                  style={{
+                    transform: anchorEl ? "rotate(180deg)" : "rotate(0deg)",
+                  }}
+                />
+              </Button>
+            </Box>
+
+            <Menu
+              id="simple-menu"
+              // classes={{ paper: downloadMenuClasses.paper }}
+              {...menuProps}
+              getContentAnchorEl={null}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              // keepMounted
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
             >
-              <span>Thêm</span>
-              <ExpandMoreIcon
-                style={{
-                  transform: anchorEl ? "rotate(180deg)" : "rotate(0deg)",
-                }}
-              />
-            </Button>
-          </Box>
-          <Menu
-            id="simple-menu"
-            // classes={{ paper: downloadMenuClasses.paper }}
-            {...menuProps}
-            getContentAnchorEl={null}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            // keepMounted
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          >
-            <MenuItem onClick={() => history.push("/proposal/add")}>
-              <AddIcon style={{ marginRight: 8 }} />
-              Tạo phiếu đề nghị
-            </MenuItem>
-            <MenuItem onClick={handleClose}>
-              <PublishIcon style={{ marginRight: 8 }} />
-              Import XLS
-            </MenuItem>
-            <MenuItem onClick={handleClose}>
-              <GetAppIcon style={{ marginRight: 8 }} />
-              Export XLS
-            </MenuItem>
-          </Menu>
-        </div>
+              <MenuItem onClick={() => history.push("/proposal/add")}>
+                <AddIcon style={{ marginRight: 8 }} />
+                Tạo phiếu đề nghị
+              </MenuItem>
+              <MenuItem onClick={handleClose}>
+                <PublishIcon style={{ marginRight: 8 }} />
+                Import XLS
+              </MenuItem>
+              <MenuItem onClick={handleClose}>
+                <GetAppIcon style={{ marginRight: 8 }} />
+                Export XLS
+              </MenuItem>
+            </Menu>
+          </div>
+        )}
       </Box>
       {/* Table */}
       <TableContainer component={Box}>
