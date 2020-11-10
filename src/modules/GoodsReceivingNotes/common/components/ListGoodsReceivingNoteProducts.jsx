@@ -116,10 +116,15 @@ const ListGoodsReceivingNoteProducts = ({
     const fieldName = name.split("_")[0];
     const index = data.findIndex((product) => product.productId === productId);
     if (index === -1) return;
+    let newValue = value;
+    if (fieldName === "quantity") {
+      newValue = newValue.match(/(\d+)\.?(\d+)?/g);
+      newValue = newValue?.length > 0 ? newValue[0] : "";
+    }
     let newProducts = data;
     newProducts[index] = {
       ...newProducts[index],
-      [fieldName]: value,
+      [fieldName]: newValue,
       action: newProducts[index].action !== "created" ? "updated" : "created",
     };
     onChange({
@@ -182,9 +187,12 @@ const ListGoodsReceivingNoteProducts = ({
               <TableCell align="left">
                 <InputBase
                   disabled={!isEdit}
-                  name={`quantity_product_${product.id}`}
-                  error={row.quantity.length === 0}
-                  value={formatNumberToVND(row.quantity)}
+                  name={`singlePurchasePrice_product_${product.id}`}
+                  error={row.singlePurchasePrice.length === 0}
+                  value={formatNumberToVND(row.singlePurchasePrice)}
+                  style={{
+                    borderRadius: 8,
+                  }}
                   classes={{
                     root: classes.inputRoot,
                     input: classes.input,
@@ -192,6 +200,42 @@ const ListGoodsReceivingNoteProducts = ({
                   }}
                   onChange={(e) => handleChangeProduct(e, product.id)}
                 />
+              </TableCell>
+              <TableCell align="left">
+                <Box display="flex">
+                  <InputBase
+                    disabled={!isEdit}
+                    name={`quantity_product_${product.id}`}
+                    error={row.quantity.length === 0}
+                    value={row.quantity}
+                    style={{
+                      borderBottomLeftRadius: 8,
+                      borderTopLeftRadius: 8,
+                    }}
+                    classes={{
+                      root: classes.inputRoot,
+                      input: classes.input,
+                      disabled: classes.inputDisabled,
+                    }}
+                    onChange={(e) => handleChangeProduct(e, product.id)}
+                  />
+                  <p
+                    style={{
+                      padding: "0.5rem",
+                      backgroundColor: blueGrey[500],
+                      color: "white",
+                      fontWeight: 500,
+                      margin: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      alignSelf: "stretch",
+                      borderBottomRightRadius: 8,
+                      borderTopRightRadius: 8,
+                    }}
+                  >
+                    {row.product.defaultUnit}
+                  </p>
+                </Box>
               </TableCell>
               {/* Action on row */}
               <TableCell align="center">
@@ -233,6 +277,9 @@ const ListGoodsReceivingNoteProducts = ({
               <TableCell style={{ width: 80 }} align="left"></TableCell>
               <TableCell>Tên sản phẩm</TableCell>
               <TableCell align="left" style={{ width: 150 }}>
+                Đơn giá
+              </TableCell>
+              <TableCell align="left" style={{ width: 150 }}>
                 Số lượng mua
               </TableCell>
               <TableCell style={{ width: 130 }} align="center">
@@ -245,7 +292,7 @@ const ListGoodsReceivingNoteProducts = ({
             {isEdit && (
               <CSSTransition in={true} timeout={500} classNames="fade">
                 <TableRow>
-                  <TableCell style={{ padding: 0 }} colSpan={4}>
+                  <TableCell style={{ padding: 0 }} colSpan={5}>
                     <Button
                       className={classes.buttonAction}
                       onClick={() => setOpenListProduct(true)}

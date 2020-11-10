@@ -29,6 +29,7 @@ import { MODULE_NAME as MODULE_PRODUCT } from "../../../Products/constants/model
 import Pagination from "@material-ui/lab/Pagination";
 import { useCallback } from "react";
 import { uniqBy, difference } from "lodash";
+import { fetchProductsSuccess } from "../../../Products/constants/actions";
 
 const useStyles = makeStyles((theme) => ({
   tableRoot: {
@@ -113,6 +114,7 @@ const ListProductModal = (props) => {
   const [filter, setFilter] = useState({
     page: 1,
   });
+  const [isFetch, setIsFetch] = useState(true);
   const { fetchProduct } = useMemo(() => handler(dispatch, props), [
     dispatch,
     props,
@@ -155,25 +157,32 @@ const ListProductModal = (props) => {
     } else {
       filterById = listProducts;
     }
-    handleFilter(
-      {
-        target: {
-          name: "id",
-          value: filterById.join(","),
+
+    if (filterById?.length > 0) {
+      handleFilter(
+        {
+          target: {
+            name: "id",
+            value: filterById.join(","),
+          },
         },
-      },
-      "in"
-    );
+        "in"
+      );
+      setIsFetch(true);
+    } else {
+      dispatch(fetchProductsSuccess({}));
+      setIsFetch(false);
+    }
   }, [initialValue, handleFilter, listProducts]);
 
   useEffect(() => {
-    if (open && filter) {
+    if (open && filter && isFetch) {
       fetchProduct({
         ...filter,
         limit: LIMIT_PER_PAGE,
       });
     }
-  }, [filter, open, fetchProduct, LIMIT_PER_PAGE]);
+  }, [filter, open, isFetch, fetchProduct, LIMIT_PER_PAGE]);
 
   useEffect(() => {
     if (listProducts) {
@@ -267,6 +276,7 @@ const ListProductModal = (props) => {
       newValues.forEach((el) => {
         if (idsNewProduct.has(el.productId) && el.action === "deleted")
           el.action = "update";
+        el.singlePurchasePrice = el.product?.purchasePrice || 0
       });
 
       onChange({

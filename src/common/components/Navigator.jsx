@@ -14,17 +14,17 @@ import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
 import GroupIcon from "@material-ui/icons/Group";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
-import AssignmentIcon from '@material-ui/icons/Assignment';
+import AssignmentIcon from "@material-ui/icons/Assignment";
 import TimerIcon from "@material-ui/icons/Timer";
 import SettingsIcon from "@material-ui/icons/Settings";
 import PhonelinkSetupIcon from "@material-ui/icons/PhonelinkSetup";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
-import CallReceivedIcon from '@material-ui/icons/CallReceived';
+import CallReceivedIcon from "@material-ui/icons/CallReceived";
 import { useDispatch } from "react-redux";
 import { toggleCollapseNavigator } from "../redux/actions/uiActions";
 import { Link, useLocation } from "react-router-dom";
-import { Badge, Collapse, Avatar } from "@material-ui/core";
+import { Badge, Collapse, Avatar, Tooltip } from "@material-ui/core";
 
 const menus = [
   {
@@ -34,7 +34,11 @@ const menus = [
       { id: "Thống kê", icon: <DashboardIcon />, link: "", isDefault: true },
       { id: "Sản phẩm", icon: <ShoppingBasketIcon />, link: "products" },
       { id: "Đề nghị nhập hàng", icon: <AssignmentIcon />, link: "proposal" },
-      { id: "Phiếu nhập hàng", icon: <CallReceivedIcon />, link: "goods-receiving-notes" },
+      {
+        id: "Phiếu nhập hàng",
+        icon: <CallReceivedIcon />,
+        link: "goods-receiving-notes",
+      },
       { id: "Nhân viên", icon: <GroupIcon />, link: "members" },
     ],
   },
@@ -196,43 +200,50 @@ function Navigator(props) {
         <Link
           to={subNav ? "#" : `/${link}`}
           onClick={(e) => handleClickDisableLink(e, subNav, `/${link}`)}
-          // className={clsx(subNav && classes.disableLink)}
         >
-          <ListItem
-            button
-            onClick={() => subNav && handleOpenSub(childId)}
-            className={clsx(
-              classes.item,
-              active && classes.itemActiveItem,
-              collapse && classes.itemCollapseItem
-            )}
+          <Tooltip
+            disableHoverListener={!collapse}
+            title={childId}
+            aria-label={link}
+            arrow
+            placement="right"
           >
-            <ListItemIcon className={classes.itemIcon}>
-              <Badge
-                invisible={!collapse || count === 0}
-                color="secondary"
-                max={99}
-                badgeContent={count}
-              >
-                {icon}
-              </Badge>
-            </ListItemIcon>
-            <ListItemText
-              classes={{
-                primary: classes.itemPrimary,
-              }}
+            <ListItem
+              button
+              onClick={() => subNav && handleOpenSub(childId)}
+              className={clsx(
+                classes.item,
+                active && classes.itemActiveItem,
+                collapse && classes.itemCollapseItem
+              )}
             >
-              {childId}
-            </ListItemText>
-            {subNav && (
-              <ListItemIcon
-                className={clsx(classes.itemIcon, collapse && "locked-icon")}
-                style={{ float: "right", margin: 0 }}
-              >
-                {open === childId ? <ExpandLess /> : <ExpandMore />}
+              <ListItemIcon className={classes.itemIcon}>
+                <Badge
+                  invisible={!collapse || count === 0}
+                  color="secondary"
+                  max={99}
+                  badgeContent={count}
+                >
+                  {icon}
+                </Badge>
               </ListItemIcon>
-            )}
-          </ListItem>
+              <ListItemText
+                classes={{
+                  primary: classes.itemPrimary,
+                }}
+              >
+                {childId}
+              </ListItemText>
+              {subNav && (
+                <ListItemIcon
+                  className={clsx(classes.itemIcon, collapse && "locked-icon")}
+                  style={{ float: "right", margin: 0 }}
+                >
+                  {open === childId ? <ExpandLess /> : <ExpandMore />}
+                </ListItemIcon>
+              )}
+            </ListItem>
+          </Tooltip>
         </Link>
         {subNav && (
           <Collapse in={open === childId} timeout="auto" unmountOnExit>

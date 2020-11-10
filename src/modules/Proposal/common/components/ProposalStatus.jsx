@@ -62,8 +62,6 @@ const ProposalStatus = ({
         return "Mới tạo";
       case ProposalStatus.PROCESSING:
         return "Đang thực hiện";
-      case ProposalStatus.DONE:
-        return "Hoàn tất";
       case ProposalStatus.FORCE_DONE:
         return "Buộc hoàn tất";
       case ProposalStatus.CANCELED:
@@ -86,7 +84,6 @@ const ProposalStatus = ({
       case ProposalStatus.PROCESSING:
         listMenu = [
           ProposalStatus.PROCESSING,
-          ProposalStatus.DONE,
           ProposalStatus.FORCE_DONE,
           ProposalStatus.CANCELED,
         ];

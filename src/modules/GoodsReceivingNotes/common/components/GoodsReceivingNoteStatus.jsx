@@ -8,10 +8,11 @@ import {
 } from "@material-ui/core";
 import { ENUMS } from "../../../../common/constants";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { MODULE_NAME as MODULE_AUTHOR } from "../../../Author/constants/models";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   select: {
-    minWidth: 200,
     background: "white",
     border: "1px solid rgba(0,0,0,.1)",
     borderRadius: 8,
@@ -38,7 +39,10 @@ const GoodsReceivingNoteStatus = ({
   onChange,
 }) => {
   const GOOD_RECEIVING_STATUS = ENUMS.GOOD_RECEIVING_STATUS;
+  const USER_ROLE = ENUMS.USER_ROLE;
   const classes = useStyles();
+
+  const { roleName } = useSelector((state) => state[MODULE_AUTHOR]);
 
   const menuProps = {
     classes: {
@@ -61,7 +65,7 @@ const GoodsReceivingNoteStatus = ({
       case GOOD_RECEIVING_STATUS.NEW:
         return "Mới tạo";
       case GOOD_RECEIVING_STATUS.PENDING:
-        return "Chờ xử lý";
+        return "Chờ xác nhận";
       case GOOD_RECEIVING_STATUS.APPROVED:
         return "Đã xác nhận";
       case GOOD_RECEIVING_STATUS.DONE:
@@ -84,12 +88,24 @@ const GoodsReceivingNoteStatus = ({
         ];
         break;
       case GOOD_RECEIVING_STATUS.PENDING:
-        listMenu = [
-          GOOD_RECEIVING_STATUS.NEW,
-          GOOD_RECEIVING_STATUS.PENDING,
-          GOOD_RECEIVING_STATUS.APPROVED,
-          GOOD_RECEIVING_STATUS.CANCELED,
-        ];
+        if (
+          [USER_ROLE.Boss, USER_ROLE.WarehouseKeeperManager].indexOf(
+            roleName
+          ) !== -1
+        ) {
+          listMenu = [
+            GOOD_RECEIVING_STATUS.NEW,
+            GOOD_RECEIVING_STATUS.PENDING,
+            GOOD_RECEIVING_STATUS.APPROVED,
+            GOOD_RECEIVING_STATUS.CANCELED,
+          ];
+        } else {
+          listMenu = [
+            GOOD_RECEIVING_STATUS.NEW,
+            GOOD_RECEIVING_STATUS.PENDING,
+            GOOD_RECEIVING_STATUS.CANCELED,
+          ];
+        }
         break;
       case GOOD_RECEIVING_STATUS.APPROVED:
         listMenu = [
@@ -126,6 +142,7 @@ const GoodsReceivingNoteStatus = ({
         }
         disableUnderline
         name="status"
+        style={{ width: "100%" }}
         classes={{ root: classes.select }}
         MenuProps={menuProps}
         IconComponent={iconSelectComponent}

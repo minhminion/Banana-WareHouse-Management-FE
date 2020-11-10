@@ -20,7 +20,7 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 // Icons
 import CloseIcon from "@material-ui/icons/Close";
-import NoteIcon from '@material-ui/icons/Note';
+import NoteIcon from "@material-ui/icons/Note";
 import ProductItemDescription from "./ProductItemDescription";
 
 const useStyles = makeStyles((theme) => ({
@@ -111,10 +111,15 @@ const ListProposalProducts = ({ data, onChange, isEdit = false }) => {
     const fieldName = name.split("_")[0];
     const index = data.findIndex((product) => product.productId === productId);
     if (index === -1) return;
+    let newValue = value;
+    if (fieldName === "quantity") {
+      newValue = newValue.match(/(\d+)\.?(\d+)?/g);
+      newValue = newValue?.length > 0 ? newValue[0] : "";
+    }
     let newProducts = data;
     newProducts[index] = {
       ...newProducts[index],
-      [fieldName]: value,
+      [fieldName]: newValue,
       action: newProducts[index].action !== "created" ? "updated" : "created",
     };
     onChange({
@@ -175,18 +180,40 @@ const ListProposalProducts = ({ data, onChange, isEdit = false }) => {
                 <strong>{product.name}</strong>
               </TableCell>
               <TableCell align="left">
-                <InputBase
-                  disabled={!isEdit}
-                  name={`quantity_product_${product.id}`}
-                  error={row.quantity.length === 0}
-                  value={formatNumberToVND(row.quantity)}
-                  classes={{
-                    root: classes.inputRoot,
-                    input: classes.input,
-                    disabled: classes.inputDisabled,
-                  }}
-                  onChange={(e) => handleChangeProduct(e, product.id)}
-                />
+                <Box display="flex">
+                  <InputBase
+                    disabled={!isEdit}
+                    name={`quantity_product_${product.id}`}
+                    error={row.quantity.length === 0}
+                    value={row.quantity}
+                    style={{
+                      borderBottomLeftRadius: 8,
+                      borderTopLeftRadius: 8,
+                    }}
+                    classes={{
+                      root: classes.inputRoot,
+                      input: classes.input,
+                      disabled: classes.inputDisabled,
+                    }}
+                    onChange={(e) => handleChangeProduct(e, product.id)}
+                  />
+                  <p
+                    style={{
+                      padding: "0.5rem",
+                      backgroundColor: blueGrey[500],
+                      color: "white",
+                      fontWeight: 500,
+                      margin: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      alignSelf: "stretch",
+                      borderBottomRightRadius: 8,
+                      borderTopRightRadius: 8,
+                    }}
+                  >
+                    {row.product.defaultUnit}
+                  </p>
+                </Box>
               </TableCell>
               {/* Action on row */}
               <TableCell align="center">

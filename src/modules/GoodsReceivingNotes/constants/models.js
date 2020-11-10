@@ -9,4 +9,9 @@ export const ENDPOINTS = {
 
   apiGoodsReceivingNotesDetails: (goodsReceivingNoteId) =>
     `${DEFAULT_API_URL}/${MODULE_NAME}/${goodsReceivingNoteId}/goodsReceivingDetails`,
+
+  apiUpdateGoodsReceivingNotesDetails: (goodsReceivingNoteId) =>
+    `${DEFAULT_API_URL}/${MODULE_NAME}/${goodsReceivingNoteId}/goodsReceivingDetails/bulkUpdate`,
+  apiDeleteGoodsReceivingNotesDetails: (goodsReceivingNoteId) =>
+    `${DEFAULT_API_URL}/${MODULE_NAME}/${goodsReceivingNoteId}/goodsReceivingDetails/bulkDelete`,
 };

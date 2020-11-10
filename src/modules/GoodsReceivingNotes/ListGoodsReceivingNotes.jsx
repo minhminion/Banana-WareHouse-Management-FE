@@ -232,7 +232,7 @@ const ListGoodsReceivingNotes = (props) => {
     if (isLoading) {
       enqueueSnackbar(`Đang tải...`, {
         variant: "info",
-        key: "loading-product",
+        key: "loading-goods-receiving-notes",
         persist: true,
         anchorOrigin: {
           vertical: "top",
@@ -240,7 +240,7 @@ const ListGoodsReceivingNotes = (props) => {
         },
       });
     } else {
-      closeSnackbar("loading-product");
+      closeSnackbar("loading-goods-receiving-notes");
     }
   }, [isLoading, enqueueSnackbar, closeSnackbar]);
 
@@ -352,7 +352,7 @@ const ListGoodsReceivingNotes = (props) => {
               <MenuItem value={0}>Tất cả trạng thái</MenuItem>
               <MenuItem value={goodsReceivingNotesStatus.NEW}>Mới</MenuItem>
               <MenuItem value={goodsReceivingNotesStatus.PENDING}>
-                Chờ xử lý
+                Chờ xác nhận
               </MenuItem>
               <MenuItem value={goodsReceivingNotesStatus.APPROVED}>
                 Xác nhận
@@ -405,9 +405,9 @@ const ListGoodsReceivingNotes = (props) => {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            <MenuItem onClick={() => history.push("/goods-receiving-notes/add")}>
+            <MenuItem onClick={() => history.push("/proposal")}>
               <AddIcon style={{ marginRight: 8 }} />
-              Tạo phiếu đề nghị
+              Tạo phiếu phiếu nhập kho
             </MenuItem>
             <MenuItem onClick={handleClose}>
               <PublishIcon style={{ marginRight: 8 }} />

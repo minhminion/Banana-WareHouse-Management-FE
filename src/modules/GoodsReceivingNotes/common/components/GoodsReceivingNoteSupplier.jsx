@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     transition: ".2s all ease-out",
   },
   externalSelect: {
-    minWidth: 300,
+    minWidth: 230,
   },
   icon: {
     right: 12,
