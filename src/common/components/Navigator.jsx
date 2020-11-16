@@ -12,6 +12,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
 import GroupIcon from "@material-ui/icons/Group";
+import HomeWorkIcon from "@material-ui/icons/HomeWork";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import AssignmentIcon from "@material-ui/icons/Assignment";
@@ -38,6 +39,11 @@ const menus = [
         id: "Phiếu nhập hàng",
         icon: <CallReceivedIcon />,
         link: "goods-receiving-notes",
+      },
+      {
+        id: "Nhà cung cấp",
+        icon: <HomeWorkIcon />,
+        link: "suppliers",
       },
       { id: "Nhân viên", icon: <GroupIcon />, link: "members" },
     ],
