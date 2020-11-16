@@ -27,6 +27,12 @@ import AddGoodsReceivingNotePage from "../pages/GoodsReceivingNotes/AddGoodsRece
 import GoodsReceivingNoteDetailsPage from "../pages/GoodsReceivingNotes/GoodsReceivingNoteDetailsPage";
 import EditGoodsReceivingNotePage from "../pages/GoodsReceivingNotes/EditGoodsReceivingNotePage";
 
+// Suppliers Pages
+import SuppliersPage from "../pages/Suppliers/SuppliersPage";
+import CreateSupplierPage from "../pages/Suppliers/CreateSupplierPage";
+import SupplierDetailsPage from "../pages/Suppliers/SupplierDetailsPage";
+import EditSupplierPage from "../pages/Suppliers/EditSupplierPage";
+
 const Routes = () => {
   const USER_ROLE = ENUMS.USER_ROLE;
   const { isSigned, roleName } = useSelector((state) => state[MODULE_AUTHOR]);
@@ -112,6 +118,32 @@ const Routes = () => {
             component={EditGoodsReceivingNotePage}
             roleName={roleName}
             acceptRoles={[USER_ROLE.WarehouseKeeper, USER_ROLE.WarehouseKeeperManager]}
+          />
+
+          {/* Suppliers Page */}
+          <Route
+            exact
+            path="/suppliers"
+            component={SuppliersPage}
+          />
+          <AuthRoute
+            exact
+            path="/suppliers/add"
+            component={CreateSupplierPage}
+            roleName={roleName}
+            acceptRoles={[USER_ROLE.Admin, USER_ROLE.Boss]}
+          />
+           <Route
+            exact
+            path="/suppliers/:supplierId"
+            component={SupplierDetailsPage}
+          />
+          <AuthRoute
+            exact
+            path="/suppliers/:supplierId/edit"
+            component={EditSupplierPage}
+            roleName={roleName}
+            acceptRoles={[USER_ROLE.Admin, USER_ROLE.Boss]}
           />
 
           {/* 404 Not Found */}
