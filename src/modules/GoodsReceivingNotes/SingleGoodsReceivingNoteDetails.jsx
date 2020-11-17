@@ -93,7 +93,6 @@ const SingleGoodsReceivingNoteDetails = (props) => {
     const details = await updateGoodsReceivingDetails(
       values.goodsReceivingDetails
     );
-    console.log('======== Bao Minh: SingleGoodsReceivingNoteDetails -> details', details)
     closeSnackbar("updating-goods-receiving-notes");
     if (result.id && details.length === 0) {
       enqueueSnackbar("Cập nhật thành công !", {

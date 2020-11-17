@@ -45,6 +45,11 @@ const menus = [
         icon: <HomeWorkIcon />,
         link: "suppliers",
       },
+      {
+        id: "Đơn hàng",
+        icon: <HomeWorkIcon />,
+        link: "orders",
+      },
       { id: "Nhân viên", icon: <GroupIcon />, link: "members" },
     ],
   },

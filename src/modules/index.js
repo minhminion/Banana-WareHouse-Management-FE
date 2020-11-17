@@ -16,6 +16,9 @@ import goodsReceivingNotesReducer from "./GoodsReceivingNotes/constants/reducer"
 import { MODULE_NAME as MODULE_SUPPLIERS } from "./Suppliers/constants/models";
 import suppliersReducer from "./Suppliers/constants/reducer";
 
+import { MODULE_NAME as MODULE_ORDERS } from "./Orders/constants/models";
+import ordersReducer from "./Orders/constants/reducer";
+
 export const rootReducer = {
   [MODULE_AUTH]: authorReducer,
   [MODULE_MEMBER]: memberReducer,
@@ -23,6 +26,7 @@ export const rootReducer = {
   [MODULE_PRODUCT]: productReducer,
   [MODULE_GOODS_RECEIVING_NOTES]: goodsReceivingNotesReducer,
   [MODULE_SUPPLIERS]: suppliersReducer,
+  [MODULE_ORDERS]: ordersReducer,
 };
 
 export const rootModules = [
@@ -32,4 +36,5 @@ export const rootModules = [
   MODULE_PRODUCT,
   MODULE_GOODS_RECEIVING_NOTES,
   MODULE_SUPPLIERS,
+  MODULE_ORDERS,
 ];

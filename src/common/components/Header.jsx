@@ -30,12 +30,14 @@ import {
   DialogContent,
   InputBase,
   DialogActions,
+  Chip,
 } from "@material-ui/core";
 import NotificationCard from "./NotificationCard";
 import { useSelector, useDispatch } from "react-redux";
 import { useSnackbar } from "notistack";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import { clearAll } from "../redux/actions/uiActions";
+import { USER_ROLE } from "../constants/enums";
 
 const lightColor = "rgba(255, 255, 255, 0.7)";
 
@@ -132,7 +134,7 @@ const anchorOrigin = {
 };
 
 const Header = (props) => {
-  const history = useHistory()
+  const history = useHistory();
   const { onDrawerToggle } = props;
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
@@ -143,7 +145,7 @@ const Header = (props) => {
   const { enqueueSnackbar: uploadSnack, closeSnackbar } = useSnackbar();
   const classes = useStyles();
 
-  const { info: userInfo, isEmpty: userEmpty } = useSelector(
+  const { info: userInfo, isEmpty: userEmpty, roleName } = useSelector(
     (state) => state.auth
   );
 
@@ -221,9 +223,9 @@ const Header = (props) => {
   };
 
   const handleLogout = () => {
-    dispatch(clearAll())
-    history.push("/")
-  }
+    dispatch(clearAll());
+    history.push("/");
+  };
 
   const handleChangeProfile = async (e) => {
     e.preventDefault();
@@ -253,6 +255,35 @@ const Header = (props) => {
       });
     }
     setChangeProfileError(null);
+  };
+
+  const renderRoleName = (roleName) => {
+    let name;
+    switch (roleName) {
+      case USER_ROLE.Boss:
+        name = "Ban lãnh đạo";
+        break;
+      case USER_ROLE.SuperAdmin:
+        name = "Quản tri cấp cao";
+        break;
+      case USER_ROLE.Admin:
+        name = "Quản trị viên";
+        break;
+      case USER_ROLE.Sale:
+        name = "Phòng kinh doanh";
+        break;
+      case USER_ROLE.WarehouseKeeper:
+        name = "Thủ kho";
+        break;
+      case USER_ROLE.WarehouseKeeperManager:
+        name = "Thủ kho trưởng";
+        break;
+      default:
+        name = "Người lạ";
+        break;
+    }
+
+    return name;
   };
 
   return (
@@ -372,7 +403,7 @@ const Header = (props) => {
                     alt={
                       userInfo &&
                       (`${userInfo.lastName} ${userInfo.firstName}` ||
-                        "My Avatar")
+                        "Ảnh của tôi")
                     }
                   />
                 </IconButton>
@@ -426,6 +457,7 @@ const Header = (props) => {
                                   (userInfo.email ||
                                     "minhminionadmin@gmail.com")}
                               </Typography>
+                              <Chip label={renderRoleName(roleName)} />
                             </div>
                             <MenuList
                               autoFocusItem={open}
@@ -433,13 +465,13 @@ const Header = (props) => {
                               onKeyDown={handleListKeyDown}
                             >
                               <MenuItem onClick={handleOpenChangeProfile}>
-                                Change display name
+                                Thay đổi tên
                               </MenuItem>
                               <MenuItem onClick={handleClose}>
-                                My account
+                                Quản lý tài khoản
                               </MenuItem>
                               <MenuItem onClick={handleLogout}>
-                                Logout
+                                Đăng xuất
                               </MenuItem>
                             </MenuList>
                           </div>
@@ -463,7 +495,7 @@ const Header = (props) => {
                               underline="none"
                               color="inherit"
                             >
-                              <MenuItem>Sign Up</MenuItem>
+                              <MenuItem>Đăng Ký</MenuItem>
                             </Link>
                           </MenuList>
                         )}
