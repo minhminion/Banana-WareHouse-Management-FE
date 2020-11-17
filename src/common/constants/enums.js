@@ -37,7 +37,7 @@ export const SUPPLIERS_STATUS = {
 
 export const ORDER_STATUS = {
   NEW: 1,
-  PENDING: 2,
+  PROCESSING: 2,
   EXPORTED: 3,
   DONE: 4,
   CANCELED: 5
