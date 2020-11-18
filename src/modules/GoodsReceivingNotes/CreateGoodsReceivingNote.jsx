@@ -5,6 +5,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { notifyError } from "../../common/helper";
 import GoodsReceivingNoteDetails from "./common/GoodsReceivingNoteDetails";
 import proposalHandler from "../Proposal/constants/handler";
+import suppliersHandler from "../Suppliers/constants/handler";
 import handler from "./constants/handler";
 
 const CreateGoodsReceivingNote = (props) => {
@@ -18,6 +19,10 @@ const CreateGoodsReceivingNote = (props) => {
     () => proposalHandler(dispatch, props),
     [dispatch, props]
   );
+  const { fetchSuppliers } = useMemo(() => suppliersHandler(dispatch, props), [
+    dispatch,
+    props,
+  ]);
   const { createGoodsReceivingNote } = useMemo(() => handler(dispatch, props), [
     dispatch,
     props,
@@ -26,6 +31,10 @@ const CreateGoodsReceivingNote = (props) => {
   useEffect(() => {
     getProposal(purchaseProposalFormId);
   }, [purchaseProposalFormId]);
+
+  useEffect(() => {
+    fetchSuppliers()
+  },[])
 
   const handleSubmit = async (values) => {
     enqueueSnackbar(`Đang tạo phiếu nhập hàng...`, {

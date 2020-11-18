@@ -234,7 +234,7 @@ const ListOrders = (props) => {
     if (isLoading) {
       enqueueSnackbar(`Đang tải...`, {
         variant: "info",
-        key: "loading-suppliers",
+        key: `loading-${MODULE_NAME}`,
         persist: true,
         anchorOrigin: {
           vertical: "top",
@@ -242,7 +242,7 @@ const ListOrders = (props) => {
         },
       });
     } else {
-      closeSnackbar("loading-suppliers");
+      closeSnackbar(`loading-${MODULE_NAME}`);
     }
   }, [isLoading, enqueueSnackbar, closeSnackbar]);
 

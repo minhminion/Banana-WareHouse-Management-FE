@@ -1,5 +1,6 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
+import { ENUMS } from "../../constants";
 
 const AuthRoute = ({
   component: Component,
@@ -12,7 +13,7 @@ const AuthRoute = ({
     <Route
       {...rest}
       render={(props) =>
-        acceptRoles?.find((item) => item === roleName) ? (
+        [ENUMS.USER_ROLE.Boss, ...acceptRoles]?.find((item) => item === roleName) ? (
           <Component {...props} />
         ) : (
           <Redirect to={to} />

@@ -5,14 +5,14 @@ import SingleOrderDetails from "../../modules/Orders/SingleOrderDetails";
 const root = [
   {
     link: "/suppliers",
-    title: "Quản lý nhà cung cấp",
+    title: "Quản lý đơn hàng",
   },
 ];
 
 const EditOrderPage = () => {
   return (
     <div>
-      <CustomBreadcrumbs title="Chỉnh sửa thông tin nhà cung cấp" root={root}/>
+      <CustomBreadcrumbs title="Chỉnh sửa thông tin đơn hàng" root={root}/>
       <SingleOrderDetails isEdit={true} />
     </div>
   );

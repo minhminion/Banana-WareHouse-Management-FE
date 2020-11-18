@@ -137,7 +137,7 @@ const Routes = () => {
             path="/suppliers/add"
             component={CreateSupplierPage}
             roleName={roleName}
-            acceptRoles={[USER_ROLE.Admin, USER_ROLE.Boss]}
+            acceptRoles={[USER_ROLE.Admin]}
           />
            <Route
             exact
