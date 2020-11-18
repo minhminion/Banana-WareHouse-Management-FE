@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Box,
   Paper,
@@ -37,7 +37,6 @@ import { useLocation, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import handler from "./constants/handler";
 import { MODULE_NAME } from "./constants/models";
-import { MODULE_NAME as MODULE_AUTHOR } from "../Author/constants/models";
 import { useSnackbar } from "notistack";
 import ListSuppliersItem from "./common/ListSuppliersItem";
 import handler from "./constants/handler";
@@ -165,7 +164,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const USER_ROLE = ENUMS.USER_ROLE;
 const SUPPLIERS_STATUS = ENUMS.SUPPLIERS_STATUS;
 
 const LIMIT_PER_PAGE = 5;
@@ -208,7 +206,6 @@ const ListSuppliers = (props) => {
   );
 
   const { isLoading } = useSelector((state) => state[MODULE_NAME]);
-  const { roleName } = useSelector((state) => state[MODULE_AUTHOR]);
 
   useEffect(() => {
     if (location.search) {

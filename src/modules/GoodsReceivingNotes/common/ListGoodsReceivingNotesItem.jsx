@@ -149,12 +149,12 @@ const ListGoodsReceivingNotesItem = ({ row, onCancel }) => {
         </TableCell>
         <TableCell component="th" scope="row">
           <div>
-            <strong>
-              {row.supplierName || "Min da poet"}
-            </strong>
-            <Typography variant="body2">
-              #{row.supplierId || "minhminion2015@gmail.com"}
-            </Typography>
+            <strong>{row.supplierName || "Min da poet"}</strong>
+            {row.supplierId !== 0 && (
+              <Typography variant="body2">
+                #{row.supplierId || "minhminion2015@gmail.com"}
+              </Typography>
+            )}
           </div>
         </TableCell>
         <TableCell align="center">{renderStatus(row.status)}</TableCell>

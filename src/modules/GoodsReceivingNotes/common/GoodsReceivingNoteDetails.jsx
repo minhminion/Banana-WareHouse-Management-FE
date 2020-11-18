@@ -24,7 +24,7 @@ import GoodsReceivingNoteStatusStepper from "./components/GoodsReceivingNoteStat
 import GoodsReceivingNoteStatus from "./components/GoodsReceivingNoteStatus";
 import ListGoodsReceivingNoteProducts from "./components/ListGoodsReceivingNoteProducts";
 import GoodsReceivingNoteSupplier from "./components/GoodsReceivingNoteSupplier";
-import { formatNumberToVND, formatVNDToNumber } from "../../../common/helper";
+import { formatNumberToVND } from "../../../common/helper";
 import { useSelector } from "react-redux";
 import { MODULE_NAME as MODULE_SUPPLIERS } from "../../Suppliers/constants/models";
 
@@ -39,15 +39,6 @@ const defaultValues = {
   goodsReceivingDetails: [],
 };
 
-// const createSupplier = (id, name, email, phoneNumber) => {
-//   return { id, name, email, phoneNumber };
-// };
-
-// const suppliers = [
-//   createSupplier(1, "Angimex", "abc@gmail.com", "0903060504"),
-//   createSupplier(2, "TH True Milk", "abc@gmail.com", "0903060504"),
-//   createSupplier(3, "Coca cola", "abc@gmail.com", "0903060504"),
-// ];
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -183,7 +174,7 @@ const GoodsReceivingNoteDetails = ({
   const classes = useStyles();
   const history = useHistory();
   const confirm = useConfirm();
-  const { data: suppliers, currentPage, totalPages, totalItems } = useSelector(
+  const { data: suppliers } = useSelector(
     (state) => state[MODULE_SUPPLIERS].data
   );
   const validate = (fieldValues = values) => {

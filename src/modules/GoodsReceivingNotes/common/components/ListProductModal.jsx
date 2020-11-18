@@ -25,8 +25,7 @@ import {
 } from "../../../../common/helper";
 import productHandler from "../../../Products/constants/handler";
 import suppliersHandler from "../../../Suppliers/constants/handler";
-import { useSelector, useDispatch } from "react-redux";
-import { MODULE_NAME as MODULE_PRODUCT } from "../../../Products/constants/models";
+import { useDispatch } from "react-redux";
 import Pagination from "@material-ui/lab/Pagination";
 import { useCallback } from "react";
 import { uniqBy, difference } from "lodash";
@@ -272,7 +271,7 @@ const ListProductModal = (props) => {
   };
 
   const handleCheckProduct = (e, product) => {
-    console.log('======== Bao Minh: handleCheckProduct -> product', product)
+    console.log("======== Bao Minh: handleCheckProduct -> product", product);
     const selectedInPage = selected[filter.page] || [];
     const selectedIndex = selectedInPage.findIndex(
       (item) => item.productId === product.id
@@ -285,7 +284,10 @@ const ListProductModal = (props) => {
       productId: product.id,
       product: product,
     };
-    console.log('======== Bao Minh: handleCheckProduct -> selectProduct', selectProduct)
+    console.log(
+      "======== Bao Minh: handleCheckProduct -> selectProduct",
+      selectProduct
+    );
     let newSelected = [];
 
     if (selectedIndex === -1) {
@@ -321,7 +323,7 @@ const ListProductModal = (props) => {
 
       // Change action of Initial Values to update
       newValues.forEach((el) => {
-      console.log('======== Bao Minh: handleSubmit -> el', el)
+        console.log("======== Bao Minh: handleSubmit -> el", el);
         if (idsNewProduct.has(el.productId) && el.action === "deleted")
           el.action = "update";
         el.singlePurchasePrice = el.singlePurchasePrice || 0;

@@ -5,7 +5,6 @@ import {
 } from "./actions";
 import { fetchAuth } from "../../../common/effects";
 import { ENDPOINTS } from "./models";
-import { ENUMS } from "../../../common/constants";
 
 export default (dispatch, props) => ({
   fetchOrders: async (params) => {

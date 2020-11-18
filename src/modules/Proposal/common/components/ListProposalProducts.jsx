@@ -11,8 +11,8 @@ import {
   InputBase,
   IconButton,
   Button,
+  Typography,
 } from "@material-ui/core";
-import { formatNumberToVND } from "../../../../common/helper";
 
 import { blueGrey } from "@material-ui/core/colors";
 import ListProductModal from "./ListProductModal";
@@ -178,6 +178,7 @@ const ListProposalProducts = ({ data, onChange, isEdit = false }) => {
               </TableCell>
               <TableCell component="th" scope="row">
                 <strong>{product.name}</strong>
+                <Typography variant="subtitle1">#{product.id}</Typography>
               </TableCell>
               <TableCell align="left">
                 <Box display="flex">

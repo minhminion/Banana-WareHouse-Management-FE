@@ -9,26 +9,14 @@ import suppliersHandler from "../Suppliers/constants/handler";
 import handler from "./constants/handler";
 import { notifyError } from "../../common/helper";
 
-const defaultValues = {
-  id: 1,
-  creator: "231",
-  createdAt: Date.now(),
-  period: 2,
-  status: ENUMS.GOOD_RECEIVING_STATUS.NEW,
-  description: "",
-  exceptionReason: "From Minh da poet with ❤❤❤ !!!",
-  goodsReceivingDetails: [],
-};
-
 const SingleGoodsReceivingNoteDetails = (props) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { isEdit = false } = props;
   const { goodsReceivingNotesId } = useParams();
-  const [initialValues, setInitialValues] = useState(defaultValues);
+  const [initialValues, setInitialValues] = useState({});
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [proposalDetails, setProposalDetails] = useState([]);
-  const [suppliers, setSuppliers] = useState([]);
 
   const { fetchSingleProposal } = useMemo(
     () => proposalHandler(dispatch, props),

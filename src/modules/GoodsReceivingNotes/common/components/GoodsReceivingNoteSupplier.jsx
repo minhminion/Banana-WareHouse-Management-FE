@@ -1,6 +1,5 @@
 import {
   Box,
-  Divider,
   IconButton,
   InputBase,
   InputLabel,
@@ -9,7 +8,6 @@ import {
   makeStyles,
   MenuItem,
   Select,
-  TextField,
   Tooltip,
   Typography,
 } from "@material-ui/core";

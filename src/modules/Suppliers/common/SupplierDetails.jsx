@@ -19,10 +19,8 @@ import Alert from "@material-ui/lab/Alert";
 // Helper
 import { ENUMS } from "../../../common/constants";
 import parse from "html-react-parser";
-import useConfirm from "../../../common/hooks/useConfirm/useConfirm";
 import SupplierDetailsStatus from "./components/SupplierDetailsStatus";
 import { MODULE_NAME } from "../constants/models";
-import ListProductModal from "./components/ListProductModal";
 import ListSupplierProducts from "./components/ListSupplierProducts";
 
 const defaultValues = {

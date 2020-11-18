@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect } from "react";
 import {
   makeStyles,
   TextField,
@@ -25,8 +25,6 @@ import { formatNumberToVND } from "../../../common/helper";
 import { useForm } from "../../../common/hooks/useForm";
 import { useHistory } from "react-router-dom";
 import { ENUMS } from "../../../common/constants";
-import handler from "../constants/handler";
-import { useDispatch } from "react-redux";
 
 const defaultValues = {
   name: "",

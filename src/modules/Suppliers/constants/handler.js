@@ -5,7 +5,6 @@ import {
 } from "./actions";
 import { fetchAuth } from "../../../common/effects";
 import { ENDPOINTS } from "./models";
-import { ENUMS } from "../../../common/constants";
 
 export default (dispatch, props) => ({
   fetchSuppliers: async (params) => {
@@ -120,6 +119,25 @@ export default (dispatch, props) => ({
         },
       });
       if (response.status === 201) {
+        return true;
+      } else {
+        return "Lỗi không xác định !";
+      }
+    } catch (error) {
+      return error?.response?.data;
+    }
+  },
+  deleteProductsSupplier: async (supplierId, productIds) => {
+    try {
+      const response = await fetchAuth({
+        url: ENDPOINTS.apiSuppliersProducts(supplierId),
+        method: "DELETE",
+        data: {
+          supplierId: supplierId,
+          productIds: productIds
+        },
+      });
+      if (response.status === 204) {
         return true;
       } else {
         return "Lỗi không xác định !";
