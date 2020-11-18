@@ -271,7 +271,6 @@ const ListProductModal = (props) => {
   };
 
   const handleCheckProduct = (e, product) => {
-    console.log("======== Bao Minh: handleCheckProduct -> product", product);
     const selectedInPage = selected[filter.page] || [];
     const selectedIndex = selectedInPage.findIndex(
       (item) => item.productId === product.id
@@ -323,7 +322,6 @@ const ListProductModal = (props) => {
 
       // Change action of Initial Values to update
       newValues.forEach((el) => {
-        console.log("======== Bao Minh: handleSubmit -> el", el);
         if (idsNewProduct.has(el.productId) && el.action === "deleted")
           el.action = "update";
         el.singlePurchasePrice = el.singlePurchasePrice || 0;

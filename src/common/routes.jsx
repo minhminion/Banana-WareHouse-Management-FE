@@ -38,6 +38,10 @@ import OrdersPage from "../pages/Orders/OrdersPage";
 import CreateOrder from "../modules/Orders/CreateOrder";
 import OrderDetailsPage from "../pages/Orders/OrderDetailsPage";
 import EditOrderPage from "../pages/Orders/EditOrderPage";
+import InventoryRecordFormsPage from "../pages/InventoryRecordForms/InventoryRecordFormsPage";
+import CreateInventoryRecordFormPage from "../pages/InventoryRecordForms/CreateInventoryRecordFormPage";
+import SingleInventoryRecordFormDetails from "../modules/InventoryRecordForms/SingleInventoryRecordFormDetails";
+import EditInventoryRecordFormPage from "../pages/InventoryRecordForms/EditInventoryRecordFormPage";
 
 const Routes = () => {
   const USER_ROLE = ENUMS.USER_ROLE;
@@ -111,7 +115,10 @@ const Routes = () => {
             path="/goods-receiving-notes/:purchaseProposalFormId/add"
             component={AddGoodsReceivingNotePage}
             roleName={roleName}
-            acceptRoles={[USER_ROLE.WarehouseKeeper, USER_ROLE.WarehouseKeeperManager]}
+            acceptRoles={[
+              USER_ROLE.WarehouseKeeper,
+              USER_ROLE.WarehouseKeeperManager,
+            ]}
           />
           <Route
             exact
@@ -123,15 +130,14 @@ const Routes = () => {
             path="/goods-receiving-notes/:goodsReceivingNotesId/edit"
             component={EditGoodsReceivingNotePage}
             roleName={roleName}
-            acceptRoles={[USER_ROLE.WarehouseKeeper, USER_ROLE.WarehouseKeeperManager]}
+            acceptRoles={[
+              USER_ROLE.WarehouseKeeper,
+              USER_ROLE.WarehouseKeeperManager,
+            ]}
           />
 
           {/* Suppliers Page */}
-          <Route
-            exact
-            path="/suppliers"
-            component={SuppliersPage}
-          />
+          <Route exact path="/suppliers" component={SuppliersPage} />
           <AuthRoute
             exact
             path="/suppliers/add"
@@ -139,7 +145,7 @@ const Routes = () => {
             roleName={roleName}
             acceptRoles={[USER_ROLE.Admin]}
           />
-           <Route
+          <Route
             exact
             path="/suppliers/:supplierId"
             component={SupplierDetailsPage}
@@ -153,11 +159,7 @@ const Routes = () => {
           />
 
           {/* Orders Pages */}
-          <Route
-            exact
-            path="/orders"
-            component={OrdersPage}
-          />
+          <Route exact path="/orders" component={OrdersPage} />
           <AuthRoute
             exact
             path="/orders/add"
@@ -165,17 +167,47 @@ const Routes = () => {
             roleName={roleName}
             acceptRoles={[USER_ROLE.Sale, USER_ROLE.Boss]}
           />
-          <Route
-            exact
-            path="/orders/:orderId"
-            component={OrderDetailsPage}
-          />
+          <Route exact path="/orders/:orderId" component={OrderDetailsPage} />
           <AuthRoute
             exact
             path="/orders/:orderId/edit"
             component={EditOrderPage}
             roleName={roleName}
             acceptRoles={[USER_ROLE.Sale, USER_ROLE.Boss]}
+          />
+
+          {/* Inventory Record Forms */}
+          <Route
+            exact
+            path="/inventoryRecordForms"
+            component={InventoryRecordFormsPage}
+          />
+          <AuthRoute
+            exact
+            path="/inventoryRecordForms/add"
+            component={CreateInventoryRecordFormPage}
+            roleName={roleName}
+            acceptRoles={[
+              USER_ROLE.WarehouseKeeper,
+              USER_ROLE.WarehouseKeeperManager,
+              USER_ROLE.Boss,
+            ]}
+          />
+          <Route
+            exact
+            path="/inventoryRecordForms/:inventoryRecordFormId"
+            component={SingleInventoryRecordFormDetails}
+          />
+          <AuthRoute
+            exact
+            path="/inventoryRecordForms/:inventoryRecordFormId/edit"
+            component={EditInventoryRecordFormPage}
+            roleName={roleName}
+            acceptRoles={[
+              USER_ROLE.WarehouseKeeper,
+              USER_ROLE.WarehouseKeeperManager,
+              USER_ROLE.Boss,
+            ]}
           />
 
           {/* 404 Not Found */}
