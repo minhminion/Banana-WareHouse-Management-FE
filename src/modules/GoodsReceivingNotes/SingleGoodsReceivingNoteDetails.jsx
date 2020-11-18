@@ -5,6 +5,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { ENUMS } from "../../common/constants";
 import GoodsReceivingNoteDetails from "./common/GoodsReceivingNoteDetails";
 import proposalHandler from "../Proposal/constants/handler";
+import suppliersHandler from "../Suppliers/constants/handler";
 import handler from "./constants/handler";
 import { notifyError } from "../../common/helper";
 
@@ -27,11 +28,16 @@ const SingleGoodsReceivingNoteDetails = (props) => {
   const [initialValues, setInitialValues] = useState(defaultValues);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [proposalDetails, setProposalDetails] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
 
   const { fetchSingleProposal } = useMemo(
     () => proposalHandler(dispatch, props),
     [dispatch, props]
   );
+  const { fetchSuppliers } = useMemo(() => suppliersHandler(dispatch, props), [
+    dispatch,
+    props,
+  ]);
   const {
     fetchSingleGoodsReceivingNotes,
     editGoodsReceivingNote,
@@ -77,6 +83,10 @@ const SingleGoodsReceivingNoteDetails = (props) => {
       getProposal(initialValues.purchaseProposalFormId);
     }
   }, [initialValues]);
+
+  useEffect(() => {
+    fetchSuppliers()
+  },[])
 
   const handleEditGoodsReceivingNotes = async (values) => {
     enqueueSnackbar(`Đang cập nhật sản phẩm...`, {

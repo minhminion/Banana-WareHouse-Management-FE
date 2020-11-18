@@ -23,7 +23,8 @@ import {
   formatNumberToReadable,
   formatNumberToVND,
 } from "../../../../common/helper";
-import handler from "../../../Products/constants/handler";
+import productHandler from "../../../Products/constants/handler";
+import suppliersHandler from "../../../Suppliers/constants/handler";
 import { useSelector, useDispatch } from "react-redux";
 import { MODULE_NAME as MODULE_PRODUCT } from "../../../Products/constants/models";
 import Pagination from "@material-ui/lab/Pagination";
@@ -100,6 +101,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const ListProductModal = (props) => {
   const {
+    supplierId = 0,
     listProducts = [],
     onClose,
     open = false,
@@ -115,12 +117,20 @@ const ListProductModal = (props) => {
     page: 1,
   });
   const [isFetch, setIsFetch] = useState(true);
-  const { fetchProduct } = useMemo(() => handler(dispatch, props), [
+  const [productsData, setProductsData] = useState({
+    data: [],
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+  });
+  const { data, currentPage, totalPages, totalItems } = productsData;
+  const { fetchProduct } = useMemo(() => productHandler(dispatch, props), [
     dispatch,
     props,
   ]);
-  const { data, currentPage, totalPages, totalItems } = useSelector(
-    (state) => state[MODULE_PRODUCT].data
+  const { fetchSingleSupplierProduct } = useMemo(
+    () => suppliersHandler(dispatch, props),
+    [dispatch, props]
   );
 
   const handleFilter = useCallback((e, condition = "=") => {
@@ -162,7 +172,7 @@ const ListProductModal = (props) => {
       handleFilter(
         {
           target: {
-            name: "id",
+            name: supplierId ? "productId" : "id",
             value: filterById.join(","),
           },
         },
@@ -173,14 +183,47 @@ const ListProductModal = (props) => {
       dispatch(fetchProductsSuccess({}));
       setIsFetch(false);
     }
-  }, [initialValue, handleFilter, listProducts]);
+  }, [initialValue, handleFilter, listProducts, supplierId]);
 
   useEffect(() => {
+    async function fetchSupplierProducts(params) {
+      // You can await here
+      const result = await fetchSingleSupplierProduct(params);
+      if (result.data) {
+        setProductsData({
+          data: [
+            ...result.data.data.map((item) => ({
+              id: item.productId,
+              ...item.product,
+              price: item.price,
+            })),
+          ],
+          currentPage: result.data.currentPage,
+          totalPages: result.data.totalPages,
+          totalItems: result.data.totalItems,
+        });
+      }
+    }
+    async function fetchProducts(params) {
+      // You can await here
+      const result = await fetchProduct(params);
+      if (result.data) {
+        setProductsData(result);
+      }
+    }
     if (open && filter && isFetch) {
-      fetchProduct({
-        ...filter,
-        limit: LIMIT_PER_PAGE,
-      });
+      if (supplierId !== 0) {
+        fetchSupplierProducts({
+          supplierId: supplierId,
+          ...filter,
+          limit: LIMIT_PER_PAGE,
+        });
+      } else {
+        fetchProducts({
+          ...filter,
+          limit: LIMIT_PER_PAGE,
+        });
+      }
     }
   }, [filter, open, isFetch, fetchProduct, LIMIT_PER_PAGE]);
 
@@ -211,6 +254,7 @@ const ListProductModal = (props) => {
         return result.concat({
           description: "",
           quantity: 1,
+          singlePurchasePrice: product.price,
           productId: product.id,
           product: product,
         });
@@ -228,6 +272,7 @@ const ListProductModal = (props) => {
   };
 
   const handleCheckProduct = (e, product) => {
+    console.log('======== Bao Minh: handleCheckProduct -> product', product)
     const selectedInPage = selected[filter.page] || [];
     const selectedIndex = selectedInPage.findIndex(
       (item) => item.productId === product.id
@@ -236,9 +281,11 @@ const ListProductModal = (props) => {
       description: "",
       action: "created",
       quantity: 1,
+      singlePurchasePrice: product.price,
       productId: product.id,
       product: product,
     };
+    console.log('======== Bao Minh: handleCheckProduct -> selectProduct', selectProduct)
     let newSelected = [];
 
     if (selectedIndex === -1) {
@@ -274,9 +321,10 @@ const ListProductModal = (props) => {
 
       // Change action of Initial Values to update
       newValues.forEach((el) => {
+      console.log('======== Bao Minh: handleSubmit -> el', el)
         if (idsNewProduct.has(el.productId) && el.action === "deleted")
           el.action = "update";
-        el.singlePurchasePrice = el.product?.purchasePrice || 0
+        el.singlePurchasePrice = el.singlePurchasePrice || 0;
       });
 
       onChange({

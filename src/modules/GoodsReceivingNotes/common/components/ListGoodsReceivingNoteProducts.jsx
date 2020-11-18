@@ -105,6 +105,7 @@ const ListGoodsReceivingNoteProducts = ({
   listProduct,
   data,
   onChange,
+  supplierId = 0,
   isEdit = false,
 }) => {
   const classes = useStyles();
@@ -188,7 +189,7 @@ const ListGoodsReceivingNoteProducts = ({
                 <InputBase
                   disabled={!isEdit}
                   name={`singlePurchasePrice_product_${product.id}`}
-                  error={row.singlePurchasePrice.length === 0}
+                  error={row?.singlePurchasePrice?.length === 0}
                   value={formatNumberToVND(row.singlePurchasePrice)}
                   style={{
                     borderRadius: 8,
@@ -307,6 +308,7 @@ const ListGoodsReceivingNoteProducts = ({
         </Table>
       </TableContainer>
       <ListProductModal
+        supplierId={supplierId}
         listProducts={listProduct}
         initialValue={[...data]}
         open={openListProduct}

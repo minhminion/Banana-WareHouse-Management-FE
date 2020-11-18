@@ -19,6 +19,7 @@ export default (dispatch, props) => ({
       });
       if (response.data && response.status === 200) {
         dispatch(fetchProductsSuccess(response.data.data));
+        return response.data.data
       } else {
         dispatch(fetchProductsFailure("Lỗi không xác định !"));
       }

@@ -25,6 +25,8 @@ import GoodsReceivingNoteStatus from "./components/GoodsReceivingNoteStatus";
 import ListGoodsReceivingNoteProducts from "./components/ListGoodsReceivingNoteProducts";
 import GoodsReceivingNoteSupplier from "./components/GoodsReceivingNoteSupplier";
 import { formatNumberToVND, formatVNDToNumber } from "../../../common/helper";
+import { useSelector } from "react-redux";
+import { MODULE_NAME as MODULE_SUPPLIERS } from "../../Suppliers/constants/models";
 
 const defaultValues = {
   creator: "231",
@@ -32,20 +34,20 @@ const defaultValues = {
   period: 2,
   status: ENUMS.GOOD_RECEIVING_STATUS.NEW,
   description: "",
-  supplierId: 1,
+  supplierId: 0,
   totalPrice: 0,
   goodsReceivingDetails: [],
 };
 
-const createSupplier = (id, name, email, phoneNumber) => {
-  return { id, name, email, phoneNumber };
-};
+// const createSupplier = (id, name, email, phoneNumber) => {
+//   return { id, name, email, phoneNumber };
+// };
 
-const suppliers = [
-  createSupplier(1, "Angimex", "abc@gmail.com", "0903060504"),
-  createSupplier(2, "TH True Milk", "abc@gmail.com", "0903060504"),
-  createSupplier(3, "Coca cola", "abc@gmail.com", "0903060504"),
-];
+// const suppliers = [
+//   createSupplier(1, "Angimex", "abc@gmail.com", "0903060504"),
+//   createSupplier(2, "TH True Milk", "abc@gmail.com", "0903060504"),
+//   createSupplier(3, "Coca cola", "abc@gmail.com", "0903060504"),
+// ];
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -181,6 +183,9 @@ const GoodsReceivingNoteDetails = ({
   const classes = useStyles();
   const history = useHistory();
   const confirm = useConfirm();
+  const { data: suppliers, currentPage, totalPages, totalItems } = useSelector(
+    (state) => state[MODULE_SUPPLIERS].data
+  );
   const validate = (fieldValues = values) => {
     let temp = { ...errors };
     setErrors({
@@ -447,6 +452,7 @@ const GoodsReceivingNoteDetails = ({
               isEdit={isEdit && values.status === ENUMS.PROPOSAL_STATUS.NEW}
               status={GOOD_RECEIVING_STATUS}
               data={values.goodsReceivingDetails}
+              supplierId={values.supplierId}
               errors={errors}
               onChange={handleInputChange}
             />

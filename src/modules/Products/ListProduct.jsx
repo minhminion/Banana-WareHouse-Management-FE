@@ -342,7 +342,7 @@ const ListProduct = (props) => {
 
   const isCancelable = () => {
     return (
-      roleName === ENUMS.USER_ROLE.Boss || roleName === ENUMS.USER_ROLE.Admin
+      [ENUMS.USER_ROLE.Boss, ENUMS.USER_ROLE.Admin].indexOf(roleName) !== -1
     );
   };
 
@@ -580,7 +580,8 @@ const ListProduct = (props) => {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            {roleName === ENUMS.USER_ROLE.Admin && (
+            {[ENUMS.USER_ROLE.Boss, ENUMS.USER_ROLE.Admin].indexOf(roleName) !==
+              -1 && (
               <MenuItem onClick={() => history.push("/products/add")}>
                 <AddIcon style={{ marginRight: 8 }} />
                 Tạo sản phẩm mới

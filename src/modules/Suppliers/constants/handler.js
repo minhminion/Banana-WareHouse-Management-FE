@@ -92,6 +92,23 @@ export default (dispatch, props) => ({
     }
   },
 
+  fetchSingleSupplierProduct: async (params) => {
+    try {
+      const response = await fetchAuth({
+        url: ENDPOINTS.apiSuppliersProducts(params.supplierId),
+        method: "GET",
+        params,
+      });
+      console.log('======== Bao Minh: response', response)
+      if (response.data && response.status === 200) {
+        return response.data
+      } else {
+        return "Lỗi không xác định !";
+      }
+    } catch (error) {
+      return error.response?.data;
+    }
+  },
   addProductsSupplier: async (supplierId, products) => {
     try {
       const response = await fetchAuth({

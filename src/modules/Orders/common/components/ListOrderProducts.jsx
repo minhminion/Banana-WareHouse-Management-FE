@@ -260,9 +260,9 @@ const ListOrderProducts = ({ data, onChange, isEdit = false }) => {
                   <IconButton
                     onClick={(e) =>
                       handleOpenContext(e, {
-                        quantityNeed: row.quantityNeed,
-                        quantitySold: row.quantitySold,
-                        quantityReturned: row.quantityReturned,
+                        quantityNeed: row.quantityNeed || 0,
+                        quantitySold: row.quantitySold || 0,
+                        quantityReturned: row.quantityReturned || 0,
                       })
                     }
                   >
