@@ -180,8 +180,7 @@ const ListProductModal = (props) => {
       const newData = data.reduce((result, product) => {
         return result.concat({
           description: "",
-          quantity: 1,
-          singlePrice: product.price,
+          actualQuantity: 1,
           productId: product.id,
           product: product,
         });
@@ -206,8 +205,7 @@ const ListProductModal = (props) => {
     const selectProduct = {
       description: "",
       action: "created",
-      quantity: 1,
-      singlePrice: product.price,
+      actualQuantity: 1,
       productId: product.id,
       product: product,
     };
@@ -252,7 +250,7 @@ const ListProductModal = (props) => {
 
       onChange({
         target: {
-          name: "orderDetails",
+          name: "inventoryRecordDetails",
           value: newValues,
         },
       });

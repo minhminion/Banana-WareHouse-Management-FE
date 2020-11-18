@@ -23,22 +23,30 @@ export const PROPOSAL_STATUS = {
 };
 
 export const GOOD_RECEIVING_STATUS = {
-  NEW: 1, 
+  NEW: 1,
   PENDING: 2,
-  APPROVED:3,
+  APPROVED: 3,
   DONE: 4,
-  CANCELED: 5
-}
+  CANCELED: 5,
+};
 
 export const SUPPLIERS_STATUS = {
-  ACTIVE: 1, 
+  ACTIVE: 1,
   LOCKED: 2,
-}
+};
 
 export const ORDER_STATUS = {
   NEW: 1,
   PROCESSING: 2,
   EXPORTED: 3,
   DONE: 4,
-  CANCELED: 5
-}
+  CANCELED: 5,
+};
+
+export const INVENTORY_RECORD_STATUS = {
+  NEW: 1,
+  PENDING: 2,
+  APPROVED: 3,
+  DONE: 4,
+  CANCELED: 5,
+};

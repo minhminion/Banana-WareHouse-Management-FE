@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Box,
   Paper,
@@ -17,12 +17,9 @@ import {
   Menu,
   Dialog,
   DialogTitle,
-  DialogContent,
   DialogActions,
 } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
-import CKEditor from "@ckeditor/ckeditor5-react";
-import Editor from "../../common/components/widget/Editor";
 // ICONS
 import SearchIcon from "@material-ui/icons/Search";
 import FilterListIcon from "@material-ui/icons/FilterList";
@@ -40,10 +37,13 @@ import { useLocation, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import handler from "./constants/handler";
 import { MODULE_NAME } from "./constants/models";
+import { MODULE_NAME as MODULE_AUTHOR } from "../Author/constants/models";
 import { useSnackbar } from "notistack";
-import ListGoodsReceivingNotesItem from "./common/ListGoodsReceivingNotesItem";
+import ListInventoryRecordFormsItem from "./common/ListInventoryRecordFormsItem";
 import handler from "./constants/handler";
 import { ENUMS } from "../../common/constants";
+import { Form } from "../../common/hooks/useForm";
+import { INVENTORY_RECORD_STATUS } from "../../common/constants/enums";
 
 const useStyles = makeStyles((theme) => ({
   select: {
@@ -166,19 +166,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LIMIT_PER_PAGE = 5;
-const ListGoodsReceivingNotes = (props) => {
-  const goodsReceivingNotesStatus = ENUMS.GOOD_RECEIVING_STATUS;
-  const editorRef = useRef(null);
+const USER_ROLE = ENUMS.USER_ROLE
+const SUPPLIERS_STATUS = ENUMS.SUPPLIERS_STATUS;
 
+const LIMIT_PER_PAGE = 5;
+const ListInventoryRecordForms = (props) => {
   const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
+  const { roleName } = useSelector((state) => state[MODULE_AUTHOR]);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [anchorEl, setAnchorEl] = useState(null);
   const [
-    selectCancelGoodsReceivingNotes,
-    setSelectCancelGoodsReceivingNotes,
+    selectCancelInventoryRecordForms,
+    setSelectCancelInventoryRecordForms,
   ] = useState({});
   const [filter, setFilter] = useState({
     page: 1,
@@ -202,7 +203,7 @@ const ListGoodsReceivingNotes = (props) => {
     getContentAnchorEl: null,
   };
 
-  const { fetchGoodsReceivingNotes, cancelGoodsReceivingNotes } = useMemo(
+  const { fetchInventoryRecordForms, deleteInventoryRecordForm } = useMemo(
     () => handler(dispatch, props),
     [dispatch, props]
   );
@@ -215,13 +216,13 @@ const ListGoodsReceivingNotes = (props) => {
 
   useEffect(() => {
     if (location.search) {
-      setFilter((prev) => ({ ...getQuery(location.search) }));
+      setFilter((prev) => ({ ...prev, ...getQuery(location.search) }));
     }
   }, [location]);
 
   useEffect(() => {
     if (filter) {
-      fetchGoodsReceivingNotes({
+      fetchInventoryRecordForms({
         ...filter,
         limit: LIMIT_PER_PAGE,
       });
@@ -232,7 +233,7 @@ const ListGoodsReceivingNotes = (props) => {
     if (isLoading) {
       enqueueSnackbar(`Đang tải...`, {
         variant: "info",
-        key: "loading-goods-receiving-notes",
+        key: `loading-${MODULE_NAME}`,
         persist: true,
         anchorOrigin: {
           vertical: "top",
@@ -240,7 +241,7 @@ const ListGoodsReceivingNotes = (props) => {
         },
       });
     } else {
-      closeSnackbar("loading-goods-receiving-notes");
+      closeSnackbar(`loading-${MODULE_NAME}`);
     }
   }, [isLoading, enqueueSnackbar, closeSnackbar]);
 
@@ -286,25 +287,45 @@ const ListGoodsReceivingNotes = (props) => {
     });
   };
 
-  const handleCloseCancelGoodsReceivingNotes = (GoodsReceivingNotes) => {
-    setSelectCancelGoodsReceivingNotes({});
-    editorRef.current.setData("");
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const { name, value } = e.target.getElementsByTagName("input")[0];
+    let newFilter = filter;
+    let extendFilter = {};
+    if (value.trim() === "") {
+      delete newFilter[`filters[${name}]`];
+      delete newFilter[`filterConditions[${name}]`];
+    } else {
+      extendFilter = {
+        [`filters[${name}]`]: `"${value}"`,
+        [`filterConditions[${name}]`]: "like",
+      };
+    }
+    history.push({
+      pathname: location.pathname,
+      search: `?${objectToQueryString({
+        ...newFilter,
+        page: 1,
+        ...extendFilter,
+      })}`,
+    });
   };
 
-  const handleCancelGoodsReceivingNotes = async () => {
+  const handleCloseCancelInventoryRecordForms = () => {
+    setSelectCancelInventoryRecordForms({});
+  };
+
+  const handleCancelInventoryRecordForms = async () => {
     if (
-      selectCancelGoodsReceivingNotes &&
-      selectCancelGoodsReceivingNotes.id &&
-      editorRef.current &&
-      editorRef.current.getData
+      selectCancelInventoryRecordForms &&
+      selectCancelInventoryRecordForms.id
     ) {
-      const result = await cancelGoodsReceivingNotes({
-        ...selectCancelGoodsReceivingNotes,
-        exceptionReason: editorRef.current.getData() || "",
-      });
-      if (result.id) {
-        handleCloseCancelGoodsReceivingNotes();
-        fetchGoodsReceivingNotes({
+      const result = await deleteInventoryRecordForm(
+        selectCancelInventoryRecordForms.id
+      );
+      if (result === true) {
+        handleCloseCancelInventoryRecordForms();
+        fetchInventoryRecordForms({
           ...filter,
           limit: LIMIT_PER_PAGE,
         });
@@ -322,10 +343,15 @@ const ListGoodsReceivingNotes = (props) => {
       <Box display="flex" justifyContent="space-between" mb={2}>
         <div style={{ display: "flex" }}>
           <Box mr={1} clone>
-            <Paper className={classes.input}>
+            <Paper
+              className={classes.input}
+              component={Form}
+              onSubmit={handleSearch}
+            >
               <InputBase
+                name="name"
                 className={classes.inputBase}
-                placeholder="Tên người tạo ..."
+                placeholder="Tên nhà cung cấp ..."
                 inputProps={{ "aria-label": "search by creator" }}
               />
               <IconButton
@@ -350,17 +376,17 @@ const ListGoodsReceivingNotes = (props) => {
               value={filter["filters[status]"] || 0}
             >
               <MenuItem value={0}>Tất cả trạng thái</MenuItem>
-              <MenuItem value={goodsReceivingNotesStatus.NEW}>Mới</MenuItem>
-              <MenuItem value={goodsReceivingNotesStatus.PENDING}>
+              <MenuItem value={INVENTORY_RECORD_STATUS.NEW}>Mới</MenuItem>
+              <MenuItem value={INVENTORY_RECORD_STATUS.PENDING}>
                 Chờ xác nhận
               </MenuItem>
-              <MenuItem value={goodsReceivingNotesStatus.APPROVED}>
+              <MenuItem value={INVENTORY_RECORD_STATUS.APPROVED}>
                 Xác nhận
               </MenuItem>
-              <MenuItem value={goodsReceivingNotesStatus.DONE}>
+              <MenuItem value={INVENTORY_RECORD_STATUS.DONE}>
                 Hoàn tất
               </MenuItem>
-              <MenuItem value={goodsReceivingNotesStatus.CANCELED}>
+              <MenuItem value={INVENTORY_RECORD_STATUS.CANCELED}>
                 Hủy
               </MenuItem>
             </Select>
@@ -371,6 +397,7 @@ const ListGoodsReceivingNotes = (props) => {
             </IconButton>
           </Box>
         </div>
+
         <div>
           <Box p={1.5} mr={1} clone>
             <Button
@@ -387,6 +414,7 @@ const ListGoodsReceivingNotes = (props) => {
               />
             </Button>
           </Box>
+
           <Menu
             id="simple-menu"
             // classes={{ paper: downloadMenuClasses.paper }}
@@ -405,10 +433,12 @@ const ListGoodsReceivingNotes = (props) => {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            <MenuItem onClick={() => history.push("/proposal/add")}>
-              <AddIcon style={{ marginRight: 8 }} />
-              Tạo phiếu phiếu nhập kho
-            </MenuItem>
+            {[USER_ROLE.WarehouseKeeper, USER_ROLE.WarehouseKeeperManager, USER_ROLE.Boss].indexOf(roleName) !== -1 && (
+              <MenuItem onClick={() => history.push(`/${MODULE_NAME}/add`)}>
+                <AddIcon style={{ marginRight: 8 }} />
+                Tạo phiếu kiểm kho
+              </MenuItem>
+            )}
             <MenuItem onClick={handleClose}>
               <PublishIcon style={{ marginRight: 8 }} />
               Import XLS
@@ -425,17 +455,17 @@ const ListGoodsReceivingNotes = (props) => {
         <Table className={classes.tableRoot} aria-label="simple table">
           <TableHead>
             <TableRow>
-              {/* <TableCell style={{ width: 80 }} align="left"></TableCell> */}
-              <TableCell style={{ width: 180 }} align="center">
+              <TableCell style={{ width: 100 }} align="left">
                 Mã phiếu
               </TableCell>
-              <TableCell>Người tạo phiếu</TableCell>
-              <TableCell>Nhà cung cấp</TableCell>
-              <TableCell style={{ width: 200 }} align="center">
-                Tình trạng
+              <TableCell style={{ width: 100 }} align="left">
+                Người tạo
               </TableCell>
-              <TableCell align="left" style={{ width: 200 }}>
+              <TableCell style={{ width: 150 }} align="center">
                 Ngày tạo
+              </TableCell>
+              <TableCell align="center" style={{ width: 100 }}>
+                Trạng thái
               </TableCell>
               <TableCell style={{ width: 150 }} align="center">
                 Thao tác
@@ -445,10 +475,10 @@ const ListGoodsReceivingNotes = (props) => {
           {/* <TableBody> */}
           {data &&
             data.map((row) => (
-              <ListGoodsReceivingNotesItem
+              <ListInventoryRecordFormsItem
                 key={row.id}
                 row={row}
-                onCancel={setSelectCancelGoodsReceivingNotes}
+                onCancel={setSelectCancelInventoryRecordForms}
               />
             ))}
           {/* </TableBody> */}
@@ -473,34 +503,20 @@ const ListGoodsReceivingNotes = (props) => {
 
       <Dialog
         open={
-          selectCancelGoodsReceivingNotes && selectCancelGoodsReceivingNotes.id
+          selectCancelInventoryRecordForms &&
+          selectCancelInventoryRecordForms.id
             ? true
             : false
         }
         className={classes.dialogRoot}
         fullWidth
-        maxWidth="md"
+        maxWidth="sm"
       >
-        <DialogTitle>Lý do hủy phiếu đề nghị này</DialogTitle>
-        <DialogContent>
-          <CKEditor
-            editor={Editor}
-            onInit={(editor) => {
-              editorRef.current = editor;
-            }}
-            onBlur={(event, editor) => {}}
-            onFocus={(event, editor) => {}}
-          />
-        </DialogContent>
+        <DialogTitle>Xác nhận hủy phiếu kiểm kho này ?</DialogTitle>
         <DialogActions>
-          <Button onClick={handleCancelGoodsReceivingNotes} color="primary">
-            Chọn
-          </Button>
-          <Button
-            onClick={handleCloseCancelGoodsReceivingNotes}
-            color="primary"
-          >
-            Hủy
+          <Button onClick={handleCloseCancelInventoryRecordForms}>Hủy</Button>
+          <Button onClick={handleCancelInventoryRecordForms} color="primary">
+            Xác nhận
           </Button>
         </DialogActions>
       </Dialog>
@@ -508,4 +524,4 @@ const ListGoodsReceivingNotes = (props) => {
   );
 };
 
-export default ListGoodsReceivingNotes;
+export default ListInventoryRecordForms;

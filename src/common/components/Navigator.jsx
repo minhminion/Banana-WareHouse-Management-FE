@@ -23,6 +23,7 @@ import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import CallReceivedIcon from "@material-ui/icons/CallReceived";
 import ReceiptIcon from "@material-ui/icons/Receipt";
+import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import { useDispatch } from "react-redux";
 import { toggleCollapseNavigator } from "../redux/actions/uiActions";
 import { Link, useLocation } from "react-router-dom";
@@ -39,6 +40,11 @@ const menus = [
         id: "Nhà cung cấp",
         icon: <HomeWorkIcon />,
         link: "suppliers",
+      },
+      {
+        id: "Kiểm kê sản phẩm",
+        icon: <AssignmentTurnedInIcon />,
+        link: "inventoryRecordForms",
       },
 
       { id: "Nhân viên", icon: <GroupIcon />, link: "members" },
