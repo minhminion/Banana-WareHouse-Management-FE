@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useSnackbar } from "notistack";
 import { MODULE_NAME } from "./constants/models";
 import SupplierDetails from "./common/SupplierDetails";
+import { formatVNDToNumber, notifyError } from "../../common/helper";
 
 const SingleSupplierDetails = (props) => {
   const { isEdit = false } = props;
@@ -17,7 +18,8 @@ const SingleSupplierDetails = (props) => {
   const {
     fetchSingleSuppliers,
     editSupplier,
-  
+    addProductsSupplier,
+    deleteProductsSupplier,
   } = useMemo(() => handler(dispatch, props), [dispatch, props]);
 
   const getSupplier = useCallback(
@@ -44,18 +46,71 @@ const SingleSupplierDetails = (props) => {
       preventDuplicate: true,
     });
     const result = await editSupplier(values);
-    // await updateSupplierUnit(values.SupplierUnits);
+    const details = await updateSupplierProducts(values.supplierProducts);
+
     closeSnackbar(`updating-${MODULE_NAME}`);
-    if (result.id) {
+    if (result.id && details.length === 0) {
       enqueueSnackbar("Cập nhật thành công !", {
         variant: "success",
       });
-      getSupplier(supplierId);
     } else {
-      enqueueSnackbar(result, {
-        variant: "error",
-      });
+      let errors = { details };
+      if (!result.id) errors["result"] = result;
+      notifyError(enqueueSnackbar, errors);
     }
+    getSupplier(supplierId);
+  };
+
+  const updateSupplierProducts = async (products = []) => {
+    let createProduct = [];
+    let updateProduct = [];
+    let deleteProduct = [];
+
+    let errors = [];
+
+    products.forEach((product) => {
+      switch (product.action) {
+        case "created":
+          createProduct.push(product);
+          break;
+        case "updated":
+          updateProduct.push(product);
+          break;
+        case "deleted":
+          deleteProduct.push(product);
+          break;
+        default:
+          break;
+      }
+    });
+
+    if (createProduct.length > 0) {
+      const result = await addProductsSupplier(
+        +supplierId,
+        products.map((product) => ({
+          productId: product.productId,
+          price: parseInt(formatVNDToNumber(product.price + "")),
+        }))
+      );
+      if (result !== true) {
+        errors.push(result?.ApiErr || result);
+      }
+    }
+
+    // Delete Proposal Products
+    if (deleteProduct.length > 0) {
+      const result = await deleteProductsSupplier(+supplierId, [
+        ...deleteProduct.map((product) => product.productId),
+      ]);
+
+      if (result !== true) {
+        errors.push(result?.ApiErr || result);
+      }
+    }
+
+    // Update Proposal Products
+
+    return errors;
   };
 
   return initialValues?.id ? (

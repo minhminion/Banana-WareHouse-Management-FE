@@ -18,7 +18,6 @@ import { useDispatch } from "react-redux";
 import handler from "../../constants/handler";
 import { notifyError } from "../../../../common/helper";
 import { useSnackbar } from "notistack";
-import { values } from "lodash";
 
 const useStyles = makeStyles((theme) => ({
   select: {

@@ -8,8 +8,6 @@ import {
 } from "@material-ui/core";
 import { ENUMS } from "../../../../common/constants";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { MODULE_NAME as MODULE_AUTHOR } from "../../../Author/constants/models";
-import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   select: {
@@ -39,10 +37,7 @@ const OrdersStatus = ({
   onChange,
 }) => {
   const ORDER_STATUS = ENUMS.ORDER_STATUS;
-  const USER_ROLE = ENUMS.USER_ROLE;
   const classes = useStyles();
-
-  const { roleName } = useSelector((state) => state[MODULE_AUTHOR]);
 
   const menuProps = {
     classes: {
@@ -88,10 +83,7 @@ const OrdersStatus = ({
         ];
         break;
       case ORDER_STATUS.PROCESSING:
-          listMenu = [
-            ORDER_STATUS.PROCESSING,
-            ORDER_STATUS.CANCELED,
-          ];
+        listMenu = [ORDER_STATUS.PROCESSING, ORDER_STATUS.CANCELED];
         break;
       case ORDER_STATUS.EXPORTED:
         listMenu = [
@@ -123,8 +115,7 @@ const OrdersStatus = ({
       <Select
         disabled={
           !isEdit ||
-          (value !== ORDER_STATUS.NEW &&
-            value !== ORDER_STATUS.PROCESSING)
+          (value !== ORDER_STATUS.NEW && value !== ORDER_STATUS.PROCESSING)
         }
         disableUnderline
         name="status"

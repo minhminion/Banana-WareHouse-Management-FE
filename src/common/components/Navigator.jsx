@@ -22,6 +22,7 @@ import PhonelinkSetupIcon from "@material-ui/icons/PhonelinkSetup";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import CallReceivedIcon from "@material-ui/icons/CallReceived";
+import ReceiptIcon from "@material-ui/icons/Receipt";
 import { useDispatch } from "react-redux";
 import { toggleCollapseNavigator } from "../redux/actions/uiActions";
 import { Link, useLocation } from "react-router-dom";
@@ -34,23 +35,36 @@ const menus = [
     children: [
       { id: "Thống kê", icon: <DashboardIcon />, link: "", isDefault: true },
       { id: "Sản phẩm", icon: <ShoppingBasketIcon />, link: "products" },
+      {
+        id: "Nhà cung cấp",
+        icon: <HomeWorkIcon />,
+        link: "suppliers",
+      },
+
+      { id: "Nhân viên", icon: <GroupIcon />, link: "members" },
+    ],
+  },
+  {
+    id: "Nhập kho",
+    showHeader: false,
+    children: [
       { id: "Đề nghị nhập hàng", icon: <AssignmentIcon />, link: "proposal" },
       {
         id: "Phiếu nhập hàng",
         icon: <CallReceivedIcon />,
         link: "goods-receiving-notes",
       },
-      {
-        id: "Nhà cung cấp",
-        icon: <HomeWorkIcon />,
-        link: "suppliers",
-      },
+    ],
+  },
+  {
+    id: "Xuất kho",
+    showHeader: false,
+    children: [
       {
         id: "Đơn hàng",
-        icon: <HomeWorkIcon />,
+        icon: <ReceiptIcon />,
         link: "orders",
       },
-      { id: "Nhân viên", icon: <GroupIcon />, link: "members" },
     ],
   },
   {
@@ -138,7 +152,8 @@ const styles = (theme) => ({
     },
   },
   divider: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
     "&:nth-last-child(1)": {
       display: "none",
     },
@@ -303,7 +318,7 @@ function Navigator(props) {
             </ListItem>
             {children.map((child) => renderNavigatorItem(child))}
 
-            {!collapse && <Divider className={classes.divider} />}
+            <Divider className={classes.divider} />
           </React.Fragment>
         ))}
       </List>

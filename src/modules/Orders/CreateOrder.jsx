@@ -1,7 +1,7 @@
 import { useSnackbar } from "notistack";
 import React, { useMemo } from "react";
 import { useDispatch } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { notifyError } from "../../common/helper";
 import OrderDetails from "./common/OrderDetails";
 import handler from "./constants/handler";

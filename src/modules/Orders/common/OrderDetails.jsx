@@ -20,7 +20,7 @@ import Alert from "@material-ui/lab/Alert";
 import { ENUMS } from "../../../common/constants";
 import parse from "html-react-parser";
 import useConfirm from "../../../common/hooks/useConfirm/useConfirm";
-import { formatNumberToVND, formatVNDToNumber } from "../../../common/helper";
+import { formatNumberToVND } from "../../../common/helper";
 import OrdersStatus from "./components/OrdersStatus";
 import ListOrderProducts from "./components/ListOrderProducts";
 import OrderStatusStepper from "./components/OrderStatusStepper";

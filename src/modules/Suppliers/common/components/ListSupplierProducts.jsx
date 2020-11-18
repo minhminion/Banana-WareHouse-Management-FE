@@ -11,6 +11,7 @@ import {
   InputBase,
   IconButton,
   Button,
+  Typography,
 } from "@material-ui/core";
 import { formatNumberToVND } from "../../../../common/helper";
 
@@ -178,6 +179,7 @@ const ListSupplierProducts = ({ data, onChange, isEdit = false }) => {
               </TableCell>
               <TableCell component="th" scope="row">
                 <strong>{product.name}</strong>
+                <Typography variant="subtitle1">#{product.id}</Typography>
               </TableCell>
               <TableCell align="left">
                 <Box display="flex">

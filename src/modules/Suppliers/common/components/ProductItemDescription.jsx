@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -9,9 +8,7 @@ import {
   Paper,
   Typography,
 } from "@material-ui/core";
-import React, { useRef } from "react";
-import CKEditor from "@ckeditor/ckeditor5-react";
-import Editor from "../../../../common/components/widget/Editor";
+import React from "react";
 import parse from "html-react-parser";
 
 const useStyles = makeStyles((theme) => ({
@@ -52,7 +49,6 @@ const ProductItemDescription = ({
   proposalProduct,
 }) => {
   const { product = {} } = proposalProduct;
-  const editorRef = useRef(null);
   const classes = useStyles();
 
   return (

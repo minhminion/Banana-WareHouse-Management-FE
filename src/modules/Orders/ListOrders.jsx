@@ -40,7 +40,6 @@ import { useLocation, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import handler from "./constants/handler";
 import { MODULE_NAME } from "./constants/models";
-import { MODULE_NAME as MODULE_AUTHOR } from "../Author/constants/models";
 import { useSnackbar } from "notistack";
 import ListOrdersItem from "./common/ListOrdersItem";
 import handler from "./constants/handler";
@@ -169,7 +168,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const USER_ROLE = ENUMS.USER_ROLE;
 const ORDERS_STATUS = ENUMS.ORDER_STATUS;
 
 const LIMIT_PER_PAGE = 5;
@@ -213,7 +211,6 @@ const ListOrders = (props) => {
   );
 
   const { isLoading } = useSelector((state) => state[MODULE_NAME]);
-  const { roleName } = useSelector((state) => state[MODULE_AUTHOR]);
 
   useEffect(() => {
     if (location.search) {

@@ -14,6 +14,7 @@ import {
   Popover,
   List,
   ListItem,
+  Typography,
 } from "@material-ui/core";
 import { formatNumberToVND } from "../../../../common/helper";
 
@@ -205,6 +206,7 @@ const ListOrderProducts = ({ data, onChange, isEdit = false }) => {
               </TableCell>
               <TableCell component="th" scope="row">
                 <strong>{product.name}</strong>
+                <Typography variant="subtitle1">#{product.id}</Typography>
               </TableCell>
               <TableCell align="left">
                 <InputBase
@@ -365,11 +367,11 @@ const ListOrderProducts = ({ data, onChange, isEdit = false }) => {
         {contextPos.quantityDetails && (
           <List dense>
             <ListItem>
-              <strong style={{ marginRight: 8 }}>Số lượng đặt mua:</strong>
+              <strong style={{ marginRight: 8 }}>Số lượng đặt bán:</strong>
               {contextPos.quantityDetails?.quantityNeed}
             </ListItem>
             <ListItem>
-              <strong style={{ marginRight: 8 }}>Số lượng bán:</strong>
+              <strong style={{ marginRight: 8 }}>Số lượng còn lại:</strong>
               {contextPos.quantityDetails?.quantitySold}
             </ListItem>
             <ListItem>

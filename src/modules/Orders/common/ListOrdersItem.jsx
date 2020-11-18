@@ -8,7 +8,6 @@ import {
   Box,
   IconButton,
   makeStyles,
-  Table,
   useTheme,
 } from "@material-ui/core";
 import clsx from "clsx";
