@@ -167,7 +167,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const USER_ROLE = ENUMS.USER_ROLE
-const SUPPLIERS_STATUS = ENUMS.SUPPLIERS_STATUS;
 
 const LIMIT_PER_PAGE = 5;
 const ListInventoryRecordForms = (props) => {

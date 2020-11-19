@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { useSnackbar } from "notistack";
 import { MODULE_NAME } from "./constants/models";
 import InventoryRecordFormDetails from "./common/InventoryRecordFormDetails";
-import { formatVNDToNumber, notifyError } from "../../common/helper";
+import { notifyError } from "../../common/helper";
 
 const SingleInventoryRecordFormDetails = (props) => {
   const { isEdit = false } = props;

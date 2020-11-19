@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ListGoodsReceivingNotesItem = ({ row, onCancel }) => {
+const ListGoodsDeliveryNotesItem = ({ row, onCancel }) => {
   const theme = useTheme();
   const classes = useStyles();
   const { roleName } = useSelector((state) => state[MODULE_AUTHOR]);
@@ -79,42 +79,42 @@ const ListGoodsReceivingNotesItem = ({ row, onCancel }) => {
   const isEditable = (rowStatus) => {
     return (
       isAuth &&
-      rowStatus !== ENUMS.GOOD_RECEIVING_STATUS.CANCELED &&
-      rowStatus !== ENUMS.GOOD_RECEIVING_STATUS.DONE
+      rowStatus !== ENUMS.GOOD_DELIVERY_STATUS.CANCELED &&
+      rowStatus !== ENUMS.GOOD_DELIVERY_STATUS.DONE
     );
   };
 
   const isAbleToCancel = (rowStatus) => {
     return (
       isAuth &&
-      (rowStatus === ENUMS.GOOD_RECEIVING_STATUS.NEW ||
-        rowStatus === ENUMS.GOOD_RECEIVING_STATUS.PENDING ||
-        rowStatus === ENUMS.GOOD_RECEIVING_STATUS.APPROVED)
+      (rowStatus === ENUMS.GOOD_DELIVERY_STATUS.NEW ||
+        rowStatus === ENUMS.GOOD_DELIVERY_STATUS.PENDING ||
+        rowStatus === ENUMS.GOOD_DELIVERY_STATUS.APPROVED)
     );
   };
 
   const renderStatus = (status) => {
-    const goodsReceivingNotesStatus = ENUMS.GOOD_RECEIVING_STATUS;
+    const goodsDeliveryNotesStatus = ENUMS.GOOD_DELIVERY_STATUS;
     let label = "Không tìm thấy";
     let style = "notfound";
     switch (status) {
-      case goodsReceivingNotesStatus.NEW:
+      case goodsDeliveryNotesStatus.NEW:
         label = "Mới";
         style = "new";
         break;
-      case goodsReceivingNotesStatus.PENDING:
+      case goodsDeliveryNotesStatus.PENDING:
         label = "Chờ xác nhận";
         style = "pending";
         break;
-      case goodsReceivingNotesStatus.APPROVED:
+      case goodsDeliveryNotesStatus.APPROVED:
         label = "Xác nhận";
         style = "approved";
         break;
-      case goodsReceivingNotesStatus.DONE:
+      case goodsDeliveryNotesStatus.DONE:
         label = "Hoàn tất";
         style = "done";
         break;
-      case goodsReceivingNotesStatus.CANCELED:
+      case goodsDeliveryNotesStatus.CANCELED:
         label = "Hủy";
         style = "canceled";
         break;
@@ -147,16 +147,6 @@ const ListGoodsReceivingNotesItem = ({ row, onCancel }) => {
             </Typography>
           </div>
         </TableCell>
-        <TableCell component="th" scope="row">
-          <div>
-            <strong>{row.supplierName || "Min da poet"}</strong>
-            {row.supplierId !== 0 && (
-              <Typography variant="body2">
-                #{row.supplierId || "minhminion2015@gmail.com"}
-              </Typography>
-            )}
-          </div>
-        </TableCell>
         <TableCell align="center">{renderStatus(row.status)}</TableCell>
         <TableCell
           align="left"
@@ -170,7 +160,7 @@ const ListGoodsReceivingNotesItem = ({ row, onCancel }) => {
         <TableCell align="center">
           <Box mr={1} clone>
             <Link
-              to={`/goodsReceivingNotes/${row.id}${
+              to={`/goodsDeliveryNotes/${row.id}${
                 isEditable(row.status) ? `/edit` : ""
               }`}
             >
@@ -192,4 +182,4 @@ const ListGoodsReceivingNotesItem = ({ row, onCancel }) => {
   );
 };
 
-export default ListGoodsReceivingNotesItem;
+export default ListGoodsDeliveryNotesItem;

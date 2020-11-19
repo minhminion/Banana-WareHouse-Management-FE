@@ -2,7 +2,7 @@ import { useSnackbar } from "notistack";
 import React, { useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { formatVNDToNumber, notifyError } from "../../common/helper";
+import { notifyError } from "../../common/helper";
 import handler from "./constants/handler";
 import InventoryRecordFormDetails from "./common/InventoryRecordFormDetails";
 import { MODULE_NAME } from "./constants/models";

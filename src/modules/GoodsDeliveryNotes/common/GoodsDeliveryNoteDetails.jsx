@@ -6,7 +6,6 @@ import {
   Box,
   Paper,
   Button,
-  TextField,
 } from "@material-ui/core";
 import clsx from "clsx";
 import { blueGrey } from "@material-ui/core/colors";
@@ -20,24 +19,22 @@ import Alert from "@material-ui/lab/Alert";
 import { ENUMS } from "../../../common/constants";
 import parse from "html-react-parser";
 import useConfirm from "../../../common/hooks/useConfirm/useConfirm";
-import { formatNumberToVND } from "../../../common/helper";
-import OrdersStatus from "./components/OrdersStatus";
-import ListOrderProducts from "./components/ListOrderProducts";
-import OrderStatusStepper from "./components/OrderStatusStepper";
-import { MODULE_NAME } from "../constants/models";
-import { MODULE_NAME as MODULE_AUTHOR } from "../../Author/constants/models";
+import GoodsDeliveryNoteStatusStepper from "./components/GoodsDeliveryNoteStatusStepper";
+import GoodsDeliveryNoteStatus from "./components/GoodsDeliveryNoteStatus";
+import ListGoodsDeliveryNoteProducts from "./components/ListGoodsDeliveryNoteProducts";
 import { useSelector } from "react-redux";
-import { GOOD_DELIVERY_STATUS, ORDER_STATUS, USER_ROLE } from "../../../common/constants/enums";
+import { MODULE_NAME as MODULE_SUPPLIERS } from "../../Suppliers/constants/models";
 
 const defaultValues = {
-  status: 1,
+  creator: "231",
+  createdAt: Date.now(),
+  period: 2,
+  status: ENUMS.GOOD_DELIVERY_STATUS.NEW,
   description: "",
-  exceptionReason: null,
+  supplierId: 0,
   totalPrice: 0,
-  user: {},
-  orderDetails: []
+  goodsDeliveryDetails: [],
 };
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,13 +50,13 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   leftSide: {
-    width: "calc(100% - 700px)",
+    width: "calc(100% - 600px)",
     [theme.breakpoints.down("sm")]: {
       width: "100%",
     },
   },
   rightSide: {
-    width: 700,
+    width: 600,
     [theme.breakpoints.down("sm")]: {
       width: "100%",
     },
@@ -156,7 +153,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const OrdersDetails = ({
+const GOOD_DELIVERY_STATUS = ENUMS.GOOD_DELIVERY_STATUS;
+
+const GoodsDeliveryNoteDetails = ({
+  orderDetails,
   initialValues,
   isEdit = true,
   onSubmit,
@@ -170,19 +170,9 @@ const OrdersDetails = ({
   const classes = useStyles();
   const history = useHistory();
   const confirm = useConfirm();
-  const { roleName } = useSelector((state) => state[MODULE_AUTHOR]);
-
-  const canCreateGoodsDeliveryNotes = () => {
-    return (
-      values.status === GOOD_DELIVERY_STATUS.PENDING &&
-      [
-        USER_ROLE.Boss,
-        USER_ROLE.WarehouseKeeper,
-        USER_ROLE.WarehouseKeeperManager,
-      ].indexOf(roleName) !== -1
-    );
-  };
-
+  const { data: suppliers } = useSelector(
+    (state) => state[MODULE_SUPPLIERS].data
+  );
   const validate = (fieldValues = values) => {
     let temp = { ...errors };
     setErrors({
@@ -223,17 +213,15 @@ const OrdersDetails = ({
     }
   };
 
-  
-
   const getStatusConfirmContent = (value) => {
     let content = {
-      title: "Thay đổi trạng thái đơn hàng ?",
+      title: "Thay đổi trạng thái phiếu nhập hàng ?",
       description: "Hành động này sẽ không thể hoàn tác",
       confirmationText: "Xác nhận",
       cancellationText: "Hủy",
     };
     switch (value) {
-      case ORDER_STATUS.CANCELED:
+      case GOOD_DELIVERY_STATUS.CANCELED:
         content = {
           ...content,
           input: true,
@@ -245,16 +233,6 @@ const OrdersDetails = ({
     }
 
     return content;
-  };
-
-  const getTotalPrice = (products) => {
-    return products.reduce((totalPrice, receivingProduct) => {
-      if (receivingProduct.action === "deleted") return totalPrice;
-      const total =
-        +(receivingProduct.singlePrice + "").replace(/,/g, "") *
-        parseFloat(receivingProduct.quantity);
-      return totalPrice + Math.round(total);
-    }, 0);
   };
 
   const handleChangeStatus = (e) => {
@@ -278,7 +256,15 @@ const OrdersDetails = ({
     if (validate()) {
       try {
         const newValues = {
-          ...values
+          description: values.description || "",
+          status: values.status,
+          goodsDeliveryDetails: values.goodsDeliveryDetails.map((product) => ({
+            id: product.id || -1,
+            productId: +product.productId,
+            quantity: parseFloat(product.quantity),
+            description: product.description || "",
+            action: product.action,
+          })),
         };
         onSubmit && onSubmit(newValues);
       } catch (error) {}
@@ -287,14 +273,14 @@ const OrdersDetails = ({
 
   return (
     <Box className={classes.root}>
-      {values.status === ENUMS.ORDER_STATUS.CANCELED && (
+      {values.status === ENUMS.GOOD_DELIVERY_STATUS.CANCELED && (
         <Box clone mb={2}>
           <Alert severity="error">
             {parse(initialValues?.exceptionReason || "")}
           </Alert>
         </Box>
       )}
-      {values.id && <OrderStatusStepper status={values.status} />}
+      {values.id && <GoodsDeliveryNoteStatusStepper status={values.status} />}
 
       <Grid container spacing={3}>
         <Grid item className={clsx(classes.root, classes.leftSide)}>
@@ -305,47 +291,14 @@ const OrdersDetails = ({
             display="flex"
             justifyContent="space-between"
           >
-            <OrdersStatus
+            <GoodsDeliveryNoteStatus
               value={values.status}
               onChange={handleChangeStatus}
               classes={classes}
               isEdit={isEdit && values.id}
               style={{ width: "35%", minWidth: 50 }}
             />
-            {/* Order Total Price */}
-            <TextField
-              disabled
-              name="totalPrice"
-              style={{
-                width: "60%",
-                minWidth: "calc(70% - 50px)",
-                marginBottom: 24,
-              }}
-              label={"Tổng giá phiếu"}
-              value={formatNumberToVND(
-                getTotalPrice(values.orderDetails) || values.totalPrice
-              )}
-              margin={"normal"}
-              InputLabelProps={{
-                classes: {
-                  root: classes.label,
-                },
-                focused: false,
-                shrink: true,
-              }}
-              InputProps={{
-                classes: {
-                  root: classes.inputRoot,
-                  input: classes.input,
-                  disabled: classes.inputDisabled,
-                },
-                style: { height: 45 },
-                disableUnderline: true,
-              }}
-            />
           </Box>
-
-          
 
           {(initialValues?.description || isEdit) && (
             <Box className={classes.productDescription}>
@@ -402,25 +355,11 @@ const OrdersDetails = ({
                 <Button
                   className={clsx(classes.actionButton, "btn__cancel")}
                   component={Paper}
-                  onClick={() => history.push(`/${MODULE_NAME}`)}
+                  onClick={() => history.push("/proposal")}
                 >
                   {cancelLabel}
                 </Button>
               </Box>
-            </Box>
-          )}
-          {canCreateGoodsDeliveryNotes() && (
-            <Box p={1.5} mr={1} clone>
-              <Button
-                style={{ width: "100%" }}
-                className={clsx(classes.actionButton)}
-                component={Paper}
-                onClick={() =>
-                  history.push(`/goodsDeliveryNotes/${values.id}/add`)
-                }
-              >
-                Tạo phiếu xuất kho
-              </Button>
             </Box>
           )}
         </Grid>
@@ -429,9 +368,12 @@ const OrdersDetails = ({
             {/* <InputLabel className={classes.label} style={{ marginBottom: 8 }}>
               Danh sách sản phẩm
             </InputLabel> */}
-            <ListOrderProducts
-              isEdit={isEdit && values.status === ORDER_STATUS.NEW}
-              data={values.orderDetails}
+            <ListGoodsDeliveryNoteProducts
+              listProduct={orderDetails}
+              isEdit={isEdit && values.status === ENUMS.PROPOSAL_STATUS.NEW}
+              status={GOOD_DELIVERY_STATUS}
+              data={values.goodsDeliveryDetails}
+              supplierId={values.supplierId}
               errors={errors}
               onChange={handleInputChange}
             />
@@ -442,4 +384,4 @@ const OrdersDetails = ({
   );
 };
 
-export default OrdersDetails;
+export default GoodsDeliveryNoteDetails;

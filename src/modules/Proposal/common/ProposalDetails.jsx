@@ -415,7 +415,7 @@ const ProposalDetails = ({
                 className={clsx(classes.actionButton)}
                 component={Paper}
                 onClick={() =>
-                  history.push(`/goods-receiving-notes/${values.id}/add`)
+                  history.push(`/goodsReceivingNotes/${values.id}/add`)
                 }
               >
                 Tạo phiếu nhập hàng

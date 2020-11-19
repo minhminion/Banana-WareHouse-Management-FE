@@ -4,7 +4,7 @@ import SingleGoodsReceivingNoteDetails from "../../modules/GoodsReceivingNotes/S
 
 const root = [
   {
-    link: "/goods-receiving-notes",
+    link: "/goodsReceivingNotes",
     title: "Danh sách phiếu nhập hàng",
   },
 ];
