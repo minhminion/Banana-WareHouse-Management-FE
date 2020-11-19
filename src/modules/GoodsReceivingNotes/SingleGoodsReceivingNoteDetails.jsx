@@ -79,7 +79,7 @@ const SingleGoodsReceivingNoteDetails = (props) => {
   const handleEditGoodsReceivingNotes = async (values) => {
     enqueueSnackbar(`Đang cập nhật sản phẩm...`, {
       variant: "info",
-      key: "updating-goods-receiving-notes",
+      key: "updating-goodsReceivingNotes",
       persist: true,
       preventDuplicate: true,
     });
@@ -91,7 +91,7 @@ const SingleGoodsReceivingNoteDetails = (props) => {
     const details = await updateGoodsReceivingDetails(
       values.goodsReceivingDetails
     );
-    closeSnackbar("updating-goods-receiving-notes");
+    closeSnackbar("updating-goodsReceivingNotes");
     if (result.id && details.length === 0) {
       enqueueSnackbar("Cập nhật thành công !", {
         variant: "success",

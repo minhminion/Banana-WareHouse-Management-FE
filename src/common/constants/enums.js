@@ -30,6 +30,14 @@ export const GOOD_RECEIVING_STATUS = {
   CANCELED: 5,
 };
 
+export const GOOD_DELIVERY_STATUS = {
+  NEW: 1,
+  PENDING: 2,
+  APPROVED: 3,
+  DONE: 4,
+  CANCELED: 5,
+};
+
 export const SUPPLIERS_STATUS = {
   ACTIVE: 1,
   LOCKED: 2,

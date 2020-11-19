@@ -49,7 +49,7 @@ const CreateGoodsReceivingNote = (props) => {
     });
     closeSnackbar("creating-goods-receiving-note");
     if (result.id) {
-      history.push("/goods-receiving-notes");
+      history.push("/goodsReceivingNotes");
     } else {
       notifyError(enqueueSnackbar, result);
     }

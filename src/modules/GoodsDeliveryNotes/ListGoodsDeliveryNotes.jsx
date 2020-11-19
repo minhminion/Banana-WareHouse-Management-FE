@@ -41,7 +41,7 @@ import { useDispatch, useSelector } from "react-redux";
 // import handler from "./constants/handler";
 import { MODULE_NAME } from "./constants/models";
 import { useSnackbar } from "notistack";
-import ListGoodsReceivingNotesItem from "./common/ListGoodsReceivingNotesItem";
+import ListGoodsDeliveryNotesItem from "./common/ListGoodsDeliveryNotesItem";
 import handler from "./constants/handler";
 import { ENUMS } from "../../common/constants";
 
@@ -167,8 +167,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const LIMIT_PER_PAGE = 5;
-const ListGoodsReceivingNotes = (props) => {
-  const goodsReceivingNotesStatus = ENUMS.GOOD_RECEIVING_STATUS;
+const ListGoodsDeliveryNotes = (props) => {
+  const goodsDeliveryNotesStatus = ENUMS.GOOD_DELIVERY_STATUS;
   const editorRef = useRef(null);
 
   const location = useLocation();
@@ -177,8 +177,8 @@ const ListGoodsReceivingNotes = (props) => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [anchorEl, setAnchorEl] = useState(null);
   const [
-    selectCancelGoodsReceivingNotes,
-    setSelectCancelGoodsReceivingNotes,
+    selectCancelGoodsDeliveryNotes,
+    setSelectCancelGoodsDeliveryNotes,
   ] = useState({});
   const [filter, setFilter] = useState({
     page: 1,
@@ -202,7 +202,7 @@ const ListGoodsReceivingNotes = (props) => {
     getContentAnchorEl: null,
   };
 
-  const { fetchGoodsReceivingNotes, cancelGoodsReceivingNotes } = useMemo(
+  const { fetchGoodsDeliveryNotes, cancelGoodsDeliveryNotes } = useMemo(
     () => handler(dispatch, props),
     [dispatch, props]
   );
@@ -221,7 +221,7 @@ const ListGoodsReceivingNotes = (props) => {
 
   useEffect(() => {
     if (filter) {
-      fetchGoodsReceivingNotes({
+      fetchGoodsDeliveryNotes({
         ...filter,
         limit: LIMIT_PER_PAGE,
       });
@@ -232,7 +232,7 @@ const ListGoodsReceivingNotes = (props) => {
     if (isLoading) {
       enqueueSnackbar(`Đang tải...`, {
         variant: "info",
-        key: "loading-goodsReceivingNotes",
+        key: `loading-${MODULE_NAME}`,
         persist: true,
         anchorOrigin: {
           vertical: "top",
@@ -240,7 +240,7 @@ const ListGoodsReceivingNotes = (props) => {
         },
       });
     } else {
-      closeSnackbar("loading-goodsReceivingNotes");
+      closeSnackbar(`loading-${MODULE_NAME}`);
     }
   }, [isLoading, enqueueSnackbar, closeSnackbar]);
 
@@ -286,25 +286,25 @@ const ListGoodsReceivingNotes = (props) => {
     });
   };
 
-  const handleCloseCancelGoodsReceivingNotes = (GoodsReceivingNotes) => {
-    setSelectCancelGoodsReceivingNotes({});
+  const handleCloseCancelGoodsDeliveryNotes = (GoodsDeliveryNotes) => {
+    setSelectCancelGoodsDeliveryNotes({});
     editorRef.current.setData("");
   };
 
-  const handleCancelGoodsReceivingNotes = async () => {
+  const handleCancelGoodsDeliveryNotes = async () => {
     if (
-      selectCancelGoodsReceivingNotes &&
-      selectCancelGoodsReceivingNotes.id &&
+      selectCancelGoodsDeliveryNotes &&
+      selectCancelGoodsDeliveryNotes.id &&
       editorRef.current &&
       editorRef.current.getData
     ) {
-      const result = await cancelGoodsReceivingNotes({
-        ...selectCancelGoodsReceivingNotes,
+      const result = await cancelGoodsDeliveryNotes({
+        ...selectCancelGoodsDeliveryNotes,
         exceptionReason: editorRef.current.getData() || "",
       });
       if (result.id) {
-        handleCloseCancelGoodsReceivingNotes();
-        fetchGoodsReceivingNotes({
+        handleCloseCancelGoodsDeliveryNotes();
+        fetchGoodsDeliveryNotes({
           ...filter,
           limit: LIMIT_PER_PAGE,
         });
@@ -350,17 +350,17 @@ const ListGoodsReceivingNotes = (props) => {
               value={filter["filters[status]"] || 0}
             >
               <MenuItem value={0}>Tất cả trạng thái</MenuItem>
-              <MenuItem value={goodsReceivingNotesStatus.NEW}>Mới</MenuItem>
-              <MenuItem value={goodsReceivingNotesStatus.PENDING}>
+              <MenuItem value={goodsDeliveryNotesStatus.NEW}>Mới</MenuItem>
+              <MenuItem value={goodsDeliveryNotesStatus.PENDING}>
                 Chờ xác nhận
               </MenuItem>
-              <MenuItem value={goodsReceivingNotesStatus.APPROVED}>
+              <MenuItem value={goodsDeliveryNotesStatus.APPROVED}>
                 Xác nhận
               </MenuItem>
-              <MenuItem value={goodsReceivingNotesStatus.DONE}>
+              <MenuItem value={goodsDeliveryNotesStatus.DONE}>
                 Hoàn tất
               </MenuItem>
-              <MenuItem value={goodsReceivingNotesStatus.CANCELED}>
+              <MenuItem value={goodsDeliveryNotesStatus.CANCELED}>
                 Hủy
               </MenuItem>
             </Select>
@@ -405,9 +405,9 @@ const ListGoodsReceivingNotes = (props) => {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            <MenuItem onClick={() => history.push("/proposal/add")}>
+            <MenuItem onClick={() => history.push("/orders")}>
               <AddIcon style={{ marginRight: 8 }} />
-              Tạo phiếu phiếu nhập kho
+              Tạo phiếu xuất kho
             </MenuItem>
             <MenuItem onClick={handleClose}>
               <PublishIcon style={{ marginRight: 8 }} />
@@ -430,7 +430,6 @@ const ListGoodsReceivingNotes = (props) => {
                 Mã phiếu
               </TableCell>
               <TableCell>Người tạo phiếu</TableCell>
-              <TableCell>Nhà cung cấp</TableCell>
               <TableCell style={{ width: 200 }} align="center">
                 Tình trạng
               </TableCell>
@@ -445,10 +444,10 @@ const ListGoodsReceivingNotes = (props) => {
           {/* <TableBody> */}
           {data &&
             data.map((row) => (
-              <ListGoodsReceivingNotesItem
+              <ListGoodsDeliveryNotesItem
                 key={row.id}
                 row={row}
-                onCancel={setSelectCancelGoodsReceivingNotes}
+                onCancel={setSelectCancelGoodsDeliveryNotes}
               />
             ))}
           {/* </TableBody> */}
@@ -473,7 +472,7 @@ const ListGoodsReceivingNotes = (props) => {
 
       <Dialog
         open={
-          selectCancelGoodsReceivingNotes && selectCancelGoodsReceivingNotes.id
+          selectCancelGoodsDeliveryNotes && selectCancelGoodsDeliveryNotes.id
             ? true
             : false
         }
@@ -493,11 +492,11 @@ const ListGoodsReceivingNotes = (props) => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancelGoodsReceivingNotes} color="primary">
+          <Button onClick={handleCancelGoodsDeliveryNotes} color="primary">
             Chọn
           </Button>
           <Button
-            onClick={handleCloseCancelGoodsReceivingNotes}
+            onClick={handleCloseCancelGoodsDeliveryNotes}
             color="primary"
           >
             Hủy
@@ -508,4 +507,4 @@ const ListGoodsReceivingNotes = (props) => {
   );
 };
 
-export default ListGoodsReceivingNotes;
+export default ListGoodsDeliveryNotes;

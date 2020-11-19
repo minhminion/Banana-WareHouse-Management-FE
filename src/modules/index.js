@@ -22,6 +22,9 @@ import ordersReducer from "./Orders/constants/reducer";
 import { MODULE_NAME as MODULE_INVENTORY_RECORD_FORMS } from "./InventoryRecordForms/constants/models";
 import inventoryRecordFormsReducer from "./InventoryRecordForms/constants/reducer";
 
+import { MODULE_NAME as MODULE_GOODS_DELIVERY_NOTES } from "./GoodsDeliveryNotes/constants/models";
+import goodsDeliveryNotesReducer from "./GoodsDeliveryNotes/constants/reducer";
+
 export const rootReducer = {
   [MODULE_AUTH]: authorReducer,
   [MODULE_MEMBER]: memberReducer,
@@ -31,6 +34,7 @@ export const rootReducer = {
   [MODULE_SUPPLIERS]: suppliersReducer,
   [MODULE_ORDERS]: ordersReducer,
   [MODULE_INVENTORY_RECORD_FORMS]: inventoryRecordFormsReducer,
+  [MODULE_GOODS_DELIVERY_NOTES]: goodsDeliveryNotesReducer,
 };
 
 export const rootModules = [
@@ -41,5 +45,6 @@ export const rootModules = [
   MODULE_GOODS_RECEIVING_NOTES,
   MODULE_SUPPLIERS,
   MODULE_ORDERS,
-  MODULE_INVENTORY_RECORD_FORMS
+  MODULE_INVENTORY_RECORD_FORMS,
+  MODULE_GOODS_DELIVERY_NOTES,
 ];

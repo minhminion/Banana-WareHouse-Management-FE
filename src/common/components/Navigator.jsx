@@ -24,6 +24,7 @@ import ExpandMore from "@material-ui/icons/ExpandMore";
 import CallReceivedIcon from "@material-ui/icons/CallReceived";
 import ReceiptIcon from "@material-ui/icons/Receipt";
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
+import CallMadeIcon from '@material-ui/icons/CallMade';
 import { useDispatch } from "react-redux";
 import { toggleCollapseNavigator } from "../redux/actions/uiActions";
 import { Link, useLocation } from "react-router-dom";
@@ -58,7 +59,7 @@ const menus = [
       {
         id: "Phiếu nhập hàng",
         icon: <CallReceivedIcon />,
-        link: "goods-receiving-notes",
+        link: "goodsReceivingNotes",
       },
     ],
   },
@@ -70,6 +71,11 @@ const menus = [
         id: "Đơn hàng",
         icon: <ReceiptIcon />,
         link: "orders",
+      },
+      {
+        id: "Phiếu xuất kho",
+        icon: <CallMadeIcon />,
+        link: "goodsDeliveryNotes",
       },
     ],
   },

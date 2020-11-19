@@ -4,7 +4,7 @@ import CreateGoodsReceivingNote from '../../modules/GoodsReceivingNotes/CreateGo
 
 const root = [
   {
-    link: "/goods-receiving-notes",
+    link: "/goodsReceivingNotes",
     title: "Danh sách phiếu nhập hàng",
   },
 ];

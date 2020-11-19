@@ -42,6 +42,10 @@ import InventoryRecordFormsPage from "../pages/InventoryRecordForms/InventoryRec
 import CreateInventoryRecordFormPage from "../pages/InventoryRecordForms/CreateInventoryRecordFormPage";
 import SingleInventoryRecordFormDetails from "../modules/InventoryRecordForms/SingleInventoryRecordFormDetails";
 import EditInventoryRecordFormPage from "../pages/InventoryRecordForms/EditInventoryRecordFormPage";
+import GoodsDeliveryNoteDetailsPage from "../pages/GoodsDeliveryNotes/GoodsDeliveryNoteDetailsPage";
+import ListGoodsDeliveryNotesPage from "../pages/GoodsDeliveryNotes/ListGoodsDeliveryNotesPage";
+import EditGoodsDeliveryNotePage from "../pages/GoodsDeliveryNotes/EditGoodsDeliveryNotePage";
+import AddGoodsDeliveryNotePage from "../pages/GoodsDeliveryNotes/AddGoodsDeliveryNotePage";
 
 const Routes = () => {
   const USER_ROLE = ENUMS.USER_ROLE;
@@ -107,12 +111,12 @@ const Routes = () => {
           {/* Goods Receiving Notes */}
           <Route
             exact
-            path="/goods-receiving-notes"
+            path="/goodsReceivingNotes"
             component={ListGoodsReceivingNotesPage}
           />
           <AuthRoute
             exact
-            path="/goods-receiving-notes/:purchaseProposalFormId/add"
+            path="/goodsReceivingNotes/:orderId/add"
             component={AddGoodsReceivingNotePage}
             roleName={roleName}
             acceptRoles={[
@@ -122,12 +126,12 @@ const Routes = () => {
           />
           <Route
             exact
-            path="/goods-receiving-notes/:goodsReceivingNotesId"
+            path="/goodsReceivingNotes/:goodsReceivingNotesId"
             component={GoodsReceivingNoteDetailsPage}
           />
           <AuthRoute
             exact
-            path="/goods-receiving-notes/:goodsReceivingNotesId/edit"
+            path="/goodsReceivingNotes/:goodsReceivingNotesId/edit"
             component={EditGoodsReceivingNotePage}
             roleName={roleName}
             acceptRoles={[
@@ -207,6 +211,38 @@ const Routes = () => {
               USER_ROLE.WarehouseKeeper,
               USER_ROLE.WarehouseKeeperManager,
               USER_ROLE.Boss,
+            ]}
+          />
+
+          {/* Goods Delivery Notes */}
+          <Route
+            exact
+            path="/goodsDeliveryNotes"
+            component={ListGoodsDeliveryNotesPage}
+          />
+          <AuthRoute
+            exact
+            path="/goodsDeliveryNotes/:orderId/add"
+            component={AddGoodsDeliveryNotePage}
+            roleName={roleName}
+            acceptRoles={[
+              USER_ROLE.WarehouseKeeper,
+              USER_ROLE.WarehouseKeeperManager,
+            ]}
+          />
+          <Route
+            exact
+            path="/goodsDeliveryNotes/:goodsDeliveryNoteId"
+            component={GoodsDeliveryNoteDetailsPage}
+          />
+          <AuthRoute
+            exact
+            path="/goodsDeliveryNotes/:goodsDeliveryNoteId/edit"
+            component={EditGoodsDeliveryNotePage}
+            roleName={roleName}
+            acceptRoles={[
+              USER_ROLE.WarehouseKeeper,
+              USER_ROLE.WarehouseKeeperManager,
             ]}
           />
 
