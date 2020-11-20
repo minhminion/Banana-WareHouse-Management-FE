@@ -38,14 +38,24 @@ import OrdersPage from "../pages/Orders/OrdersPage";
 import CreateOrder from "../modules/Orders/CreateOrder";
 import OrderDetailsPage from "../pages/Orders/OrderDetailsPage";
 import EditOrderPage from "../pages/Orders/EditOrderPage";
+
+// Inventory Record Pages
 import InventoryRecordFormsPage from "../pages/InventoryRecordForms/InventoryRecordFormsPage";
 import CreateInventoryRecordFormPage from "../pages/InventoryRecordForms/CreateInventoryRecordFormPage";
 import SingleInventoryRecordFormDetails from "../modules/InventoryRecordForms/SingleInventoryRecordFormDetails";
 import EditInventoryRecordFormPage from "../pages/InventoryRecordForms/EditInventoryRecordFormPage";
+
+// Goods Delivery Notes Pages
 import GoodsDeliveryNoteDetailsPage from "../pages/GoodsDeliveryNotes/GoodsDeliveryNoteDetailsPage";
 import ListGoodsDeliveryNotesPage from "../pages/GoodsDeliveryNotes/ListGoodsDeliveryNotesPage";
 import EditGoodsDeliveryNotePage from "../pages/GoodsDeliveryNotes/EditGoodsDeliveryNotePage";
 import AddGoodsDeliveryNotePage from "../pages/GoodsDeliveryNotes/AddGoodsDeliveryNotePage";
+
+// Product Remove Pages
+import ProductRemoveFormsPage from "../pages/ProductRemoveForms/ProductRemoveFormsPage";
+import CreateProductRemoveFormPage from "../pages/ProductRemoveForms/CreateProductRemoveFormPage";
+import SingleProductRemoveFormDetails from "../modules/ProductRemoveForms/SingleProductRemoveFormDetails";
+import EditProductRemoveFormPage from "../pages/ProductRemoveForms/EditProductRemoveFormPage";
 
 const Routes = () => {
   const USER_ROLE = ENUMS.USER_ROLE;
@@ -243,6 +253,40 @@ const Routes = () => {
             acceptRoles={[
               USER_ROLE.WarehouseKeeper,
               USER_ROLE.WarehouseKeeperManager,
+            ]}
+          />
+
+          {/* Product Remove Forms */}
+          <Route
+            exact
+            path="/productRemoveForms"
+            component={ProductRemoveFormsPage}
+          />
+          <AuthRoute
+            exact
+            path="/productRemoveForms/add"
+            component={CreateProductRemoveFormPage}
+            roleName={roleName}
+            acceptRoles={[
+              USER_ROLE.WarehouseKeeper,
+              USER_ROLE.WarehouseKeeperManager,
+              USER_ROLE.Boss,
+            ]}
+          />
+          <Route
+            exact
+            path="/productRemoveForms/:productRemoveFormId"
+            component={SingleProductRemoveFormDetails}
+          />
+          <AuthRoute
+            exact
+            path="/productRemoveForms/:productRemoveFormId/edit"
+            component={EditProductRemoveFormPage}
+            roleName={roleName}
+            acceptRoles={[
+              USER_ROLE.WarehouseKeeper,
+              USER_ROLE.WarehouseKeeperManager,
+              USER_ROLE.Boss,
             ]}
           />
 

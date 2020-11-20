@@ -40,12 +40,13 @@ import { useLocation, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import handler from "./constants/handler";
 import { MODULE_NAME } from "./constants/models";
+import { MODULE_NAME as MODULE_AUTHOR } from "../Author/constants/models";
 import { useSnackbar } from "notistack";
 import ListOrdersItem from "./common/ListOrdersItem";
 import handler from "./constants/handler";
 import { ENUMS } from "../../common/constants";
 import { Form } from "../../common/hooks/useForm";
-import { ORDER_STATUS } from "../../common/constants/enums";
+import { ORDER_STATUS, USER_ROLE } from "../../common/constants/enums";
 
 const useStyles = makeStyles((theme) => ({
   select: {
@@ -176,6 +177,7 @@ const ListOrders = (props) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const editorRef = useRef(null);
+  const { roleName } = useSelector((state) => state[MODULE_AUTHOR]);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectCancelOrders, setSelectCancelOrders] = useState({});
@@ -201,10 +203,10 @@ const ListOrders = (props) => {
     getContentAnchorEl: null,
   };
 
-  const { fetchOrders, editOrder } = useMemo(
-    () => handler(dispatch, props),
-    [dispatch, props]
-  );
+  const { fetchOrders, editOrder } = useMemo(() => handler(dispatch, props), [
+    dispatch,
+    props,
+  ]);
 
   const { data, currentPage, totalPages, totalItems } = useSelector(
     (state) => state[MODULE_NAME].data
@@ -379,7 +381,7 @@ const ListOrders = (props) => {
             >
               <MenuItem value={0}>Tất cả trạng thái</MenuItem>
               <MenuItem value={ORDERS_STATUS.NEW}>Mới tạo</MenuItem>
-              <MenuItem value={ORDERS_STATUS.PROCESSING}>Chờ xác nhận</MenuItem>
+              <MenuItem value={ORDERS_STATUS.PROCESSING}>Đang xử lý</MenuItem>
               <MenuItem value={ORDERS_STATUS.EXPORTED}>Đã xuất kho</MenuItem>
               <MenuItem value={ORDERS_STATUS.DONE}>Hoàn tất</MenuItem>
               <MenuItem value={ORDERS_STATUS.CANCELED}>Đã hủy</MenuItem>
@@ -427,10 +429,12 @@ const ListOrders = (props) => {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            <MenuItem onClick={() => history.push(`/${MODULE_NAME}/add`)}>
-              <AddIcon style={{ marginRight: 8 }} />
-              Tạo đơn hàng
-            </MenuItem>
+            {[USER_ROLE.Sale, USER_ROLE.Boss].indexOf(roleName) !== -1 && (
+              <MenuItem onClick={() => history.push(`/${MODULE_NAME}/add`)}>
+                <AddIcon style={{ marginRight: 8 }} />
+                Tạo đơn hàng
+              </MenuItem>
+            )}
             <MenuItem onClick={handleClose}>
               <PublishIcon style={{ marginRight: 8 }} />
               Import XLS
@@ -447,16 +451,17 @@ const ListOrders = (props) => {
         <Table className={classes.tableRoot} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell style={{ width: 120 }} align="left">
+              <TableCell style={{ width: 80 }} align="left"></TableCell>
+              <TableCell style={{ width: 120 }} align="center">
                 Mã đơn hàng
               </TableCell>
               <TableCell style={{ width: 120 }} align="left">
                 Người tạo phiếu
               </TableCell>
               <TableCell style={{ width: 180 }} align="left">
-                Tổng tiền
+                Tổng tiền (đ)
               </TableCell>
-              <TableCell style={{ width: 200 }} align="left">
+              <TableCell style={{ width: 200 }} align="center">
                 Ngày tạo
               </TableCell>
               <TableCell align="center" style={{ width: 100 }}>
@@ -497,11 +502,7 @@ const ListOrders = (props) => {
       </Box>
 
       <Dialog
-        open={
-          selectCancelOrders && selectCancelOrders.id
-            ? true
-            : false
-        }
+        open={selectCancelOrders && selectCancelOrders.id ? true : false}
         className={classes.dialogRoot}
         fullWidth
         maxWidth="md"
@@ -518,11 +519,7 @@ const ListOrders = (props) => {
           />
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={handleCancelOrders}
-          >
-            Hủy
-          </Button>
+          <Button onClick={handleCancelOrders}>Hủy</Button>
           <Button onClick={handleCancelOrders} color="primary">
             Xác nhận
           </Button>

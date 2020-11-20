@@ -103,7 +103,7 @@ const ListSuppliersItem = ({ row, onCancel }) => {
   return (
     <TableBody>
       <TableRow style={{ marginBottom: 0 }}>
-        <TableCell>{row.id}</TableCell>
+        <TableCell align="center">{row.id}</TableCell>
         <TableCell align="left">
           <strong>{`${row.name}` || "Lưu Bảo Minh"}</strong>
         </TableCell>
@@ -111,7 +111,7 @@ const ListSuppliersItem = ({ row, onCancel }) => {
           <div>
             <strong>{row.representative || "Min da poet"}</strong>
             <Typography variant="body2">
-              {row.supplierId || "minhminion2015@gmail.com"}
+              {row.email || "minhminion2015@gmail.com"}
             </Typography>
           </div>
         </TableCell>

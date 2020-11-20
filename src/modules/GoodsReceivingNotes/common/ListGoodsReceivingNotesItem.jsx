@@ -137,6 +137,7 @@ const ListGoodsReceivingNotesItem = ({ row, onCancel }) => {
           </IconButton>
         </TableCell> */}
         <TableCell align="center">{row.id}</TableCell>
+        <TableCell align="center">{row.purchaseProposalFormId}</TableCell>
         <TableCell component="th" scope="row">
           <div>
             <strong>

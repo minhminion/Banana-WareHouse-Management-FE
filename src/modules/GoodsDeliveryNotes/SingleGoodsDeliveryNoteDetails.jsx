@@ -129,9 +129,7 @@ const SingleGoodsDeliveryNoteDetails = (props) => {
     if (deleteProduct.length > 0) {
       const result = await deleteGoodsDeliveryDetails({
         goodsDeliveryNoteId: +goodsDeliveryNoteId,
-        goodsDeliveryDetailIds: [
-          ...deleteProduct.map((product) => product.id),
-        ],
+        goodsDeliveryDetailIds: [...deleteProduct.map((product) => product.id)],
       });
       if (result !== true) {
         errors.push(result?.ApiErr || result);
@@ -167,8 +165,11 @@ const SingleGoodsDeliveryNoteDetails = (props) => {
       orderDetails={orderDetails}
       isEdit={
         isEdit &&
-        (initialValues?.status === ENUMS.PROPOSAL_STATUS.NEW ||
-          initialValues?.status === ENUMS.PROPOSAL_STATUS.PROCESSING)
+        [
+          ENUMS.GOOD_RECEIVING_STATUS.NEW,
+          ENUMS.GOOD_RECEIVING_STATUS.PROCESSING,
+          ENUMS.GOOD_RECEIVING_STATUS.APPROVED,
+        ].indexOf(initialValues.status) !== -1
       }
       onSubmit={(values) => isEdit && handleEditGoodsDeliveryNotes(values)}
     />

@@ -124,7 +124,7 @@ const ListInventoryRecordFormsItem = ({ row, onCancel }) => {
   return (
     <TableBody>
       <TableRow style={{ marginBottom: 0 }}>
-        <TableCell>{row.id}</TableCell>
+        <TableCell align="center">{row.id}</TableCell>
         <TableCell component="th" scope="row">
           <div>
             <strong>

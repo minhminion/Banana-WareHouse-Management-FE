@@ -426,9 +426,10 @@ const ListGoodsReceivingNotes = (props) => {
           <TableHead>
             <TableRow>
               {/* <TableCell style={{ width: 80 }} align="left"></TableCell> */}
-              <TableCell style={{ width: 180 }} align="center">
+              <TableCell style={{ width: 120 }} align="center">
                 Mã phiếu
               </TableCell>
+              <TableCell style={{ width: 150 }} align="center">Mã phiếu đề nghị</TableCell>
               <TableCell>Người tạo phiếu</TableCell>
               <TableCell>Nhà cung cấp</TableCell>
               <TableCell style={{ width: 200 }} align="center">

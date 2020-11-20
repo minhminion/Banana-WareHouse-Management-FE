@@ -360,9 +360,7 @@ const ListGoodsDeliveryNotes = (props) => {
               <MenuItem value={goodsDeliveryNotesStatus.DONE}>
                 Hoàn tất
               </MenuItem>
-              <MenuItem value={goodsDeliveryNotesStatus.CANCELED}>
-                Hủy
-              </MenuItem>
+              <MenuItem value={goodsDeliveryNotesStatus.CANCELED}>Hủy</MenuItem>
             </Select>
           </Box>
           <Box p={1.5} mr={1} clone>
@@ -426,9 +424,10 @@ const ListGoodsDeliveryNotes = (props) => {
           <TableHead>
             <TableRow>
               {/* <TableCell style={{ width: 80 }} align="left"></TableCell> */}
-              <TableCell style={{ width: 180 }} align="center">
+              <TableCell style={{ width: 120 }} align="center">
                 Mã phiếu
               </TableCell>
+              <TableCell style={{ width: 120 }} align="center">Mã hóa đơn</TableCell>
               <TableCell>Người tạo phiếu</TableCell>
               <TableCell style={{ width: 200 }} align="center">
                 Tình trạng
@@ -495,10 +494,7 @@ const ListGoodsDeliveryNotes = (props) => {
           <Button onClick={handleCancelGoodsDeliveryNotes} color="primary">
             Chọn
           </Button>
-          <Button
-            onClick={handleCloseCancelGoodsDeliveryNotes}
-            color="primary"
-          >
+          <Button onClick={handleCloseCancelGoodsDeliveryNotes} color="primary">
             Hủy
           </Button>
         </DialogActions>

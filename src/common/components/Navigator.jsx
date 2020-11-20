@@ -47,6 +47,11 @@ const menus = [
         icon: <AssignmentTurnedInIcon />,
         link: "inventoryRecordForms",
       },
+      {
+        id: "Phiếu hủy sản phẩm",
+        icon: <AssignmentTurnedInIcon />,
+        link: "productRemoveForms",
+      },
 
       { id: "Nhân viên", icon: <GroupIcon />, link: "members" },
     ],
@@ -99,6 +104,9 @@ const styles = (theme) => ({
     color: theme.palette.common.white,
   },
   item: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    justifyContent: "center",
     minHeight: 45,
     whiteSpace: "nowrap",
     paddingTop: theme.spacing(1),
@@ -117,6 +125,7 @@ const styles = (theme) => ({
     paddingBottom: theme.spacing(2),
   },
   firebase: {
+    justifyContent: "center",
     float: "left",
     fontSize: 24,
     color: theme.palette.common.white,
@@ -125,6 +134,7 @@ const styles = (theme) => ({
     color: theme.palette.primary.main,
   },
   itemCollapseItem: {
+    padding: 0,
     width: "auto",
     borderRadius: theme.spacing(0.5),
     "& .MuiListItemIcon-root": {
@@ -248,6 +258,7 @@ function Navigator(props) {
           >
             <ListItem
               button
+              disableGutters
               onClick={() => subNav && handleOpenSub(childId)}
               className={clsx(
                 classes.item,
@@ -302,7 +313,7 @@ function Navigator(props) {
     <Drawer variant="permanent" {...other}>
       <List disablePadding className={classes.logo}>
         <Link to="/" style={{ textDecoration: "none" }}>
-          <ListItem button className={clsx(classes.firebase)}>
+          <ListItem disableGutters button className={clsx(classes.firebase)}>
             <ListItemIcon className={classes.itemIcon}>
               <Avatar
                 alt="Remy Sharp"

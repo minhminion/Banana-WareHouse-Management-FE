@@ -23,10 +23,12 @@ import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import InfoIcon from "@material-ui/icons/Info";
 
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { ENUMS } from "../../../common/constants";
 import { useSelector } from "react-redux";
 import { MODULE_NAME as MODULE_AUTHOR } from "../../Author/constants/models";
+import { MODULE_NAME as MODULE_GOODS_RECEIVING_NOTES } from "../../GoodsReceivingNotes/constants/models";
+import { formatNumberToVND } from "../../../common/helper";
 
 const useStyles = makeStyles((theme) => ({
   chip: {
@@ -75,6 +77,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ListProposalItem = ({ row, onCancel }) => {
   const theme = useTheme();
+  const history = useHistory();
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const { roleName } = useSelector((state) => state[MODULE_AUTHOR]);
@@ -96,6 +99,37 @@ const ListProposalItem = ({ row, onCancel }) => {
       (rowStatus === ENUMS.PROPOSAL_STATUS.NEW ||
         rowStatus === ENUMS.PROPOSAL_STATUS.PROCESSING)
     );
+  };
+
+  const renderGoodsReceivingNotesStatus = (status) => {
+    const goodsReceivingNotesStatus = ENUMS.GOOD_RECEIVING_STATUS;
+    let label = "Không tìm thấy";
+    let style = "notfound";
+    switch (status) {
+      case goodsReceivingNotesStatus.NEW:
+        label = "Mới";
+        style = "new";
+        break;
+      case goodsReceivingNotesStatus.PENDING:
+        label = "Chờ xác nhận";
+        style = "pending";
+        break;
+      case goodsReceivingNotesStatus.APPROVED:
+        label = "Xác nhận";
+        style = "approved";
+        break;
+      case goodsReceivingNotesStatus.DONE:
+        label = "Hoàn tất";
+        style = "done";
+        break;
+      case goodsReceivingNotesStatus.CANCELED:
+        label = "Hủy";
+        style = "canceled";
+        break;
+      default:
+        break;
+    }
+    return <Chip className={clsx(classes.chip, style)} label={label} />;
   };
 
   const renderStatus = (status) => {
@@ -141,7 +175,7 @@ const ListProposalItem = ({ row, onCancel }) => {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell align="left">{row.id}</TableCell>
+        <TableCell align="center">{row.id}</TableCell>
         <TableCell component="th" scope="row">
           <div>
             <strong>
@@ -199,25 +233,51 @@ const ListProposalItem = ({ row, onCancel }) => {
               >
                 <TableHead>
                   <TableRow>
-                    <TableCell>Mã phiếu nhập kho</TableCell>
-                    <TableCell>Tình trạng</TableCell>
-                    <TableCell align="left">Ngày tạo</TableCell>
+                    <TableCell style={{ width: 200 }} align="center">
+                      Mã phiếu nhập kho
+                    </TableCell>
+                    <TableCell>Nhà cung cấp</TableCell>
+                    <TableCell align="center">Tình trạng</TableCell>
+                    <TableCell align="center">Ngày tạo</TableCell>
                     <TableCell align="left">Tổng tiền (đ)</TableCell>
                     <TableCell align="left"></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  <TableRow>
-                    <TableCell>1</TableCell>
-                    <TableCell>Đang thực hiện</TableCell>
-                    <TableCell align="left">20/11</TableCell>
-                    <TableCell align="left">1,000,000</TableCell>
-                    <TableCell align="left">
-                      <IconButton>
-                        <ArrowForwardIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
+                  {row.goodsReceivingNotes?.length > 0 &&
+                    row.goodsReceivingNotes.map((note) => (
+                      <TableRow key={note.id}>
+                        <TableCell align="center">{note.id}</TableCell>
+                        <TableCell>
+                          <div>
+                            <strong>
+                              {note.supplierName || "Min da poet"}
+                            </strong>
+                            {note.supplierId !== 0 && (
+                              <Typography variant="body2">
+                                #{note.supplierId || "minhminion2015@gmail.com"}
+                              </Typography>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell align="center">
+                          {renderGoodsReceivingNotesStatus(note.status)}
+                        </TableCell>
+                        <TableCell align="center">
+                          <strong>
+                            {dayjs(note.createdAt).format("DD/MM/YYYY")}
+                          </strong>
+                        </TableCell>
+                        <TableCell align="left">
+                          {formatNumberToVND(note.totalPrice)}
+                        </TableCell>
+                        <TableCell align="left">
+                          <IconButton onClick={() => history.push(`/${MODULE_GOODS_RECEIVING_NOTES}/${note.id}`)}>
+                            <ArrowForwardIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             </Box>

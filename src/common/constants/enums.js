@@ -58,3 +58,11 @@ export const INVENTORY_RECORD_STATUS = {
   DONE: 4,
   CANCELED: 5,
 };
+
+export const PRODUCT_REMOVE_STATUS = {
+  NEW: 1,
+  PENDING: 2,
+  APPROVED: 3,
+  DONE: 4,
+  CANCELED: 5,
+};

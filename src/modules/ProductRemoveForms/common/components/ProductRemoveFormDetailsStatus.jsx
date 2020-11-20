@@ -10,6 +10,7 @@ import { ENUMS } from "../../../../common/constants";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { MODULE_NAME as MODULE_AUTHOR } from "../../../Author/constants/models";
 import { useSelector } from "react-redux";
+import { PRODUCT_REMOVE_STATUS } from "../../../../common/constants/enums";
 
 const useStyles = makeStyles((theme) => ({
   select: {
@@ -31,14 +32,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GoodsDeliveryNoteStatus = ({
+const ProductRemoveFormDetailsStatus = ({
   classes: classesStyle,
   isEdit,
   style,
   value,
   onChange,
 }) => {
-  const GOOD_DELIVERY_STATUS = ENUMS.GOOD_DELIVERY_STATUS;
+  const PRODUCT_REMOVE_STATUS = ENUMS.PRODUCT_REMOVE_STATUS;
   const USER_ROLE = ENUMS.USER_ROLE;
   const classes = useStyles();
 
@@ -62,15 +63,15 @@ const GoodsDeliveryNoteStatus = ({
 
   const getMenuContent = (status) => {
     switch (status) {
-      case GOOD_DELIVERY_STATUS.NEW:
+      case PRODUCT_REMOVE_STATUS.NEW:
         return "Mới tạo";
-      case GOOD_DELIVERY_STATUS.PENDING:
+      case PRODUCT_REMOVE_STATUS.PENDING:
         return "Chờ xác nhận";
-      case GOOD_DELIVERY_STATUS.APPROVED:
+      case PRODUCT_REMOVE_STATUS.APPROVED:
         return "Đã xác nhận";
-      case GOOD_DELIVERY_STATUS.DONE:
+      case PRODUCT_REMOVE_STATUS.DONE:
         return "Hoàn tất";
-      case GOOD_DELIVERY_STATUS.CANCELED:
+      case PRODUCT_REMOVE_STATUS.CANCELED:
         return "Hủy";
       default:
         return "Unknown step";
@@ -78,40 +79,36 @@ const GoodsDeliveryNoteStatus = ({
   };
 
   const renderMenuItem = (status) => {
-    let listMenu = Object.values(GOOD_DELIVERY_STATUS);
+    let listMenu = Object.values(PRODUCT_REMOVE_STATUS);
     switch (status) {
-      case GOOD_DELIVERY_STATUS.NEW:
-        listMenu = [
-          GOOD_DELIVERY_STATUS.NEW,
-          GOOD_DELIVERY_STATUS.PENDING,
-          GOOD_DELIVERY_STATUS.CANCELED,
-        ];
+      case PRODUCT_REMOVE_STATUS.NEW:
+        listMenu = [PRODUCT_REMOVE_STATUS.NEW, PRODUCT_REMOVE_STATUS.PENDING];
         break;
-      case GOOD_DELIVERY_STATUS.PENDING:
+      case PRODUCT_REMOVE_STATUS.PENDING:
         if (
           [USER_ROLE.Boss, USER_ROLE.WarehouseKeeperManager].indexOf(
             roleName
           ) !== -1
         ) {
           listMenu = [
-            GOOD_DELIVERY_STATUS.NEW,
-            GOOD_DELIVERY_STATUS.PENDING,
-            GOOD_DELIVERY_STATUS.APPROVED,
-            GOOD_DELIVERY_STATUS.CANCELED,
+            PRODUCT_REMOVE_STATUS.NEW,
+            PRODUCT_REMOVE_STATUS.PENDING,
+            PRODUCT_REMOVE_STATUS.APPROVED,
+            PRODUCT_REMOVE_STATUS.CANCELED,
           ];
         } else {
           listMenu = [
-            GOOD_DELIVERY_STATUS.NEW,
-            GOOD_DELIVERY_STATUS.PENDING,
-            GOOD_DELIVERY_STATUS.CANCELED,
+            PRODUCT_REMOVE_STATUS.NEW,
+            PRODUCT_REMOVE_STATUS.PENDING,
+            PRODUCT_REMOVE_STATUS.CANCELED,
           ];
         }
         break;
-      case GOOD_DELIVERY_STATUS.APPROVED:
+      case PRODUCT_REMOVE_STATUS.APPROVED:
         listMenu = [
-          GOOD_DELIVERY_STATUS.APPROVED,
-          GOOD_DELIVERY_STATUS.DONE,
-          GOOD_DELIVERY_STATUS.CANCELED,
+          PRODUCT_REMOVE_STATUS.APPROVED,
+          PRODUCT_REMOVE_STATUS.DONE,
+          PRODUCT_REMOVE_STATUS.CANCELED,
         ];
         break;
       default:
@@ -137,8 +134,9 @@ const GoodsDeliveryNoteStatus = ({
       <Select
         disabled={
           !isEdit ||
-          (value === GOOD_DELIVERY_STATUS.CANCELED ||
-            value === GOOD_DELIVERY_STATUS.DONE)
+          (value !== PRODUCT_REMOVE_STATUS.NEW &&
+            value !== PRODUCT_REMOVE_STATUS.PENDING &&
+            value !== PRODUCT_REMOVE_STATUS.APPROVED)
         }
         disableUnderline
         name="status"
@@ -155,4 +153,4 @@ const GoodsDeliveryNoteStatus = ({
   );
 };
 
-export default GoodsDeliveryNoteStatus;
+export default ProductRemoveFormDetailsStatus;

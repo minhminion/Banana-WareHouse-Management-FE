@@ -23,12 +23,12 @@ import {
   formatNumberToReadable,
   formatNumberToVND,
 } from "../../../../common/helper";
-import productHandler from "../../../Products/constants/handler";
-import { useDispatch } from "react-redux";
+import handler from "../../../Products/constants/handler";
+import { useSelector, useDispatch } from "react-redux";
+import { MODULE_NAME as MODULE_PRODUCT } from "../../../Products/constants/models";
 import Pagination from "@material-ui/lab/Pagination";
 import { useCallback } from "react";
-import { uniqBy, difference } from "lodash";
-import { fetchProductsSuccess } from "../../../Products/constants/actions";
+import { uniqBy } from "lodash";
 
 const useStyles = makeStyles((theme) => ({
   tableRoot: {
@@ -99,11 +99,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const ListProductModal = (props) => {
   const {
-    listProducts = [],
     onClose,
     open = false,
     LIMIT_PER_PAGE = 4,
-    initialValue = [],
+    initialValue,
     onChange,
   } = props;
   const theme = useTheme();
@@ -113,18 +112,13 @@ const ListProductModal = (props) => {
   const [filter, setFilter] = useState({
     page: 1,
   });
-  const [isFetch, setIsFetch] = useState(true);
-  const [productsData, setProductsData] = useState({
-    data: [],
-    currentPage: 1,
-    totalPages: 1,
-    totalItems: 0,
-  });
-  const { data, currentPage, totalPages, totalItems } = productsData;
-  const { fetchProduct } = useMemo(() => productHandler(dispatch, props), [
+  const { fetchProduct } = useMemo(() => handler(dispatch, props), [
     dispatch,
     props,
   ]);
+  const { data, currentPage, totalPages, totalItems } = useSelector(
+    (state) => state[MODULE_PRODUCT].data
+  );
 
   const handleFilter = useCallback((e, condition = "=") => {
     const { name, value } = e.target;
@@ -147,65 +141,32 @@ const ListProductModal = (props) => {
   }, []);
 
   useEffect(() => {
-    let filterById = [];
     if (initialValue?.length > 0) {
       const value = initialValue.reduce((accumulator, currentValue) => {
-        if (currentValue.action !== "deleted") {
+        if (currentValue.action !== "deleted")
           return accumulator.concat(currentValue["productId"]);
-        }
         return accumulator;
       }, []);
-
-      filterById = difference(listProducts, value);
-    } else {
-      filterById = listProducts;
-    }
-
-    if (filterById?.length > 0) {
       handleFilter(
         {
           target: {
             name: "id",
-            value: filterById.join(","),
+            value: value.join(","),
           },
         },
-        "in"
+        "notin"
       );
-      setIsFetch(true);
-    } else {
-      setProductsData([]);
-      setIsFetch(false);
     }
-  }, [initialValue, handleFilter, listProducts]);
+  }, [initialValue, handleFilter]);
 
   useEffect(() => {
-    async function fetchProducts(params) {
-      const result = await fetchProduct(params);
-      if (result.data) {
-        setProductsData(result);
-      }
-    }
-    if (open && filter && isFetch) {
-      fetchProducts({
+    if (open && filter) {
+      fetchProduct({
         ...filter,
         limit: LIMIT_PER_PAGE,
       });
     }
-  }, [filter, open, isFetch, fetchProduct, LIMIT_PER_PAGE]);
-
-  useEffect(() => {
-    if (listProducts) {
-      handleFilter(
-        {
-          target: {
-            name: "id",
-            value: listProducts.join(","),
-          },
-        },
-        "in"
-      );
-    }
-  }, [listProducts]);
+  }, [filter, open, fetchProduct, LIMIT_PER_PAGE]);
 
   const handleChangePagination = (e, newPage) => {
     setFilter((prev) => ({
@@ -219,7 +180,7 @@ const ListProductModal = (props) => {
       const newData = data.reduce((result, product) => {
         return result.concat({
           description: "",
-          quantity: 1,
+          removedQuantity: 1,
           productId: product.id,
           product: product,
         });
@@ -244,7 +205,7 @@ const ListProductModal = (props) => {
     const selectProduct = {
       description: "",
       action: "created",
-      quantity: 1,
+      removedQuantity: 1,
       productId: product.id,
       product: product,
     };
@@ -289,7 +250,7 @@ const ListProductModal = (props) => {
 
       onChange({
         target: {
-          name: "goodsDeliveryDetails",
+          name: "productRemoveDetails",
           value: newValues,
         },
       });
