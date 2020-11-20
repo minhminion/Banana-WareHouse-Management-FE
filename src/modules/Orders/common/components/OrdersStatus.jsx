@@ -60,7 +60,7 @@ const OrdersStatus = ({
       case ORDER_STATUS.NEW:
         return "Mới tạo";
       case ORDER_STATUS.PROCESSING:
-        return "Chờ xác nhận";
+        return "Đang xử lý";
       case ORDER_STATUS.EXPORTED:
         return "Đã xuất kho";
       case ORDER_STATUS.DONE:

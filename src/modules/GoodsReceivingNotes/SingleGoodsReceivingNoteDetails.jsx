@@ -73,8 +73,8 @@ const SingleGoodsReceivingNoteDetails = (props) => {
   }, [initialValues]);
 
   useEffect(() => {
-    fetchSuppliers()
-  },[])
+    fetchSuppliers();
+  }, []);
 
   const handleEditGoodsReceivingNotes = async (values) => {
     enqueueSnackbar(`Đang cập nhật sản phẩm...`, {
@@ -180,8 +180,8 @@ const SingleGoodsReceivingNoteDetails = (props) => {
       proposalDetails={proposalDetails}
       isEdit={
         isEdit &&
-        (initialValues?.status === ENUMS.PROPOSAL_STATUS.NEW ||
-          initialValues?.status === ENUMS.PROPOSAL_STATUS.PROCESSING)
+        (initialValues?.status === ENUMS.GOOD_RECEIVING_STATUS.NEW ||
+          initialValues?.status === ENUMS.GOOD_RECEIVING_STATUS.PROCESSING)
       }
       onSubmit={(values) => isEdit && handleEditGoodsReceivingNotes(values)}
     />

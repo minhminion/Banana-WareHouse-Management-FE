@@ -39,11 +39,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { MODULE_NAME } from "./constants/models";
 import { MODULE_NAME as MODULE_AUTHOR } from "../Author/constants/models";
 import { useSnackbar } from "notistack";
-import ListInventoryRecordFormsItem from "./common/ListInventoryRecordFormsItem";
+import ListProductRemoveFormsItem from "./common/ListProductRemoveFormsItem";
 import handler from "./constants/handler";
 import { ENUMS } from "../../common/constants";
 import { Form } from "../../common/hooks/useForm";
-import { INVENTORY_RECORD_STATUS } from "../../common/constants/enums";
+import { PRODUCT_REMOVE_STATUS } from "../../common/constants/enums";
 
 const useStyles = makeStyles((theme) => ({
   select: {
@@ -169,7 +169,7 @@ const useStyles = makeStyles((theme) => ({
 const USER_ROLE = ENUMS.USER_ROLE
 
 const LIMIT_PER_PAGE = 5;
-const ListInventoryRecordForms = (props) => {
+const ListProductRemoveForms = (props) => {
   const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -177,8 +177,8 @@ const ListInventoryRecordForms = (props) => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [anchorEl, setAnchorEl] = useState(null);
   const [
-    selectCancelInventoryRecordForms,
-    setSelectCancelInventoryRecordForms,
+    selectCancelProductRemoveForms,
+    setSelectCancelProductRemoveForms,
   ] = useState({});
   const [filter, setFilter] = useState({
     page: 1,
@@ -202,7 +202,7 @@ const ListInventoryRecordForms = (props) => {
     getContentAnchorEl: null,
   };
 
-  const { fetchInventoryRecordForms, deleteInventoryRecordForm } = useMemo(
+  const { fetchProductRemoveForms, deleteProductRemoveForm } = useMemo(
     () => handler(dispatch, props),
     [dispatch, props]
   );
@@ -221,7 +221,7 @@ const ListInventoryRecordForms = (props) => {
 
   useEffect(() => {
     if (filter) {
-      fetchInventoryRecordForms({
+      fetchProductRemoveForms({
         ...filter,
         limit: LIMIT_PER_PAGE,
       });
@@ -310,21 +310,21 @@ const ListInventoryRecordForms = (props) => {
     });
   };
 
-  const handleCloseCancelInventoryRecordForms = () => {
-    setSelectCancelInventoryRecordForms({});
+  const handleCloseCancelProductRemoveForms = () => {
+    setSelectCancelProductRemoveForms({});
   };
 
-  const handleCancelInventoryRecordForms = async () => {
+  const handleCancelProductRemoveForms = async () => {
     if (
-      selectCancelInventoryRecordForms &&
-      selectCancelInventoryRecordForms.id
+      selectCancelProductRemoveForms &&
+      selectCancelProductRemoveForms.id
     ) {
-      const result = await deleteInventoryRecordForm(
-        selectCancelInventoryRecordForms.id
+      const result = await deleteProductRemoveForm(
+        selectCancelProductRemoveForms.id
       );
       if (result === true) {
-        handleCloseCancelInventoryRecordForms();
-        fetchInventoryRecordForms({
+        handleCloseCancelProductRemoveForms();
+        fetchProductRemoveForms({
           ...filter,
           limit: LIMIT_PER_PAGE,
         });
@@ -350,7 +350,7 @@ const ListInventoryRecordForms = (props) => {
               <InputBase
                 name="name"
                 className={classes.inputBase}
-                placeholder="Tên nhà cung cấp ..."
+                placeholder="Tên người người tạo ..."
                 inputProps={{ "aria-label": "search by creator" }}
               />
               <IconButton
@@ -375,17 +375,17 @@ const ListInventoryRecordForms = (props) => {
               value={filter["filters[status]"] || 0}
             >
               <MenuItem value={0}>Tất cả trạng thái</MenuItem>
-              <MenuItem value={INVENTORY_RECORD_STATUS.NEW}>Mới</MenuItem>
-              <MenuItem value={INVENTORY_RECORD_STATUS.PENDING}>
+              <MenuItem value={PRODUCT_REMOVE_STATUS.NEW}>Mới</MenuItem>
+              <MenuItem value={PRODUCT_REMOVE_STATUS.PENDING}>
                 Chờ xác nhận
               </MenuItem>
-              <MenuItem value={INVENTORY_RECORD_STATUS.APPROVED}>
+              <MenuItem value={PRODUCT_REMOVE_STATUS.APPROVED}>
                 Xác nhận
               </MenuItem>
-              <MenuItem value={INVENTORY_RECORD_STATUS.DONE}>
+              <MenuItem value={PRODUCT_REMOVE_STATUS.DONE}>
                 Hoàn tất
               </MenuItem>
-              <MenuItem value={INVENTORY_RECORD_STATUS.CANCELED}>
+              <MenuItem value={PRODUCT_REMOVE_STATUS.CANCELED}>
                 Hủy
               </MenuItem>
             </Select>
@@ -435,7 +435,7 @@ const ListInventoryRecordForms = (props) => {
             {[USER_ROLE.WarehouseKeeper, USER_ROLE.WarehouseKeeperManager, USER_ROLE.Boss].indexOf(roleName) !== -1 && (
               <MenuItem onClick={() => history.push(`/${MODULE_NAME}/add`)}>
                 <AddIcon style={{ marginRight: 8 }} />
-                Tạo phiếu kiểm kho
+                Tạo phiếu hủy sản phẩm
               </MenuItem>
             )}
             <MenuItem onClick={handleClose}>
@@ -474,10 +474,10 @@ const ListInventoryRecordForms = (props) => {
           {/* <TableBody> */}
           {data &&
             data.map((row) => (
-              <ListInventoryRecordFormsItem
+              <ListProductRemoveFormsItem
                 key={row.id}
                 row={row}
-                onCancel={setSelectCancelInventoryRecordForms}
+                onCancel={setSelectCancelProductRemoveForms}
               />
             ))}
           {/* </TableBody> */}
@@ -502,8 +502,8 @@ const ListInventoryRecordForms = (props) => {
 
       <Dialog
         open={
-          selectCancelInventoryRecordForms &&
-          selectCancelInventoryRecordForms.id
+          selectCancelProductRemoveForms &&
+          selectCancelProductRemoveForms.id
             ? true
             : false
         }
@@ -511,10 +511,10 @@ const ListInventoryRecordForms = (props) => {
         fullWidth
         maxWidth="sm"
       >
-        <DialogTitle>Xác nhận hủy phiếu kiểm kho này ?</DialogTitle>
+        <DialogTitle>Xác nhận hủy phiếu hủy sản phẩm này ?</DialogTitle>
         <DialogActions>
-          <Button onClick={handleCloseCancelInventoryRecordForms}>Hủy</Button>
-          <Button onClick={handleCancelInventoryRecordForms} color="primary">
+          <Button onClick={handleCloseCancelProductRemoveForms}>Hủy</Button>
+          <Button onClick={handleCancelProductRemoveForms} color="primary">
             Xác nhận
           </Button>
         </DialogActions>
@@ -523,4 +523,4 @@ const ListInventoryRecordForms = (props) => {
   );
 };
 
-export default ListInventoryRecordForms;
+export default ListProductRemoveForms;

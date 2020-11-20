@@ -430,7 +430,7 @@ const ListSuppliers = (props) => {
         <Table className={classes.tableRoot} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell style={{ width: 100 }} align="left">
+              <TableCell style={{ width: 100 }} align="center">
                 Mã NCC
               </TableCell>
               <TableCell style={{ width: 180 }} align="left">

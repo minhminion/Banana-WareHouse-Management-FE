@@ -393,7 +393,7 @@ const ListProposal = (props) => {
           <TableHead>
             <TableRow>
               <TableCell style={{ width: 80 }} align="left"></TableCell>
-              <TableCell style={{ width: 180 }} align="left">
+              <TableCell style={{ width: 120}} align="center">
                 Mã phiếu
               </TableCell>
               <TableCell>Người tạo phiếu</TableCell>
