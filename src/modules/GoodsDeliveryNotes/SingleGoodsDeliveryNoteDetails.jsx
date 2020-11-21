@@ -166,9 +166,9 @@ const SingleGoodsDeliveryNoteDetails = (props) => {
       isEdit={
         isEdit &&
         [
-          ENUMS.GOOD_RECEIVING_STATUS.NEW,
-          ENUMS.GOOD_RECEIVING_STATUS.PROCESSING,
-          ENUMS.GOOD_RECEIVING_STATUS.APPROVED,
+          ENUMS.GOOD_DELIVERY_STATUS.NEW,
+          ENUMS.GOOD_DELIVERY_STATUS.PENDING,
+          ENUMS.GOOD_DELIVERY_STATUS.APPROVED,
         ].indexOf(initialValues.status) !== -1
       }
       onSubmit={(values) => isEdit && handleEditGoodsDeliveryNotes(values)}

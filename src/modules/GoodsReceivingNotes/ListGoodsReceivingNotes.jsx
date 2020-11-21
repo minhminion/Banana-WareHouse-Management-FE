@@ -405,7 +405,7 @@ const ListGoodsReceivingNotes = (props) => {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            <MenuItem onClick={() => history.push("/proposal/add")}>
+            <MenuItem onClick={() => history.push("/proposal")}>
               <AddIcon style={{ marginRight: 8 }} />
               Tạo phiếu phiếu nhập kho
             </MenuItem>
