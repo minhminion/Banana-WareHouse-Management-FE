@@ -50,7 +50,7 @@ const SingleGoodsDeliveryNoteDetails = (props) => {
     async (orderId) => {
       const result = await fetchSingleOrders(orderId);
       if (result) {
-        setOrderDetails(result.orderDetails.map((item) => item.productId));
+        setOrderDetails(result.orderDetails);
       } else {
         history.push("/404");
       }

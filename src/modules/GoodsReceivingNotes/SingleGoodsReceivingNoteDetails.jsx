@@ -56,9 +56,7 @@ const SingleGoodsReceivingNoteDetails = (props) => {
     async (purchaseProposalFormId) => {
       const result = await fetchSingleProposal(purchaseProposalFormId);
       if (result) {
-        setProposalDetails(
-          result.purchaseProposalDetails.map((item) => item.productId)
-        );
+        setProposalDetails(result.purchaseProposalDetails);
       } else {
         history.push("/404");
       }
@@ -180,8 +178,11 @@ const SingleGoodsReceivingNoteDetails = (props) => {
       proposalDetails={proposalDetails}
       isEdit={
         isEdit &&
-        (initialValues?.status === ENUMS.GOOD_RECEIVING_STATUS.NEW ||
-          initialValues?.status === ENUMS.GOOD_RECEIVING_STATUS.PROCESSING)
+        [
+          ENUMS.GOOD_RECEIVING_STATUS.NEW,
+          ENUMS.GOOD_RECEIVING_STATUS.PENDING,
+          ENUMS.GOOD_RECEIVING_STATUS.APPROVED,
+        ].indexOf(initialValues.status) !== -1
       }
       onSubmit={(values) => isEdit && handleEditGoodsReceivingNotes(values)}
     />

@@ -12,6 +12,9 @@ import {
   IconButton,
   Button,
   Typography,
+  Popover,
+  List,
+  ListItem,
 } from "@material-ui/core";
 import { formatNumberToVND } from "../../../../common/helper";
 
@@ -23,6 +26,7 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 import CloseIcon from "@material-ui/icons/Close";
 import NoteIcon from "@material-ui/icons/Note";
 import ProductItemDescription from "./ProductItemDescription";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const useStyles = makeStyles((theme) => ({
   inputRoot: {
@@ -112,6 +116,29 @@ const ListGoodsReceivingNoteProducts = ({
   const classes = useStyles();
   const [viewProduct, setViewProduct] = useState({});
   const [openListProduct, setOpenListProduct] = useState(false);
+  const [contextPos, setContextPos] = useState({
+    quantityDetails: null,
+    mouseX: null,
+    mouseY: null,
+  });
+
+  // Popover context
+  const handleOpenContext = (e, quantityDetails) => {
+    e.preventDefault();
+    setContextPos({
+      quantityDetails: quantityDetails,
+      mouseX: e.clientX - 2,
+      mouseY: e.clientY - 4,
+    });
+  };
+
+  const handleCloseContext = () => {
+    setContextPos({
+      quantityDetails: null,
+      mouseX: null,
+      mouseY: null,
+    });
+  };
 
   const handleChangeProduct = (e, productId) => {
     const { name, value } = e.target;
@@ -163,9 +190,15 @@ const ListGoodsReceivingNoteProducts = ({
     setViewProduct({});
   };
 
+  const getProductQuantityNeed = (productId) => {
+    const product = listProduct.find((item) => item.productId === productId);
+    return product ? product.quantity - product.quantityPurchased : 0;
+  };
+
   const renderTableBody = (rows) => {
     return rows.map((row) => {
       const product = row.product;
+      const quantityNeed = getProductQuantityNeed(product.id);
       return (
         row.action !== "deleted" && (
           <CSSTransition key={product.id} timeout={500} classNames="fade">
@@ -238,6 +271,15 @@ const ListGoodsReceivingNoteProducts = ({
                   >
                     {row.product.defaultUnit}
                   </p>
+                  <IconButton
+                    onClick={(e) =>
+                      handleOpenContext(e, {
+                        quantityNeed: quantityNeed || 0,
+                      })
+                    }
+                  >
+                    <ExpandMoreIcon />
+                  </IconButton>
                 </Box>
               </TableCell>
               {/* Action on row */}
@@ -311,7 +353,7 @@ const ListGoodsReceivingNoteProducts = ({
       </TableContainer>
       <ListProductModal
         supplierId={supplierId}
-        listProducts={listProduct}
+        listProducts={listProduct.map((item) => item.productId)}
         initialValue={[...data]}
         open={openListProduct}
         onChange={onChange}
@@ -323,6 +365,26 @@ const ListGoodsReceivingNoteProducts = ({
         onClose={handleCloseViewProduct}
         onSubmit={handleChangeProduct}
       />
+      <Popover
+        style={{ zIndex: 9999 }}
+        open={contextPos.mouseY !== null}
+        onClose={handleCloseContext}
+        anchorReference="anchorPosition"
+        anchorPosition={
+          contextPos.mouseY !== null && contextPos.mouseX !== null
+            ? { top: contextPos.mouseY, left: contextPos.mouseX }
+            : undefined
+        }
+      >
+        {contextPos.quantityDetails && (
+          <List dense>
+            <ListItem>
+              <strong style={{ marginRight: 8 }}>Số lượng cần:</strong>
+              {contextPos.quantityDetails?.quantityNeed}
+            </ListItem>
+          </List>
+        )}
+      </Popover>
     </Fragment>
   );
 };

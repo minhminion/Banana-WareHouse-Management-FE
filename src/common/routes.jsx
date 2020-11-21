@@ -56,6 +56,8 @@ import ProductRemoveFormsPage from "../pages/ProductRemoveForms/ProductRemoveFor
 import CreateProductRemoveFormPage from "../pages/ProductRemoveForms/CreateProductRemoveFormPage";
 import SingleProductRemoveFormDetails from "../modules/ProductRemoveForms/SingleProductRemoveFormDetails";
 import EditProductRemoveFormPage from "../pages/ProductRemoveForms/EditProductRemoveFormPage";
+import Statistics from "../modules/Statistics/Statistics";
+import StatisticsPage from "../pages/StatisticsPage";
 
 const Routes = () => {
   const USER_ROLE = ENUMS.USER_ROLE;
@@ -65,7 +67,7 @@ const Routes = () => {
     return (
       <MainLayout>
         <AnimatedSwitch>
-          <Route exact path="/" component={() => <div>Analytics 1</div>} />
+          <Route exact path="/" component={StatisticsPage} />
           <Route exact path="/members" component={MembersPage} />
           {/* Product Pages */}
           <Route exact path="/products" component={ListProductPage} />

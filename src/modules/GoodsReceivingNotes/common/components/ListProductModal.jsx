@@ -238,7 +238,7 @@ const ListProductModal = (props) => {
         "in"
       );
     }
-  }, [listProducts]);
+  }, []);
 
   const handleChangePagination = (e, newPage) => {
     setFilter((prev) => ({

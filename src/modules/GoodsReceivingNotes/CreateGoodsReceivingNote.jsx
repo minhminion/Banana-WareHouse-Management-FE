@@ -33,8 +33,8 @@ const CreateGoodsReceivingNote = (props) => {
   }, [purchaseProposalFormId]);
 
   useEffect(() => {
-    fetchSuppliers()
-  },[])
+    fetchSuppliers();
+  }, []);
 
   const handleSubmit = async (values) => {
     enqueueSnackbar(`Đang tạo phiếu nhập hàng...`, {
@@ -59,9 +59,7 @@ const CreateGoodsReceivingNote = (props) => {
     async (purchaseProposalFormId) => {
       const result = await fetchSingleProposal(purchaseProposalFormId);
       if (result) {
-        setProposalDetails(
-          result.purchaseProposalDetails.map((item) => item.productId)
-        );
+        setProposalDetails(result.purchaseProposalDetails);
       } else {
         history.push("/404");
       }
