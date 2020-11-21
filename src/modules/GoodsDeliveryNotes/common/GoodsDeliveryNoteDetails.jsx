@@ -6,6 +6,8 @@ import {
   Box,
   Paper,
   Button,
+  Tooltip,
+  IconButton,
 } from "@material-ui/core";
 import clsx from "clsx";
 import { blueGrey } from "@material-ui/core/colors";
@@ -22,8 +24,8 @@ import useConfirm from "../../../common/hooks/useConfirm/useConfirm";
 import GoodsDeliveryNoteStatusStepper from "./components/GoodsDeliveryNoteStatusStepper";
 import GoodsDeliveryNoteStatus from "./components/GoodsDeliveryNoteStatus";
 import ListGoodsDeliveryNoteProducts from "./components/ListGoodsDeliveryNoteProducts";
-import { useSelector } from "react-redux";
-import { MODULE_NAME as MODULE_SUPPLIERS } from "../../Suppliers/constants/models";
+import InfoIcon from "@material-ui/icons/Info";
+import { MODULE_NAME as MODULE_ORDERS } from "../../Orders/constants/models";
 
 const defaultValues = {
   creator: "231",
@@ -170,9 +172,6 @@ const GoodsDeliveryNoteDetails = ({
   const classes = useStyles();
   const history = useHistory();
   const confirm = useConfirm();
-  const { data: suppliers } = useSelector(
-    (state) => state[MODULE_SUPPLIERS].data
-  );
   const validate = (fieldValues = values) => {
     let temp = { ...errors };
     setErrors({
@@ -281,6 +280,22 @@ const GoodsDeliveryNoteDetails = ({
         </Box>
       )}
       {values.id && <GoodsDeliveryNoteStatusStepper status={values.status} />}
+      {values.orderId && (
+        <InputLabel className={classes.label} style={{ marginBottom: 16 }}>
+          Mã đơn hàng: {values.orderId}
+          <Tooltip title="Thông tin đơn hàng">
+            <IconButton
+              size="small"
+              style={{ marginLeft: 8 }}
+              onClick={() =>
+                history.push(`/${MODULE_ORDERS}/${values.orderId}`)
+              }
+            >
+              <InfoIcon />
+            </IconButton>
+          </Tooltip>
+        </InputLabel>
+      )}
 
       <Grid container spacing={3}>
         <Grid item className={clsx(classes.root, classes.leftSide)}>

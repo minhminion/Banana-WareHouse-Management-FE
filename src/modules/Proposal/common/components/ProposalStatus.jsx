@@ -62,6 +62,8 @@ const ProposalStatus = ({
         return "Mới tạo";
       case ProposalStatus.PROCESSING:
         return "Đang thực hiện";
+      case ProposalStatus.DONE:
+        return "Hoàn tất";
       case ProposalStatus.FORCE_DONE:
         return "Buộc hoàn tất";
       case ProposalStatus.CANCELED:

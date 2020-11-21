@@ -367,15 +367,15 @@ const ListOrderProducts = ({ data, onChange, isEdit = false }) => {
         {contextPos.quantityDetails && (
           <List dense>
             <ListItem>
-              <strong style={{ marginRight: 8 }}>Số lượng đặt bán:</strong>
+              <strong style={{ marginRight: 8 }}>Số lượng còn lại:</strong>
               {contextPos.quantityDetails?.quantityNeed}
             </ListItem>
             <ListItem>
-              <strong style={{ marginRight: 8 }}>Số lượng còn lại:</strong>
+              <strong style={{ marginRight: 8 }}>Số lượng đã bán:</strong>
               {contextPos.quantityDetails?.quantitySold}
             </ListItem>
             <ListItem>
-              <strong style={{ marginRight: 8 }}>Số lượng trả về:</strong>
+              <strong style={{ marginRight: 8 }}>Số lượng trả lại:</strong>
               {contextPos.quantityDetails?.quantityReturned}
             </ListItem>
           </List>

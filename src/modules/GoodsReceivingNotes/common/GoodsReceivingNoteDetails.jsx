@@ -7,6 +7,8 @@ import {
   Paper,
   Button,
   TextField,
+  IconButton,
+  Tooltip,
 } from "@material-ui/core";
 import clsx from "clsx";
 import { blueGrey } from "@material-ui/core/colors";
@@ -27,6 +29,7 @@ import GoodsReceivingNoteSupplier from "./components/GoodsReceivingNoteSupplier"
 import { formatNumberToVND } from "../../../common/helper";
 import { useSelector } from "react-redux";
 import { MODULE_NAME as MODULE_SUPPLIERS } from "../../Suppliers/constants/models";
+import InfoIcon from "@material-ui/icons/Info";
 
 const defaultValues = {
   creator: "231",
@@ -38,7 +41,6 @@ const defaultValues = {
   totalPrice: 0,
   goodsReceivingDetails: [],
 };
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -308,6 +310,22 @@ const GoodsReceivingNoteDetails = ({
         </Box>
       )}
       {values.id && <GoodsReceivingNoteStatusStepper status={values.status} />}
+      {values.purchaseProposalFormId && (
+        <InputLabel className={classes.label} style={{ marginBottom: 16 }}>
+          Mã phiếu đề nghị nhận hàng: {values.purchaseProposalFormId}
+          <Tooltip title="Thông tin phiếu đề nghị">
+            <IconButton
+              size="small"
+              style={{ marginLeft: 8 }}
+              onClick={() =>
+                history.push(`/proposal/${values.purchaseProposalFormId}`)
+              }
+            >
+              <InfoIcon />
+            </IconButton>
+          </Tooltip>
+        </InputLabel>
+      )}
 
       <Grid container spacing={3}>
         <Grid item className={clsx(classes.root, classes.leftSide)}>

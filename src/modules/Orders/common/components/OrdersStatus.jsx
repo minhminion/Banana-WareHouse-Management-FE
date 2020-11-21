@@ -115,7 +115,8 @@ const OrdersStatus = ({
       <Select
         disabled={
           !isEdit ||
-          (value !== ORDER_STATUS.NEW && value !== ORDER_STATUS.PROCESSING)
+          
+          (value !== ORDER_STATUS.NEW && value !== ORDER_STATUS.PROCESSING && value !== ORDER_STATUS.EXPORTED)
         }
         disableUnderline
         name="status"

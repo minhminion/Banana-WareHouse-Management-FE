@@ -135,11 +135,7 @@ const GoodsReceivingNoteStatus = ({
         Tình trạng phiếu
       </InputLabel>
       <Select
-        disabled={
-          !isEdit ||
-          (value !== GOOD_RECEIVING_STATUS.NEW &&
-            value !== GOOD_RECEIVING_STATUS.PENDING)
-        }
+        disabled={!isEdit}
         disableUnderline
         name="status"
         style={{ width: "100%" }}

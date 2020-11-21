@@ -15,10 +15,10 @@ const CreateGoodsDeliveryNote = (props) => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [orderDetails, setOrderDetails] = useState([]);
 
-  const { fetchSingleOrders } = useMemo(
-    () => ordersHandler(dispatch, props),
-    [dispatch, props]
-  );
+  const { fetchSingleOrders } = useMemo(() => ordersHandler(dispatch, props), [
+    dispatch,
+    props,
+  ]);
 
   const { createGoodsDeliveryNote } = useMemo(() => handler(dispatch, props), [
     dispatch,
@@ -28,7 +28,6 @@ const CreateGoodsDeliveryNote = (props) => {
   useEffect(() => {
     getOrder(orderId);
   }, [orderId]);
-
 
   const handleSubmit = async (values) => {
     enqueueSnackbar(`Đang tạo phiếu nhập hàng...`, {
@@ -53,9 +52,7 @@ const CreateGoodsDeliveryNote = (props) => {
     async (orderId) => {
       const result = await fetchSingleOrders(orderId);
       if (result) {
-        setOrderDetails(
-          result.orderDetails.map((item) => item.productId)
-        );
+        setOrderDetails(result.orderDetails);
       } else {
         history.push("/404");
       }

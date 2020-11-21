@@ -189,9 +189,19 @@ const ListGoodsDeliveryNoteProducts = ({
     setViewProduct({});
   };
 
+  const getProductQuantityNeed = (productId) => {
+    console.log(
+      "======== Bao Minh: getProductQuantityNeed -> listProduct",
+      listProduct
+    );
+    const product = listProduct.find((item) => item.productId === productId);
+    return product?.quantityNeed || 0;
+  };
+
   const renderTableBody = (rows) => {
     return rows.map((row) => {
       const product = row.product;
+      const quantityNeed = getProductQuantityNeed(product.id);
       return (
         row.action !== "deleted" && (
           <CSSTransition key={product.id} timeout={500} classNames="fade">
@@ -250,8 +260,7 @@ const ListGoodsDeliveryNoteProducts = ({
                   <IconButton
                     onClick={(e) =>
                       handleOpenContext(e, {
-                        quantityNeed: row.quantityNeed || 0,
-                        quantitySold: row.quantitySold || 0,
+                        quantityNeed: quantityNeed || 0,
                         quantityReturned: row.quantityReturned || 0,
                       })
                     }
@@ -327,7 +336,7 @@ const ListGoodsDeliveryNoteProducts = ({
         </Table>
       </TableContainer>
       <ListProductModal
-        listProducts={listProduct||[]}
+        listProducts={listProduct.map((item) => item.productId)}
         initialValue={[...data]}
         open={openListProduct}
         onChange={onChange}
@@ -352,6 +361,10 @@ const ListGoodsDeliveryNoteProducts = ({
       >
         {contextPos.quantityDetails && (
           <List dense>
+            <ListItem>
+              <strong style={{ marginRight: 8 }}>Số lượng cần:</strong>
+              {contextPos.quantityDetails?.quantityNeed}
+            </ListItem>
             <ListItem>
               <strong style={{ marginRight: 8 }}>Số lượng trả về:</strong>
               {contextPos.quantityDetails?.quantityReturned}

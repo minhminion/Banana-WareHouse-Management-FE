@@ -65,8 +65,6 @@ export default (dispatch, props) => ({
           id: data.id,
           description: data.description,
           status: data.status,
-          supplierId: data.supplierId,
-          supplierName: data.supplierName,
           ...(data.exceptionReason
             ? { exceptionReason: data.exceptionReason }
             : {}),
