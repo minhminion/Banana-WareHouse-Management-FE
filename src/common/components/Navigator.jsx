@@ -43,6 +43,11 @@ const menus = [
         link: "suppliers",
       },
       {
+        id: "Báo cáo",
+        icon: <HomeWorkIcon />,
+        link: "reports",
+      },
+      {
         id: "Kiểm kê sản phẩm",
         icon: <AssignmentTurnedInIcon />,
         link: "inventoryRecordForms",
