@@ -61,20 +61,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ReportsTabs() {
+export default function ReportsTabs(props) {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
+  const { onChange, value } = props;
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    onChange && onChange(newValue);
   };
 
   return (
     <div className={classes.demo1}>
       <AntTabs value={value} onChange={handleChange} aria-label="ant example">
-        <AntTab label="Nhập kho" />
-        <AntTab label="Xuất kho" />
-        <AntTab label="Tồn kho sản phẩm" />
+        <AntTab value="goodsReceivingNote" label="Nhập kho" />
+        <AntTab value="goodsDeliveryNote" label="Xuất kho" />
+        <AntTab value="products" label="Tồn kho sản phẩm" />
       </AntTabs>
       <Typography className={classes.padding} />
     </div>

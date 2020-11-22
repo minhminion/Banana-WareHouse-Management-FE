@@ -6,6 +6,8 @@
     "@ckeditor/ckeditor5-build-classic": "^22.0.0",
     "@ckeditor/ckeditor5-react": "^2.1.0",
     "@date-io/dayjs": "^1.3.13",
+    "@devexpress/dx-react-chart": "^2.7.3",
+    "@devexpress/dx-react-chart-material-ui": "^2.7.3",
     "@devexpress/dx-react-core": "^2.7.3",
     "@devexpress/dx-react-grid": "^2.7.3",
     "@devexpress/dx-react-grid-export": "^2.7.3",

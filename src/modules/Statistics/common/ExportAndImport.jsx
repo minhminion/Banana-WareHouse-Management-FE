@@ -16,7 +16,6 @@ import handler from "../constants/handler";
 import { MODULE_NAME } from "../constants/models";
 import { Box } from "@material-ui/core";
 import ExportAndImportTabs from "./components/ExportAndImportTabs";
-import { defaults } from "lodash";
 import {
   GOOD_DELIVERY_STATUS,
   GOOD_RECEIVING_STATUS,

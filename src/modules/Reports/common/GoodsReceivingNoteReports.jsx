@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from "react";
+import React, { useRef, useCallback, useMemo, useEffect } from "react";
 import Paper from "@material-ui/core/Paper";
 import {
   SummaryState,
@@ -20,8 +20,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import saveAs from "file-saver";
 
 import { orders } from "./demoData";
-import { defaults } from "lodash";
 import { formatNumberToVND } from "../../../common/helper";
+import { useDispatch, useSelector } from "react-redux";
+import handler from "../../GoodsReceivingNotes/constants/handler";
+import { MODULE_NAME } from "../../GoodsReceivingNotes/constants/models";
+import dayjs from "dayjs";
+import { Typography } from "@material-ui/core";
 
 const getCellStyle = ({ OrderDate, SaleAmount }, column) => {
   const style = {};
@@ -49,10 +53,28 @@ const Cell = (props) => {
   return <VirtualTable.Cell {...props} className={classes.cell} />;
 };
 
-const DateFormatter = ({ value }) => <span>{value.toLocaleDateString()}</span>;
+const DateFormatter = ({ value }) => (
+  <span>{dayjs(value).format("DD/MM/YYYY")}</span>
+);
 
 const DateTypeProvider = (props) => (
   <DataTypeProvider {...props} formatterComponent={DateFormatter} />
+);
+
+const UserTypeProvider = (props) => (
+  <DataTypeProvider
+    {...props}
+    formatterComponent={({ value }) => (
+      <div>
+        <strong>
+          {`${value?.lastName} ${value?.firstName}` || "Lưu Bảo Minh"}
+        </strong>
+        <Typography variant="body2">
+          {value?.email || "minhminion2015@gmail.com"}
+        </Typography>
+      </div>
+    )}
+  />
 );
 
 const MoneyTypeProvider = (props) => (
@@ -154,7 +176,9 @@ const onSave = (workbook) => {
 
 const columns = [
   { name: "id", title: "Mã phiếu" },
-  { name: "OrderNumber", title: "Invoice Number" },
+  { name: "supplierName", title: "Nhà cung cấp" },
+  { name: "status", title: "Trạng thái" },
+  { name: "user", title: "Người tạo" },
   { name: "createdAt", title: "Ngày tạo" },
   { name: "CustomerStoreCity", title: "City" },
   { name: "CustomerStoreState", title: "State" },
@@ -162,23 +186,44 @@ const columns = [
 ];
 const dateColumns = ["createdAt"];
 const moneyColumns = ["totalPrice"];
+const userCreatedColumns = ["user"];
+
 const totalSummaryItems = [
   { columnName: "id", type: "count" },
   { columnName: "totalPrice", type: "sum" },
 ];
 const tableColumnExtensions = [
   { columnName: "id", width: 120, align: "center" },
+  { columnName: "user", width: 200, align: "left" },
+  { columnName: "status", width: 120, align: "center" },
   { columnName: "createdAt", width: 120, align: "center" },
-  { columnName: "totalPrice", align: "right" },
+  { columnName: "totalPrice", align: "left" },
 ];
 
 const messages = {
   count: "Số lượng",
-  sum: "Tổng tiền",
+  sum: "Tổng tiền (đ)",
 };
 
-const ReportsTable = () => {
+const GoodsReceivingNoteReports = (props) => {
   const exporterRef = useRef(null);
+  const { filter } = props;
+  const dispatch = useDispatch();
+
+  const { fetchGoodsReceivingNotes } = useMemo(() => handler(dispatch, props), [
+    dispatch,
+    props,
+  ]);
+
+  useEffect(() => {
+    fetchGoodsReceivingNotes({
+      ...filter,
+      page: 1,
+      limit: 1000,
+    });
+  }, [filter]);
+
+  const { data } = useSelector((state) => state[MODULE_NAME].data);
 
   const startExport = useCallback(
     (options) => {
@@ -189,10 +234,10 @@ const ReportsTable = () => {
 
   return (
     <Paper>
-      
-      <Grid rows={orders} columns={columns}>
+      <Grid rows={data || []} columns={columns}>
         <DateTypeProvider for={dateColumns} />
         <MoneyTypeProvider for={moneyColumns} />
+        <UserTypeProvider for={userCreatedColumns} />
         <SummaryState totalItems={totalSummaryItems} />
         <IntegratedSummary />
         <Table columnExtensions={tableColumnExtensions} />
@@ -221,4 +266,4 @@ const ReportsTable = () => {
   );
 };
 
-export default ReportsTable;
+export default GoodsReceivingNoteReports;
