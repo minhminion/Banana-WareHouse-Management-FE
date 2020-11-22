@@ -4,5 +4,6 @@ export const MODULE_NAME = "statistics";
 
 export const ENDPOINTS = {
   apiBestSellingProducts: `${DEFAULT_API_URL}/${MODULE_NAME}/bestSellingProducts`,
-  apiRevenueAndExpenditure: `${DEFAULT_API_URL}/${MODULE_NAME}/revenueAndExpediture`
+  apiRevenueAndExpenditure: `${DEFAULT_API_URL}/${MODULE_NAME}/revenueAndExpediture`,
+  apiExportAndImport: `${DEFAULT_API_URL}/${MODULE_NAME}/exportAndImport`,
 };

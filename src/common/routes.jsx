@@ -56,7 +56,8 @@ import ProductRemoveFormsPage from "../pages/ProductRemoveForms/ProductRemoveFor
 import CreateProductRemoveFormPage from "../pages/ProductRemoveForms/CreateProductRemoveFormPage";
 import SingleProductRemoveFormDetails from "../modules/ProductRemoveForms/SingleProductRemoveFormDetails";
 import EditProductRemoveFormPage from "../pages/ProductRemoveForms/EditProductRemoveFormPage";
-import Statistics from "../modules/Statistics/Statistics";
+
+// Statistics Pages
 import StatisticsPage from "../pages/StatisticsPage";
 
 const Routes = () => {

@@ -16,7 +16,6 @@ import {
   List,
   ListItem,
 } from "@material-ui/core";
-import { formatNumberToVND } from "../../../../common/helper";
 
 import { blueGrey } from "@material-ui/core/colors";
 import ListProductModal from "./ListProductModal";
@@ -190,10 +189,6 @@ const ListGoodsDeliveryNoteProducts = ({
   };
 
   const getProductQuantityNeed = (productId) => {
-    console.log(
-      "======== Bao Minh: getProductQuantityNeed -> listProduct",
-      listProduct
-    );
     const product = listProduct.find((item) => item.productId === productId);
     return product?.quantityNeed || 0;
   };

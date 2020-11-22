@@ -15,6 +15,10 @@ const initialState = {
     isLoading: false,
     data: [],
   },
+  exportAndImport: {
+    isLoading: false,
+    data: [],
+  },
 };
 
 const handler = {
