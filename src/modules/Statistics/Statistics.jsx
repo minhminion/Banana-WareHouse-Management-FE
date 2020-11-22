@@ -4,6 +4,7 @@ import { blueGrey } from "@material-ui/core/colors";
 import clsx from "clsx";
 import BestSellingProducts from "./common/BestSellingProducts";
 import RevenueAndExpenditure from "./common/RevenueAndExpenditure";
+import ExportAndImport from "./common/ExportAndImport";
 
 const useStyles = makeStyles((theme) => ({
   leftSide: {
@@ -38,6 +39,7 @@ const Statistics = (props) => {
     <Grid container spacing={3}>
       <Grid item className={clsx(classes.root, classes.leftSide)}>
         <RevenueAndExpenditure />
+        <ExportAndImport />
       </Grid>
       <Grid item className={clsx(classes.root, classes.rightSide)}>
         <BestSellingProducts

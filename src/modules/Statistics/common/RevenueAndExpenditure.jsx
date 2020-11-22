@@ -9,7 +9,7 @@ import { formatNumberToVND } from "../../../common/helper";
 const useStyles = makeStyles(({ palette, spacing }) => ({
   root: ({ bgColor = "primary.main", offset = "-40px", ...styles }) => ({
     backgroundColor: "rgb(63, 81, 181)",
-    borderRadius: spacing(2),
+    borderRadius: spacing(1),
     // margin: `${offset} auto 0`,
     width: "calc(50% - 8px)",
     ...styles,
@@ -38,7 +38,6 @@ const RevenueAndExpenditure = (props) => {
   const { data, isLoading } = useSelector(
     (state) => state[MODULE_NAME][target]
   );
-  console.log("======== Bao Minh: RevenueAndExpenditure -> data", data);
 
   useEffect(() => {
     getRevenueAndExpenditure({
@@ -48,7 +47,7 @@ const RevenueAndExpenditure = (props) => {
   }, []);
 
   return (
-    <Box display="flex" justifyContent="space-between">
+    <Box mb={2} display="flex" justifyContent="space-between">
       <CardHeader
         classes={classes}
         title={`${formatNumberToVND(data?.revenue || 0)}đ`}
