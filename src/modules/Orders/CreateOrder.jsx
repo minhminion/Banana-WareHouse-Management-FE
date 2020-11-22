@@ -2,7 +2,7 @@ import { useSnackbar } from "notistack";
 import React, { useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { notifyError } from "../../common/helper";
+import { formatVNDToNumber, notifyError } from "../../common/helper";
 import OrderDetails from "./common/OrderDetails";
 import handler from "./constants/handler";
 import { MODULE_NAME } from "./constants/models";
@@ -26,7 +26,12 @@ const CreateOrder = (props) => {
     });
     const result = await createOrder({
       description: values.description,
-      orderDetails: values.orderDetails
+      orderDetails: values.orderDetails.map((item) => ({
+        productId: item.productId,
+        quantity: +item.quantity,
+        description: item.description,
+        singlePrice: +formatVNDToNumber(item.singlePrice + ""),
+      })),
     });
     closeSnackbar(`creating-${MODULE_NAME}`);
     if (result.id) {
