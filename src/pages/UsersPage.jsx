@@ -1,13 +1,13 @@
 import React from "react";
-import Member from "../modules/Member/Member";
 import CustomBreadcrumbs from "../common/components/Breadcrumb";
-const MembersPage = () => {
+import ListUsers from "../modules/Users/ListUsers";
+const UsersPage = () => {
   return (
     <div className="page">
       <CustomBreadcrumbs title="Member Manager" />
-      <Member />
+      <ListUsers />
     </div>
   );
 };
 
-export default MembersPage;
+export default UsersPage;

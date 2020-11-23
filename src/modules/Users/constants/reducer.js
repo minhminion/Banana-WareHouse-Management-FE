@@ -12,16 +12,16 @@ const initialState = {
 const handler = {
   [clearAll]: (state, action) => ({ ...initialState }),
   // FETCH MEMBER
-  [actions.fetchProposalPending]: (state, action) => ({
+  [actions.fetchUsersPending]: (state, action) => ({
     ...state,
     isLoading: true,
   }),
-  [actions.fetchProposalSuccess]: (state, action) => ({
+  [actions.fetchUsersSuccess]: (state, action) => ({
     ...state,
     isLoading: false,
     data: action.payload,
   }),
-  [actions.fetchProposalFailure]: (state, action) => ({
+  [actions.fetchUsersFailure]: (state, action) => ({
     ...state,
     isLoading: false,
     error: action.payload,

@@ -31,6 +31,9 @@ import productRemoveFormsReducer from "./ProductRemoveForms/constants/reducer";
 import { MODULE_NAME as MODULE_STATISTICS } from "./Statistics/constants/models";
 import statisticsReducer from "./Statistics/constants/reducer";
 
+import { MODULE_NAME as MODULE_USERS } from "./Users/constants/models";
+import usersReducer from "./Users/constants/reducer";
+
 export const rootReducer = {
   [MODULE_AUTH]: authorReducer,
   [MODULE_MEMBER]: memberReducer,
@@ -44,6 +47,7 @@ export const rootReducer = {
   [MODULE_PRODUCT_REMOVE_FORMS]: productRemoveFormsReducer,
 
   [MODULE_STATISTICS]: statisticsReducer,
+  [MODULE_USERS]: usersReducer,
 };
 
 export const rootModules = [
@@ -58,4 +62,5 @@ export const rootModules = [
   MODULE_GOODS_DELIVERY_NOTES,
   MODULE_PRODUCT_REMOVE_FORMS,
   MODULE_STATISTICS,
+  MODULE_USERS,
 ];

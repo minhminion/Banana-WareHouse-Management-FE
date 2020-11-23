@@ -4,7 +4,6 @@ import LoginPage from "../pages/LoginPage";
 import { useSelector } from "react-redux";
 import { MODULE_NAME as MODULE_AUTHOR } from "../modules/Author/constants/models";
 import MainLayout from "./HOCS/MainLayout";
-import MembersPage from "../pages/MembersPage";
 import AnimatedSwitch from "./components/Routes/AnimatedSwitch";
 import AuthRoute from "./components/Routes/AuthRoute";
 import { ENUMS } from "./constants/index";
@@ -60,6 +59,7 @@ import ReportsPage from "../pages/Reports/ReportsPage";
 
 // Statistics Pages
 import StatisticsPage from "../pages/StatisticsPage";
+import UsersPage from "../pages/UsersPage";
 
 const Routes = () => {
   const USER_ROLE = ENUMS.USER_ROLE;
@@ -70,7 +70,7 @@ const Routes = () => {
       <MainLayout>
         <AnimatedSwitch>
           <Route exact path="/" component={StatisticsPage} />
-          <Route exact path="/members" component={MembersPage} />
+          <Route exact path="/users" component={UsersPage} />
           {/* Product Pages */}
           <Route exact path="/products" component={ListProductPage} />
           <AuthRoute
@@ -295,10 +295,7 @@ const Routes = () => {
           />
 
           {/* Reports Pages */}
-          <Route
-            path="/reports"
-            component={ReportsPage}
-          />
+          <Route path="/reports" component={ReportsPage} />
 
           {/* 404 Not Found */}
           <Route exact path="*" component={NotFoundPage} />

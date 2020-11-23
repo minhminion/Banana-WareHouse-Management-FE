@@ -4,6 +4,7 @@ import ReportsFilter from "./common/ReportsFilter";
 import ReportsTabs from "./common/ReportsTabs";
 import ProductReportsTable from "./common/ProductReportsTable";
 import GoodsReceivingNoteReports from "./common/GoodsReceivingNoteReports";
+import GoodsDeliveryNoteReports from "./common/GoodsDeliveryNoteReports";
 
 const ReportsRoot = (props) => {
   const [selectedOption, setSelectedOption] = useState("goodsDeliveryNote");
@@ -19,6 +20,8 @@ const ReportsRoot = (props) => {
         return <ProductReportsTable filter={filter} />;
       case "goodsReceivingNote":
         return <GoodsReceivingNoteReports filter={filter} />;
+      case "goodsDeliveryNote":
+        return <GoodsDeliveryNoteReports filter={filter} />;
       default:
         return <h5>No content</h5>;
     }

@@ -50,9 +50,9 @@ const ReportsFilter = ({ onSubmit }) => {
         const toDate = values.toDate || fromDate;
 
         const newValues = {
-          "filters[createdAt]": `"${dayjs(fromDate).format(
-            "YYYY-mm-DD"
-          )}","${dayjs(toDate).format("YYYY-mm-DD")}"`,
+          "filters[createdAt]": `${dayjs(fromDate).format(
+            "YYYY-MM-DD"
+          )},${dayjs(toDate).format("YYYY-MM-DD")}`,
           "filterConditions[createdAt]": "between",
         };
         onSubmit && onSubmit(newValues);
