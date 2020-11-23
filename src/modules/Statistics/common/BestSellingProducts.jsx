@@ -39,7 +39,7 @@ const BestSellingProducts = (props) => {
         justifyContent="center"
       >
         {!isLoading && data?.length > 0 ? (
-          <div style={{ width: "100%" }}>
+          <div style={{ width: "100%", height: "100vh" }}>
             {data.map((product) => (
               <BestSellingProductsItem
                 key={product.productId}

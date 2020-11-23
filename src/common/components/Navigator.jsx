@@ -25,6 +25,10 @@ import CallReceivedIcon from "@material-ui/icons/CallReceived";
 import ReceiptIcon from "@material-ui/icons/Receipt";
 import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedIn";
 import CallMadeIcon from "@material-ui/icons/CallMade";
+import AssignmentReturnedIcon from "@material-ui/icons/AssignmentReturned";
+import ListAltIcon from '@material-ui/icons/ListAlt';
+import DeleteSweepIcon from '@material-ui/icons/DeleteSweep';
+
 import { useDispatch, useSelector } from "react-redux";
 import { toggleCollapseNavigator } from "../redux/actions/uiActions";
 import { Link, useLocation } from "react-router-dom";
@@ -46,7 +50,7 @@ const menus = [
       },
       {
         id: "Báo cáo",
-        icon: <HomeWorkIcon />,
+        icon: <ListAltIcon />,
         link: "reports",
       },
       {
@@ -56,7 +60,7 @@ const menus = [
       },
       {
         id: "Phiếu hủy sản phẩm",
-        icon: <AssignmentTurnedInIcon />,
+        icon: <DeleteSweepIcon />,
         link: "productRemoveForms",
       },
 
@@ -93,6 +97,11 @@ const menus = [
         id: "Phiếu xuất kho",
         icon: <CallMadeIcon />,
         link: "goodsDeliveryNotes",
+      },
+      {
+        id: "Đề nghỉ trả hàng",
+        icon: <AssignmentReturnedIcon />,
+        link: "merchandiseReturnProposals",
       },
     ],
   },

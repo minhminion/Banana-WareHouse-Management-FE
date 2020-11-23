@@ -8,6 +8,7 @@ import {
   Button,
   Tooltip,
   IconButton,
+  InputBase,
 } from "@material-ui/core";
 import clsx from "clsx";
 import { blueGrey } from "@material-ui/core/colors";
@@ -21,27 +22,21 @@ import Alert from "@material-ui/lab/Alert";
 import { ENUMS } from "../../../common/constants";
 import parse from "html-react-parser";
 import useConfirm from "../../../common/hooks/useConfirm/useConfirm";
-import GoodsDeliveryNoteStatusStepper from "./components/GoodsDeliveryNoteStatusStepper";
-import GoodsDeliveryNoteStatus from "./components/GoodsDeliveryNoteStatus";
-import ListGoodsDeliveryNoteProducts from "./components/ListGoodsDeliveryNoteProducts";
+import MerchandiseReturnProposalStatusStepper from "./components/MerchandiseReturnProposalStatusStepper";
+import MerchandiseReturnProposalStatus from "./components/MerchandiseReturnProposalStatus";
+import ListMerchandiseReturnProposalProducts from "./components/ListMerchandiseReturnProposalProducts";
 import InfoIcon from "@material-ui/icons/Info";
-import { MODULE_NAME as MODULE_ORDERS } from "../../Orders/constants/models";
-import { MODULE_NAME as MODULE_AUTHOR } from "../../Author/constants/models";
-import {
-  MERCHANDISE_RETURN_STATUS,
-  USER_ROLE,
-} from "../../../common/constants/enums";
-import { useSelector } from "react-redux";
+import { MODULE_NAME as MODULE_GOODS_DELIVERY_NOTES } from "../../GoodsDeliveryNotes/constants/models";
 
 const defaultValues = {
   creator: "231",
   createdAt: Date.now(),
   period: 2,
-  status: ENUMS.GOOD_DELIVERY_STATUS.NEW,
+  status: ENUMS.MERCHANDISE_RETURN_STATUS.NEW,
   description: "",
   supplierId: 0,
   totalPrice: 0,
-  goodsDeliveryDetails: [],
+  merchandiseReturnDetails: [],
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -161,10 +156,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GOOD_DELIVERY_STATUS = ENUMS.GOOD_DELIVERY_STATUS;
+const MERCHANDISE_RETURN_STATUS = ENUMS.MERCHANDISE_RETURN_STATUS;
 
-const GoodsDeliveryNoteDetails = ({
-  orderDetails,
+const MerchandiseReturnProposalDetails = ({
+  goodsDeliveryNoteDetails,
   initialValues,
   isEdit = true,
   onSubmit,
@@ -178,8 +173,6 @@ const GoodsDeliveryNoteDetails = ({
   const classes = useStyles();
   const history = useHistory();
   const confirm = useConfirm();
-  const { roleName } = useSelector((state) => state[MODULE_AUTHOR]);
-
   const validate = (fieldValues = values) => {
     let temp = { ...errors };
     setErrors({
@@ -220,17 +213,6 @@ const GoodsDeliveryNoteDetails = ({
     }
   };
 
-  const canCreateMerchandiseReturnProposal = () => {
-    return (
-      values.status === GOOD_DELIVERY_STATUS.DONE &&
-      [
-        USER_ROLE.Boss,
-        USER_ROLE.WarehouseKeeper,
-        USER_ROLE.WarehouseKeeperManager,
-      ].indexOf(roleName) !== -1
-    );
-  };
-
   const getStatusConfirmContent = (value) => {
     let content = {
       title: "Thay đổi trạng thái phiếu nhập hàng ?",
@@ -239,7 +221,7 @@ const GoodsDeliveryNoteDetails = ({
       cancellationText: "Hủy",
     };
     switch (value) {
-      case GOOD_DELIVERY_STATUS.CANCELED:
+      case MERCHANDISE_RETURN_STATUS.CANCELED:
         content = {
           ...content,
           input: true,
@@ -276,13 +258,16 @@ const GoodsDeliveryNoteDetails = ({
         const newValues = {
           description: values.description || "",
           status: values.status,
-          goodsDeliveryDetails: values.goodsDeliveryDetails.map((product) => ({
-            id: product.id || -1,
-            productId: +product.productId,
-            quantity: parseFloat(product.quantity),
-            description: product.description || "",
-            action: product.action,
-          })),
+          merchandiseReturnDetails: values.merchandiseReturnDetails.map(
+            (product) => ({
+              id: product.id || -1,
+              productId: +product.productId,
+              quantityReturned: 1,
+              quantity: parseFloat(product.quantity),
+              description: product.description || "",
+              action: product.action,
+            })
+          ),
         };
         onSubmit && onSubmit(newValues);
       } catch (error) {}
@@ -291,23 +276,27 @@ const GoodsDeliveryNoteDetails = ({
 
   return (
     <Box className={classes.root}>
-      {values.status === ENUMS.GOOD_DELIVERY_STATUS.CANCELED && (
+      {values.status === ENUMS.MERCHANDISE_RETURN_STATUS.CANCELED && (
         <Box clone mb={2}>
           <Alert severity="error">
             {parse(initialValues?.exceptionReason || "")}
           </Alert>
         </Box>
       )}
-      {values.id && <GoodsDeliveryNoteStatusStepper status={values.status} />}
-      {values.orderId && (
+      {values.id && (
+        <MerchandiseReturnProposalStatusStepper status={values.status} />
+      )}
+      {values.goodsDeliveryNote?.id && (
         <InputLabel className={classes.label} style={{ marginBottom: 16 }}>
-          Mã đơn hàng: {values.orderId}
+          Mã phiếu xuất kho: {values.goodsDeliveryNote?.id}
           <Tooltip title="Thông tin đơn hàng">
             <IconButton
               size="small"
               style={{ marginLeft: 8 }}
               onClick={() =>
-                history.push(`/${MODULE_ORDERS}/${values.orderId}`)
+                history.push(
+                  `/${MODULE_GOODS_DELIVERY_NOTES}/${values.goodsDeliveryNote?.id}`
+                )
               }
             >
               <InfoIcon />
@@ -325,7 +314,7 @@ const GoodsDeliveryNoteDetails = ({
             display="flex"
             justifyContent="space-between"
           >
-            <GoodsDeliveryNoteStatus
+            <MerchandiseReturnProposalStatus
               value={values.status}
               onChange={handleChangeStatus}
               classes={classes}
@@ -396,31 +385,17 @@ const GoodsDeliveryNoteDetails = ({
               </Box>
             </Box>
           )}
-          {isEdit && canCreateMerchandiseReturnProposal() && (
-            <Box p={1.5} mr={1} clone>
-              <Button
-                style={{ width: "100%" }}
-                className={clsx(classes.actionButton)}
-                component={Paper}
-                onClick={() =>
-                  history.push(`/merchandiseReturnProposals/${values.id}/add`)
-                }
-              >
-                Tạo phiếu đề nghị trả hàng
-              </Button>
-            </Box>
-          )}
         </Grid>
         <Grid item className={clsx(classes.root, classes.rightSide)}>
           <Box className={classes.productDescription}>
             {/* <InputLabel className={classes.label} style={{ marginBottom: 8 }}>
               Danh sách sản phẩm
             </InputLabel> */}
-            <ListGoodsDeliveryNoteProducts
-              listProduct={orderDetails}
+            <ListMerchandiseReturnProposalProducts
+              listProduct={goodsDeliveryNoteDetails}
               isEdit={isEdit && values.status === ENUMS.PROPOSAL_STATUS.NEW}
-              status={GOOD_DELIVERY_STATUS}
-              data={values.goodsDeliveryDetails}
+              status={MERCHANDISE_RETURN_STATUS}
+              data={values.merchandiseReturnDetails}
               supplierId={values.supplierId}
               errors={errors}
               onChange={handleInputChange}
@@ -432,4 +407,4 @@ const GoodsDeliveryNoteDetails = ({
   );
 };
 
-export default GoodsDeliveryNoteDetails;
+export default MerchandiseReturnProposalDetails;
