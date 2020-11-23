@@ -67,3 +67,10 @@ export const PRODUCT_REMOVE_STATUS = {
   DONE: 4,
   CANCELED: 5,
 };
+
+export const MERCHANDISE_RETURN_STATUS = {
+  NEW: 1,
+  PENDING: 2,
+  DONE: 3,
+  CANCELED: 4,
+}

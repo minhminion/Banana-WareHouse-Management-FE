@@ -61,6 +61,11 @@ import ReportsPage from "../pages/Reports/ReportsPage";
 import StatisticsPage from "../pages/StatisticsPage";
 import UsersPage from "../pages/UsersPage";
 
+import ListMerchandiseReturnProposalsPage from "../pages/MerchandiseReturnProposals/ListMerchandiseReturnProposalsPage";
+import EditMerchandiseReturnProposalPage from "../pages/MerchandiseReturnProposals/EditMerchandiseReturnProposalPage";
+import AddMerchandiseReturnProposalPage from "../pages/MerchandiseReturnProposals/AddMerchandiseReturnProposalPage";
+import MerchandiseReturnProposalDetailsPage from "../pages/MerchandiseReturnProposals/MerchandiseReturnProposalDetailsPage";
+
 const Routes = () => {
   const USER_ROLE = ENUMS.USER_ROLE;
   const { isSigned, roleName } = useSelector((state) => state[MODULE_AUTHOR]);
@@ -291,6 +296,38 @@ const Routes = () => {
               USER_ROLE.WarehouseKeeper,
               USER_ROLE.WarehouseKeeperManager,
               USER_ROLE.Boss,
+            ]}
+          />
+
+          {/* Merchandise Return Proposal Pages */}
+          <Route
+            exact
+            path="/merchandiseReturnProposals"
+            component={ListMerchandiseReturnProposalsPage}
+          />
+          <AuthRoute
+            exact
+            path="/merchandiseReturnProposals/:goodsDeliveryNoteId/add"
+            component={AddMerchandiseReturnProposalPage}
+            roleName={roleName}
+            acceptRoles={[
+              USER_ROLE.WarehouseKeeper,
+              USER_ROLE.WarehouseKeeperManager,
+            ]}
+          />
+          <Route
+            exact
+            path="/merchandiseReturnProposals/:merchandiseReturnProposalId"
+            component={MerchandiseReturnProposalDetailsPage}
+          />
+          <AuthRoute
+            exact
+            path="/merchandiseReturnProposals/:merchandiseReturnProposalId/edit"
+            component={EditMerchandiseReturnProposalPage}
+            roleName={roleName}
+            acceptRoles={[
+              USER_ROLE.WarehouseKeeper,
+              USER_ROLE.WarehouseKeeperManager,
             ]}
           />
 

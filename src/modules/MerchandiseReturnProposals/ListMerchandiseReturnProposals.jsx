@@ -17,8 +17,8 @@ import {
   Menu,
   Dialog,
   DialogTitle,
-  DialogActions,
   DialogContent,
+  DialogActions,
 } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
 import CKEditor from "@ckeditor/ckeditor5-react";
@@ -40,13 +40,10 @@ import { useLocation, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import handler from "./constants/handler";
 import { MODULE_NAME } from "./constants/models";
-import { MODULE_NAME as MODULE_AUTHOR } from "../Author/constants/models";
 import { useSnackbar } from "notistack";
-import ListOrdersItem from "./common/ListOrdersItem";
+import ListMerchandiseReturnProposalsItem from "./common/ListMerchandiseReturnProposalsItem";
 import handler from "./constants/handler";
 import { ENUMS } from "../../common/constants";
-import { Form } from "../../common/hooks/useForm";
-import { ORDER_STATUS, USER_ROLE } from "../../common/constants/enums";
 
 const useStyles = makeStyles((theme) => ({
   select: {
@@ -169,18 +166,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ORDERS_STATUS = ENUMS.ORDER_STATUS;
-
 const LIMIT_PER_PAGE = 5;
-const ListOrders = (props) => {
+const ListMerchandiseReturnProposals = (props) => {
+  const merchandiseReturnProposalsStatus = ENUMS.MERCHANDISE_RETURN_STATUS;
+  const editorRef = useRef(null);
+
   const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
-  const editorRef = useRef(null);
-  const { roleName } = useSelector((state) => state[MODULE_AUTHOR]);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [selectCancelOrders, setSelectCancelOrders] = useState({});
+  const [
+    selectCancelMerchandiseReturnProposals,
+    setSelectCancelMerchandiseReturnProposals,
+  ] = useState({});
   const [filter, setFilter] = useState({
     page: 1,
     ...getQuery(location.search),
@@ -203,10 +202,10 @@ const ListOrders = (props) => {
     getContentAnchorEl: null,
   };
 
-  const { fetchOrders, editOrder } = useMemo(() => handler(dispatch, props), [
-    dispatch,
-    props,
-  ]);
+  const { fetchMerchandiseReturnProposals, cancelMerchandiseReturnProposals } = useMemo(
+    () => handler(dispatch, props),
+    [dispatch, props]
+  );
 
   const { data, currentPage, totalPages, totalItems } = useSelector(
     (state) => state[MODULE_NAME].data
@@ -216,13 +215,13 @@ const ListOrders = (props) => {
 
   useEffect(() => {
     if (location.search) {
-      setFilter((prev) => ({ ...prev, ...getQuery(location.search) }));
+      setFilter((prev) => ({ ...getQuery(location.search) }));
     }
   }, [location]);
 
   useEffect(() => {
     if (filter) {
-      fetchOrders({
+      fetchMerchandiseReturnProposals({
         ...filter,
         limit: LIMIT_PER_PAGE,
       });
@@ -287,49 +286,25 @@ const ListOrders = (props) => {
     });
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    const { name, value } = e.target.getElementsByTagName("input")[0];
-    let newFilter = filter;
-    let extendFilter = {};
-    if (value.trim() === "") {
-      delete newFilter[`filters[${name}]`];
-      delete newFilter[`filterConditions[${name}]`];
-    } else {
-      extendFilter = {
-        [`filters[${name}]`]: `"${value}"`,
-        [`filterConditions[${name}]`]: "like",
-      };
-    }
-    history.push({
-      pathname: location.pathname,
-      search: `?${objectToQueryString({
-        ...newFilter,
-        page: 1,
-        ...extendFilter,
-      })}`,
-    });
+  const handleCloseCancelMerchandiseReturnProposals = (MerchandiseReturnProposals) => {
+    setSelectCancelMerchandiseReturnProposals({});
+    editorRef.current.setData("");
   };
 
-  const handleCloseCancelOrders = () => {
-    setSelectCancelOrders({});
-  };
-
-  const handleCancelOrders = async () => {
+  const handleCancelMerchandiseReturnProposals = async () => {
     if (
-      selectCancelOrders &&
-      selectCancelOrders.id &&
+      selectCancelMerchandiseReturnProposals &&
+      selectCancelMerchandiseReturnProposals.id &&
       editorRef.current &&
       editorRef.current.getData
     ) {
-      const result = await editOrder({
-        ...selectCancelOrders,
-        status: ORDER_STATUS.CANCELED,
+      const result = await cancelMerchandiseReturnProposals({
+        ...selectCancelMerchandiseReturnProposals,
         exceptionReason: editorRef.current.getData() || "",
       });
       if (result.id) {
-        handleCloseCancelOrders();
-        fetchOrders({
+        handleCloseCancelMerchandiseReturnProposals();
+        fetchMerchandiseReturnProposals({
           ...filter,
           limit: LIMIT_PER_PAGE,
         });
@@ -347,15 +322,10 @@ const ListOrders = (props) => {
       <Box display="flex" justifyContent="space-between" mb={2}>
         <div style={{ display: "flex" }}>
           <Box mr={1} clone>
-            <Paper
-              className={classes.input}
-              component={Form}
-              onSubmit={handleSearch}
-            >
+            <Paper className={classes.input}>
               <InputBase
-                name="name"
                 className={classes.inputBase}
-                placeholder="Tên nhà cung cấp ..."
+                placeholder="Tên người tạo ..."
                 inputProps={{ "aria-label": "search by creator" }}
               />
               <IconButton
@@ -380,11 +350,14 @@ const ListOrders = (props) => {
               value={filter["filters[status]"] || 0}
             >
               <MenuItem value={0}>Tất cả trạng thái</MenuItem>
-              <MenuItem value={ORDERS_STATUS.NEW}>Mới tạo</MenuItem>
-              <MenuItem value={ORDERS_STATUS.PROCESSING}>Đang xử lý</MenuItem>
-              <MenuItem value={ORDERS_STATUS.EXPORTED}>Đã xuất kho</MenuItem>
-              <MenuItem value={ORDERS_STATUS.DONE}>Hoàn tất</MenuItem>
-              <MenuItem value={ORDERS_STATUS.CANCELED}>Đã hủy</MenuItem>
+              <MenuItem value={merchandiseReturnProposalsStatus.NEW}>Mới</MenuItem>
+              <MenuItem value={merchandiseReturnProposalsStatus.PENDING}>
+                Chờ xác nhận
+              </MenuItem>
+              <MenuItem value={merchandiseReturnProposalsStatus.DONE}>
+                Hoàn tất
+              </MenuItem>
+              <MenuItem value={merchandiseReturnProposalsStatus.CANCELED}>Hủy</MenuItem>
             </Select>
           </Box>
           <Box p={1.5} mr={1} clone>
@@ -393,7 +366,6 @@ const ListOrders = (props) => {
             </IconButton>
           </Box>
         </div>
-
         <div>
           <Box p={1.5} mr={1} clone>
             <Button
@@ -410,7 +382,6 @@ const ListOrders = (props) => {
               />
             </Button>
           </Box>
-
           <Menu
             id="simple-menu"
             // classes={{ paper: downloadMenuClasses.paper }}
@@ -429,12 +400,10 @@ const ListOrders = (props) => {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            {[USER_ROLE.Sale, USER_ROLE.Boss].indexOf(roleName) !== -1 && (
-              <MenuItem onClick={() => history.push(`/${MODULE_NAME}/add`)}>
-                <AddIcon style={{ marginRight: 8 }} />
-                Tạo đơn hàng
-              </MenuItem>
-            )}
+            <MenuItem onClick={() => history.push(`/goodsDeliveryNotes`)}>
+              <AddIcon style={{ marginRight: 8 }} />
+              Tạo phiếu để nghị trả hàng
+            </MenuItem>
             <MenuItem onClick={handleClose}>
               <PublishIcon style={{ marginRight: 8 }} />
               Import XLS
@@ -451,21 +420,17 @@ const ListOrders = (props) => {
         <Table className={classes.tableRoot} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell style={{ width: 80 }} align="left"></TableCell>
+              {/* <TableCell style={{ width: 80 }} align="left"></TableCell> */}
               <TableCell style={{ width: 120 }} align="center">
-                Mã đơn hàng
+                Mã phiếu
               </TableCell>
-              <TableCell style={{ width: 120 }} align="left">
-                Người tạo phiếu
-              </TableCell>
-              <TableCell style={{ width: 180 }} align="left">
-                Tổng tiền (đ)
-              </TableCell>
+              <TableCell style={{ width: 150 }} align="center">Mã phiếu xuất kho</TableCell>
+              <TableCell>Người tạo phiếu</TableCell>
               <TableCell style={{ width: 200 }} align="center">
-                Ngày tạo
+                Tình trạng
               </TableCell>
-              <TableCell align="center" style={{ width: 100 }}>
-                Trạng thái
+              <TableCell align="left" style={{ width: 200 }}>
+                Ngày tạo
               </TableCell>
               <TableCell style={{ width: 150 }} align="center">
                 Thao tác
@@ -475,10 +440,10 @@ const ListOrders = (props) => {
           {/* <TableBody> */}
           {data &&
             data.map((row) => (
-              <ListOrdersItem
+              <ListMerchandiseReturnProposalsItem
                 key={row.id}
                 row={row}
-                onCancel={setSelectCancelOrders}
+                onCancel={setSelectCancelMerchandiseReturnProposals}
               />
             ))}
           {/* </TableBody> */}
@@ -502,13 +467,16 @@ const ListOrders = (props) => {
       </Box>
 
       <Dialog
-        open={selectCancelOrders && selectCancelOrders.id ? true : false}
+        open={
+          selectCancelMerchandiseReturnProposals && selectCancelMerchandiseReturnProposals.id
+            ? true
+            : false
+        }
         className={classes.dialogRoot}
         fullWidth
-        onClose={handleCloseCancelOrders}
         maxWidth="md"
       >
-        <DialogTitle>Lý do hủy đơn hàng</DialogTitle>
+        <DialogTitle>Lý do hủy phiếu đề nghị này</DialogTitle>
         <DialogContent>
           <CKEditor
             editor={Editor}
@@ -520,9 +488,11 @@ const ListOrders = (props) => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseCancelOrders}>Hủy</Button>
-          <Button onClick={handleCancelOrders} color="primary">
-            Xác nhận
+          <Button onClick={handleCancelMerchandiseReturnProposals} color="primary">
+            Chọn
+          </Button>
+          <Button onClick={handleCloseCancelMerchandiseReturnProposals} color="primary">
+            Hủy
           </Button>
         </DialogActions>
       </Dialog>
@@ -530,4 +500,4 @@ const ListOrders = (props) => {
   );
 };
 
-export default ListOrders;
+export default ListMerchandiseReturnProposals;

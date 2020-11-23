@@ -228,7 +228,6 @@ const ListOrdersItem = ({ row, onCancel }) => {
                     <TableCell style={{ width: 200 }} align="center">
                       Mã phiếu xuất kho
                     </TableCell>
-                    <TableCell>Nhà cung cấp</TableCell>
                     <TableCell align="center">Tình trạng</TableCell>
                     <TableCell align="center">Ngày tạo</TableCell>
                     <TableCell align="left">Tổng tiền (đ)</TableCell>
@@ -240,18 +239,6 @@ const ListOrdersItem = ({ row, onCancel }) => {
                     row.goodsDeliveryNotes.map((note) => (
                       <TableRow key={note.id}>
                         <TableCell align="center">{note.id}</TableCell>
-                        <TableCell>
-                          <div>
-                            <strong>
-                              {note.supplierName || "Min da poet"}
-                            </strong>
-                            {note.supplierId !== 0 && (
-                              <Typography variant="body2">
-                                #{note.supplierId || "minhminion2015@gmail.com"}
-                              </Typography>
-                            )}
-                          </div>
-                        </TableCell>
                         <TableCell align="center">
                           {renderGoodsDeliveryNotesStatus(note.status)}
                         </TableCell>
