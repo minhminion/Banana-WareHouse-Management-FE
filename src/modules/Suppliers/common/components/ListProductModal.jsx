@@ -181,6 +181,7 @@ const ListProductModal = (props) => {
         return result.concat({
           description: "",
           quantity: 1,
+          price: product.price,
           productId: product.id,
           product: product,
         });

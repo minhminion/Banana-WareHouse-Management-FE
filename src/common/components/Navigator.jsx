@@ -23,16 +23,18 @@ import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import CallReceivedIcon from "@material-ui/icons/CallReceived";
 import ReceiptIcon from "@material-ui/icons/Receipt";
-import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
-import CallMadeIcon from '@material-ui/icons/CallMade';
-import { useDispatch } from "react-redux";
+import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedIn";
+import CallMadeIcon from "@material-ui/icons/CallMade";
+import { useDispatch, useSelector } from "react-redux";
 import { toggleCollapseNavigator } from "../redux/actions/uiActions";
 import { Link, useLocation } from "react-router-dom";
 import { Badge, Collapse, Avatar, Tooltip } from "@material-ui/core";
+import { USER_ROLE } from "../constants/enums";
+import { MODULE_NAME as MODULE_AUTHOR } from "../../modules/Author/constants/models";
 
 const menus = [
   {
-    id: "Develop",
+    id: "Chung",
     showHeader: false,
     children: [
       { id: "Thống kê", icon: <DashboardIcon />, link: "", isDefault: true },
@@ -58,7 +60,12 @@ const menus = [
         link: "productRemoveForms",
       },
 
-      { id: "Nhân viên", icon: <GroupIcon />, link: "members" },
+      {
+        id: "Tài khoản",
+        icon: <GroupIcon />,
+        link: "users",
+        acceptRole: [USER_ROLE.SuperAdmin, USER_ROLE.Admin],
+      },
     ],
   },
   {
@@ -221,6 +228,8 @@ function Navigator(props) {
   const dispatch = useDispatch();
   const location = useLocation();
 
+  const { roleName } = useSelector((state) => state[MODULE_AUTHOR]);
+
   const [open, setOpen] = useState(false);
 
   const handleCollapsed = () => {
@@ -242,75 +251,81 @@ function Navigator(props) {
   const pathName = location.pathname.substring(1);
 
   const renderNavigatorItem = (
-    { id: childId, icon, link, isDefault, subNav },
+    { id: childId, icon, link, isDefault, subNav, acceptRole },
     step = 1
   ) => {
     const active =
       pathName.length > 0 ? pathName.split("/")[0] === link : isDefault;
     const count = 0;
+    const auth = acceptRole ? acceptRole.indexOf(roleName) !== -1 : true;
     return (
-      <Fragment key={childId}>
-        <Link
-          to={subNav ? "#" : `/${link}`}
-          onClick={(e) => handleClickDisableLink(e, subNav, `/${link}`)}
-        >
-          <Tooltip
-            disableHoverListener={!collapse}
-            title={childId}
-            aria-label={link}
-            arrow
-            placement="right"
+      auth && (
+        <Fragment key={childId}>
+          <Link
+            to={subNav ? "#" : `/${link}`}
+            onClick={(e) => handleClickDisableLink(e, subNav, `/${link}`)}
           >
-            <ListItem
-              button
-              disableGutters
-              onClick={() => subNav && handleOpenSub(childId)}
-              className={clsx(
-                classes.item,
-                active && classes.itemActiveItem,
-                collapse && classes.itemCollapseItem
-              )}
+            <Tooltip
+              disableHoverListener={!collapse}
+              title={childId}
+              aria-label={link}
+              arrow
+              placement="right"
             >
-              <ListItemIcon className={classes.itemIcon}>
-                <Badge
-                  invisible={!collapse || count === 0}
-                  color="secondary"
-                  max={99}
-                  badgeContent={count}
-                >
-                  {icon}
-                </Badge>
-              </ListItemIcon>
-              <ListItemText
-                classes={{
-                  primary: classes.itemPrimary,
-                }}
+              <ListItem
+                button
+                disableGutters
+                onClick={() => subNav && handleOpenSub(childId)}
+                className={clsx(
+                  classes.item,
+                  active && classes.itemActiveItem,
+                  collapse && classes.itemCollapseItem
+                )}
               >
-                {childId}
-              </ListItemText>
-              {subNav && (
-                <ListItemIcon
-                  className={clsx(classes.itemIcon, collapse && "locked-icon")}
-                  style={{ float: "right", margin: 0 }}
-                >
-                  {open === childId ? <ExpandLess /> : <ExpandMore />}
+                <ListItemIcon className={classes.itemIcon}>
+                  <Badge
+                    invisible={!collapse || count === 0}
+                    color="secondary"
+                    max={99}
+                    badgeContent={count}
+                  >
+                    {icon}
+                  </Badge>
                 </ListItemIcon>
-              )}
-            </ListItem>
-          </Tooltip>
-        </Link>
-        {subNav && (
-          <Collapse in={open === childId} timeout="auto" unmountOnExit>
-            <List
-              className={classes.menuList}
-              disablePadding
-              style={{ marginLeft: step * 8, paddingRight: 0 }}
-            >
-              {subNav.map((nav) => renderNavigatorItem(nav, step + 1))}
-            </List>
-          </Collapse>
-        )}
-      </Fragment>
+                <ListItemText
+                  classes={{
+                    primary: classes.itemPrimary,
+                  }}
+                >
+                  {childId}
+                </ListItemText>
+                {subNav && (
+                  <ListItemIcon
+                    className={clsx(
+                      classes.itemIcon,
+                      collapse && "locked-icon"
+                    )}
+                    style={{ float: "right", margin: 0 }}
+                  >
+                    {open === childId ? <ExpandLess /> : <ExpandMore />}
+                  </ListItemIcon>
+                )}
+              </ListItem>
+            </Tooltip>
+          </Link>
+          {subNav && (
+            <Collapse in={open === childId} timeout="auto" unmountOnExit>
+              <List
+                className={classes.menuList}
+                disablePadding
+                style={{ marginLeft: step * 8, paddingRight: 0 }}
+              >
+                {subNav.map((nav) => renderNavigatorItem(nav, step + 1))}
+              </List>
+            </Collapse>
+          )}
+        </Fragment>
+      )
     );
   };
 

@@ -65,6 +65,14 @@ export default (dispatch, props) => ({
           id: data.id,
           description: data.description,
           status: data.status,
+          ...(data.supplierId !== 0
+            ? {
+                supplierId: data.supplierId,
+              }
+            : {
+                supplierName: data.supplierName,
+              }),
+          supplierName: data.supplierName || null,
           ...(data.exceptionReason
             ? { exceptionReason: data.exceptionReason }
             : {}),
@@ -79,7 +87,6 @@ export default (dispatch, props) => ({
       return error?.response?.data;
     }
   },
-
 
   addGoodsReceivingDetails: async (data) => {
     try {
@@ -100,7 +107,9 @@ export default (dispatch, props) => ({
   deleteGoodsReceivingDetails: async (data) => {
     try {
       const response = await fetchAuth({
-        url: ENDPOINTS.apiDeleteGoodsReceivingNotesDetails(data.goodsReceivingNoteId),
+        url: ENDPOINTS.apiDeleteGoodsReceivingNotesDetails(
+          data.goodsReceivingNoteId
+        ),
         method: "DELETE",
         data,
       });
@@ -116,7 +125,9 @@ export default (dispatch, props) => ({
   editGoodsReceivingDetails: async (data) => {
     try {
       const response = await fetchAuth({
-        url: ENDPOINTS.apiUpdateGoodsReceivingNotesDetails(data.goodsReceivingNoteId),
+        url: ENDPOINTS.apiUpdateGoodsReceivingNotesDetails(
+          data.goodsReceivingNoteId
+        ),
         method: "PUT",
         data,
       });
