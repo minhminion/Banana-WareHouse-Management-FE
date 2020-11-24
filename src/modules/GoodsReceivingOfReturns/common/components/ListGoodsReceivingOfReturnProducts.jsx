@@ -188,15 +188,16 @@ const ListGoodsDeliveryNoteProducts = ({
     setViewProduct({});
   };
 
-  const getProductQuantityNeed = (productId) => {
+  const getMerchandiseProduct = (productId) => {
     const product = listProduct.find((item) => item.productId === productId);
-    return product?.quantityNeed || 0;
+
+    return product;
   };
 
   const renderTableBody = (rows) => {
     return rows.map((row) => {
       const product = row.product;
-      const quantityNeed = getProductQuantityNeed(product.id);
+      const merchandiseProduct = getMerchandiseProduct(product.id);
       return (
         row.action !== "deleted" && (
           <CSSTransition key={product.id} timeout={500} classNames="fade">
@@ -255,8 +256,11 @@ const ListGoodsDeliveryNoteProducts = ({
                   <IconButton
                     onClick={(e) =>
                       handleOpenContext(e, {
-                        quantityNeed: quantityNeed || 0,
-                        quantityReturned: row.quantityReturned || 0,
+                        quantityNeed:
+                          merchandiseProduct.quantity -
+                            merchandiseProduct.quantityReturned || 0,
+                        quantityReturned:
+                          merchandiseProduct.quantityReturned || 0,
                       })
                     }
                   >

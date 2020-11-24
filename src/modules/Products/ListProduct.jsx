@@ -467,7 +467,7 @@ const ListProduct = (props) => {
               {contextPos.quantityDetails?.quantityOrdered}
             </ListItem>
             <ListItem>
-              <strong style={{ marginRight: 8 }}>Số lượng bán:</strong>
+              <strong style={{ marginRight: 8 }}>Số lượng đặt bán:</strong>
               {contextPos.quantityDetails?.quantityForSale}
             </ListItem>
             <ListItem>

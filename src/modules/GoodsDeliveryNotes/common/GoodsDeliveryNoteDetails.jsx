@@ -395,7 +395,7 @@ const GoodsDeliveryNoteDetails = ({
               </Box>
             </Box>
           )}
-          {isEdit && canCreateMerchandiseReturnProposal() && (
+          {canCreateMerchandiseReturnProposal() && (
             <Box p={1.5} mr={1} clone>
               <Button
                 style={{ width: "100%" }}
