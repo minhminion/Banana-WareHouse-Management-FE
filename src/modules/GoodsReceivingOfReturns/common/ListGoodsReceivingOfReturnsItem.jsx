@@ -7,10 +7,9 @@ import {
   Chip,
   Box,
   IconButton,
-  useTheme,
   makeStyles,
+  useTheme,
 } from "@material-ui/core";
-import dayjs from "dayjs";
 import clsx from "clsx";
 
 import EditIcon from "@material-ui/icons/Edit";
@@ -21,6 +20,9 @@ import { Link } from "react-router-dom";
 import { ENUMS } from "../../../common/constants";
 import { useSelector } from "react-redux";
 import { MODULE_NAME as MODULE_AUTHOR } from "../../Author/constants/models";
+import { MODULE_NAME } from "../constants/models";
+import HTMLReactParser from "html-react-parser";
+import dayjs from "dayjs";
 
 const useStyles = makeStyles((theme) => ({
   chip: {
@@ -67,50 +69,49 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ListMerchandiseReturnProposalsItem = ({ row, onCancel }) => {
+const USER_ROLE = ENUMS.USER_ROLE;
+
+const ListGoodsReceivingOfReturnsItem = ({ row, onCancel }) => {
   const theme = useTheme();
   const classes = useStyles();
   const { roleName } = useSelector((state) => state[MODULE_AUTHOR]);
   const isAuth =
-    roleName === ENUMS.USER_ROLE.Boss ||
-    roleName === ENUMS.USER_ROLE.WarehouseKeeper ||
-    roleName === ENUMS.USER_ROLE.WarehouseKeeperManager;
+    [
+      USER_ROLE.WarehouseKeeper,
+      USER_ROLE.WarehouseKeeperManager,
+      USER_ROLE.Boss,
+    ].indexOf(roleName) !== -1;
 
-  const isEditable = (rowStatus) => {
-    return (
-      isAuth &&
-      rowStatus !== ENUMS.MERCHANDISE_RETURN_STATUS.CANCELED &&
-      rowStatus !== ENUMS.MERCHANDISE_RETURN_STATUS.DONE
-    );
+  const isEditable = () => {
+    return isAuth;
   };
 
-  const isAbleToCancel = (rowStatus) => {
-    return (
-      isAuth &&
-      (rowStatus === ENUMS.MERCHANDISE_RETURN_STATUS.NEW ||
-        rowStatus === ENUMS.MERCHANDISE_RETURN_STATUS.PROCESSING ||
-        rowStatus === ENUMS.MERCHANDISE_RETURN_STATUS.APPROVED)
-    );
+  const isAbleToCancel = () => {
+    return isAuth;
   };
 
   const renderStatus = (status) => {
-    const merchandiseReturnProposalsStatus = ENUMS.MERCHANDISE_RETURN_STATUS;
+    const GOOD_RECEIVING_RETURN_STATUS = ENUMS.GOOD_RECEIVING_RETURN_STATUS;
     let label = "Không tìm thấy";
     let style = "notfound";
     switch (status) {
-      case merchandiseReturnProposalsStatus.NEW:
+      case GOOD_RECEIVING_RETURN_STATUS.NEW:
         label = "Mới";
         style = "new";
         break;
-      case merchandiseReturnProposalsStatus.PROCESSING:
+      case GOOD_RECEIVING_RETURN_STATUS.PENDING:
         label = "Chờ xác nhận";
         style = "pending";
         break;
-      case merchandiseReturnProposalsStatus.DONE:
+      case GOOD_RECEIVING_RETURN_STATUS.APPROVED:
+        label = "Xác nhận";
+        style = "approved";
+        break;
+      case GOOD_RECEIVING_RETURN_STATUS.DONE:
         label = "Hoàn tất";
         style = "done";
         break;
-      case merchandiseReturnProposalsStatus.CANCELED:
+      case GOOD_RECEIVING_RETURN_STATUS.CANCELED:
         label = "Hủy";
         style = "canceled";
         break;
@@ -123,17 +124,7 @@ const ListMerchandiseReturnProposalsItem = ({ row, onCancel }) => {
   return (
     <TableBody>
       <TableRow style={{ marginBottom: 0 }}>
-        {/* <TableCell>
-          <IconButton
-            aria-label="expand row"
-            size="small"
-            onClick={() => setOpen(!open)}
-          >
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-        </TableCell> */}
         <TableCell align="center">{row.id}</TableCell>
-        <TableCell align="center">{row.goodsDeliveryNote?.id}</TableCell>
         <TableCell component="th" scope="row">
           <div>
             <strong>
@@ -144,32 +135,39 @@ const ListMerchandiseReturnProposalsItem = ({ row, onCancel }) => {
             </Typography>
           </div>
         </TableCell>
-        <TableCell align="center">{renderStatus(row.status)}</TableCell>
         <TableCell
-          align="left"
+          align="center"
           style={{
             color: theme.palette.primary.dark,
           }}
         >
           <strong>{dayjs(row.createdAt).format("DD/MM/YYYY")}</strong>
         </TableCell>
+        <TableCell align="center">{renderStatus(row.status)}</TableCell>
         {/* Action on row */}
         <TableCell align="center">
           <Box mr={1} clone>
             <Link
-              to={`/merchandiseReturnProposals/${row.id}${
+              to={`/${MODULE_NAME}/${row.id}${
                 isEditable(row.status) ? `/edit` : ""
               }`}
             >
               <IconButton>
-                {isEditable(row.status) ? <EditIcon /> : <InfoIcon />}
+                {isEditable() ? <EditIcon /> : <InfoIcon />}
               </IconButton>
             </Link>
           </Box>
+          {isAbleToCancel() && (
+            <Box clone>
+              <IconButton color="secondary" onClick={() => onCancel(row)}>
+                <BlockIcon />
+              </IconButton>
+            </Box>
+          )}
         </TableCell>
       </TableRow>
     </TableBody>
   );
 };
 
-export default ListMerchandiseReturnProposalsItem;
+export default ListGoodsReceivingOfReturnsItem;

@@ -173,7 +173,7 @@ const SingleMerchandiseReturnProposalDetails = (props) => {
         isEdit &&
         [
           ENUMS.MERCHANDISE_RETURN_STATUS.NEW,
-          ENUMS.MERCHANDISE_RETURN_STATUS.PENDING,
+          ENUMS.MERCHANDISE_RETURN_STATUS.PROCESSING,
           ENUMS.MERCHANDISE_RETURN_STATUS.APPROVED,
         ].indexOf(initialValues.status) !== -1
       }

@@ -70,7 +70,15 @@ export const PRODUCT_REMOVE_STATUS = {
 
 export const MERCHANDISE_RETURN_STATUS = {
   NEW: 1,
-  PENDING: 2,
+  PROCESSING: 2,
   DONE: 3,
   CANCELED: 4,
 }
+
+export const GOOD_RECEIVING_RETURN_STATUS = {
+  NEW: 1,
+  PENDING: 2,
+  APPROVED: 3,
+  DONE: 4,
+  CANCELED: 5,
+};

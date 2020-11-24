@@ -13,7 +13,7 @@ import { Check, Close } from "@material-ui/icons";
 import { ENUMS } from "../../../../common/constants";
 
 function getSteps() {
-  return ["Mới", "Chở xử lý", "Hoàn tất"];
+  return ["Mới", "Chở xác nhận", "Đã xác nhận", "Hoàn tất"];
 }
 
 const Connector = withStyles((theme) => ({
@@ -112,28 +112,30 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MERCHANDISE_RETURN_STATUS = ENUMS.MERCHANDISE_RETURN_STATUS;
+const GOOD_RECEIVING_RETURN_STATUS = ENUMS.GOOD_RECEIVING_RETURN_STATUS;
 
-const MerchandiseReturnProposalStatusStepper = ({ status }) => {
+const GoodsReceivingOfReturnDetailsStatusStepper = ({ status }) => {
   const classes = useStyles();
   const steps = getSteps();
 
   const getCurrentStep = (status) => {
     switch (status) {
-      case MERCHANDISE_RETURN_STATUS.NEW:
+      case GOOD_RECEIVING_RETURN_STATUS.NEW:
         return 0;
-      case MERCHANDISE_RETURN_STATUS.PROCESSING:
+      case GOOD_RECEIVING_RETURN_STATUS.PENDING:
         return 1;
-      case MERCHANDISE_RETURN_STATUS.DONE:
-      case MERCHANDISE_RETURN_STATUS.CANCELED:
+      case GOOD_RECEIVING_RETURN_STATUS.APPROVED:
         return 2;
+      case GOOD_RECEIVING_RETURN_STATUS.DONE:
+      case GOOD_RECEIVING_RETURN_STATUS.CANCELED:
+        return 3;
       default:
         return 0;
     }
   };
 
   const isStepCancel = (step) => {
-    return step === 2 && status === MERCHANDISE_RETURN_STATUS.CANCELED;
+    return step === 3 && status === GOOD_RECEIVING_RETURN_STATUS.CANCELED;
   };
 
   return (
@@ -170,4 +172,4 @@ const MerchandiseReturnProposalStatusStepper = ({ status }) => {
   );
 };
 
-export default MerchandiseReturnProposalStatusStepper;
+export default GoodsReceivingOfReturnDetailsStatusStepper;

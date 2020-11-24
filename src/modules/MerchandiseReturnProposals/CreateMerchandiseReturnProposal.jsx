@@ -30,7 +30,7 @@ const CreateMerchandiseReturnProposal = (props) => {
   }, [goodsDeliveryNoteId]);
 
   const handleSubmit = async (values) => {
-    enqueueSnackbar(`Đang tạo phiếu nhập hàng...`, {
+    enqueueSnackbar(`Đang tạo phiếu nhập kho trả hàng ...`, {
       variant: "info",
       key: `creating-${MODULE_NAME}`,
       persist: true,

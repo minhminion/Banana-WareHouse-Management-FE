@@ -37,6 +37,9 @@ import merchandiseReturnReducer from "./MerchandiseReturnProposals/constants/red
 import { MODULE_NAME as MODULE_USERS } from "./Users/constants/models";
 import usersReducer from "./Users/constants/reducer";
 
+import { MODULE_NAME as MODULE_GOODS_RECEIVING_OF_RETURNS } from "./GoodsReceivingOfReturns/constants/models";
+import goodsReceivingOfReturnsReducer from "./GoodsReceivingOfReturns/constants/reducer";
+
 export const rootReducer = {
   [MODULE_AUTH]: authorReducer,
   [MODULE_MEMBER]: memberReducer,
@@ -52,6 +55,7 @@ export const rootReducer = {
   [MODULE_MERCHANDISE_RETURN]: merchandiseReturnReducer,
   [MODULE_STATISTICS]: statisticsReducer,
   [MODULE_USERS]: usersReducer,
+  [MODULE_GOODS_RECEIVING_OF_RETURNS]: goodsReceivingOfReturnsReducer,
 };
 
 export const rootModules = [
@@ -68,4 +72,5 @@ export const rootModules = [
   MODULE_STATISTICS,
   MODULE_USERS,
   MODULE_MERCHANDISE_RETURN,
+  MODULE_GOODS_RECEIVING_OF_RETURNS,
 ];

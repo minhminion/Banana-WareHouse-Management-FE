@@ -65,6 +65,10 @@ import ListMerchandiseReturnProposalsPage from "../pages/MerchandiseReturnPropos
 import EditMerchandiseReturnProposalPage from "../pages/MerchandiseReturnProposals/EditMerchandiseReturnProposalPage";
 import AddMerchandiseReturnProposalPage from "../pages/MerchandiseReturnProposals/AddMerchandiseReturnProposalPage";
 import MerchandiseReturnProposalDetailsPage from "../pages/MerchandiseReturnProposals/MerchandiseReturnProposalDetailsPage";
+import GoodsReceivingOfReturnsPage from "../pages/GoodsReceivingOfReturns/GoodsReceivingOfReturnsPage";
+import CreateGoodsReceivingOfReturnPage from "../pages/GoodsReceivingOfReturns/CreateGoodsReceivingOfReturnPage";
+import EditGoodsReceivingOfReturnPage from "../pages/GoodsReceivingOfReturns/EditGoodsReceivingOfReturnPage";
+import GoodsReceivingOfReturnDetailsPage from "../pages/GoodsReceivingOfReturns/GoodsReceivingOfReturnDetailsPage";
 
 const Routes = () => {
   const USER_ROLE = ENUMS.USER_ROLE;
@@ -328,6 +332,40 @@ const Routes = () => {
             acceptRoles={[
               USER_ROLE.WarehouseKeeper,
               USER_ROLE.WarehouseKeeperManager,
+            ]}
+          />
+
+          {/* Goods Receiving Of Return */}
+          <Route
+            exact
+            path="/goodsReceivingOfReturns"
+            component={GoodsReceivingOfReturnsPage}
+          />
+          <AuthRoute
+            exact
+            path="/goodsReceivingOfReturns/:merchandiseReturnProposalId/add"
+            component={CreateGoodsReceivingOfReturnPage}
+            roleName={roleName}
+            acceptRoles={[
+              USER_ROLE.WarehouseKeeper,
+              USER_ROLE.WarehouseKeeperManager,
+              USER_ROLE.Boss,
+            ]}
+          />
+          <Route
+            exact
+            path="/goodsReceivingOfReturns/:goodsReceivingOfReturnId"
+            component={GoodsReceivingOfReturnDetailsPage}
+          />
+          <AuthRoute
+            exact
+            path="/goodsReceivingOfReturns/:goodsReceivingOfReturnId/edit"
+            component={EditGoodsReceivingOfReturnPage}
+            roleName={roleName}
+            acceptRoles={[
+              USER_ROLE.WarehouseKeeper,
+              USER_ROLE.WarehouseKeeperManager,
+              USER_ROLE.Boss,
             ]}
           />
 
