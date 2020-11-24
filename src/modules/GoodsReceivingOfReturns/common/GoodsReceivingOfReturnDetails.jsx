@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import {
   Grid,
   makeStyles,
-  InputLabel,
   Box,
   Paper,
   Button,
+  InputLabel,
   Tooltip,
   IconButton,
 } from "@material-ui/core";
@@ -13,34 +13,27 @@ import clsx from "clsx";
 import { blueGrey } from "@material-ui/core/colors";
 import { useHistory } from "react-router-dom";
 import { useForm } from "../../../common/hooks/useForm";
+import Alert from "@material-ui/lab/Alert";
 import CKEditor from "@ckeditor/ckeditor5-react";
 import Editor from "../../../common/components/widget/Editor";
-import Alert from "@material-ui/lab/Alert";
 
 // Helper
 import { ENUMS } from "../../../common/constants";
 import parse from "html-react-parser";
+import GoodsReceivingOfReturnDetailsStatus from "./components/GoodsReceivingOfReturnDetailsStatus";
+import { MODULE_NAME } from "../constants/models";
+import { MODULE_NAME as MODULE_MERCHANDISE } from "../../MerchandiseReturnProposals/constants/models";
+import ListGoodsReceivingOfReturnProducts from "./components/ListGoodsReceivingOfReturnProducts";
+import GoodsReceivingOfReturnDetailsStatusStepper from "./components/GoodsReceivingOfReturnDetailsStatusStepper";
 import useConfirm from "../../../common/hooks/useConfirm/useConfirm";
-import GoodsDeliveryNoteStatusStepper from "./components/GoodsDeliveryNoteStatusStepper";
-import GoodsDeliveryNoteStatus from "./components/GoodsDeliveryNoteStatus";
-import ListGoodsDeliveryNoteProducts from "./components/ListGoodsDeliveryNoteProducts";
+
 import InfoIcon from "@material-ui/icons/Info";
-import { MODULE_NAME as MODULE_ORDERS } from "../../Orders/constants/models";
-import { MODULE_NAME as MODULE_AUTHOR } from "../../Author/constants/models";
-import {
-  USER_ROLE,
-} from "../../../common/constants/enums";
-import { useSelector } from "react-redux";
 
 const defaultValues = {
-  creator: "231",
-  createdAt: Date.now(),
-  period: 2,
-  status: ENUMS.GOOD_DELIVERY_STATUS.NEW,
-  description: "",
-  supplierId: 0,
-  totalPrice: 0,
-  goodsDeliveryDetails: [],
+  description: null,
+  exceptionReason: null,
+  status: 1,
+  goodsReceivingOfReturnDetails: [],
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -143,7 +136,7 @@ const useStyles = makeStyles((theme) => ({
   },
   actionButton: {
     background: theme.palette.secondary.main,
-    width: 120,
+    minWidth: 120,
     color: theme.palette.common.white,
     justifyContent: "center",
     "&:hover": {
@@ -160,10 +153,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GOOD_DELIVERY_STATUS = ENUMS.GOOD_DELIVERY_STATUS;
+const GOOD_RECEIVING_RETURN_STATUS = ENUMS.GOOD_RECEIVING_RETURN_STATUS;
 
-const GoodsDeliveryNoteDetails = ({
-  orderDetails,
+const GoodsReceivingOfReturnDetails = ({
+  merchandiseDetails,
   initialValues,
   isEdit = true,
   onSubmit,
@@ -174,10 +167,9 @@ const GoodsDeliveryNoteDetails = ({
   let minDate = new Date();
   minDate.setDate(minDate.getDate() + 1);
 
+  const confirm = useConfirm();
   const classes = useStyles();
   const history = useHistory();
-  const confirm = useConfirm();
-  const { roleName } = useSelector((state) => state[MODULE_AUTHOR]);
 
   const validate = (fieldValues = values) => {
     let temp = { ...errors };
@@ -211,34 +203,15 @@ const GoodsDeliveryNoteDetails = ({
     handleResetValues();
   }, [initialValues]);
 
-  const handleResetValues = () => {
-    if (initialValues) {
-      setDefaultValues(initialValues);
-    } else {
-      setDefaultValues(defaultValues);
-    }
-  };
-
-  const canCreateMerchandiseReturnProposal = () => {
-    return (
-      values.status === GOOD_DELIVERY_STATUS.DONE &&
-      [
-        USER_ROLE.Boss,
-        USER_ROLE.WarehouseKeeper,
-        USER_ROLE.WarehouseKeeperManager,
-      ].indexOf(roleName) !== -1
-    );
-  };
-
   const getStatusConfirmContent = (value) => {
     let content = {
-      title: "Thay đổi trạng thái phiếu nhập hàng ?",
+      title: "Thay đổi trạng thái phiếu hủy sản phẩm ?",
       description: "Hành động này sẽ không thể hoàn tác",
       confirmationText: "Xác nhận",
       cancellationText: "Hủy",
     };
     switch (value) {
-      case GOOD_DELIVERY_STATUS.CANCELED:
+      case GOOD_RECEIVING_RETURN_STATUS.CANCELED:
         content = {
           ...content,
           input: true,
@@ -269,19 +242,23 @@ const GoodsDeliveryNoteDetails = ({
       });
   };
 
+  const handleResetValues = () => {
+    if (initialValues) {
+      setDefaultValues(initialValues);
+    } else {
+      setDefaultValues(defaultValues);
+    }
+  };
+
   const handleSubmit = () => {
     if (validate()) {
       try {
+        console.log(
+          "======== Bao Minh ~ file: GoodsReceivingOfReturnDetails.jsx ~ line 258 ~ handleSubmit ~ values",
+          values
+        );
         const newValues = {
-          description: values.description || "",
-          status: values.status,
-          goodsDeliveryDetails: values.goodsDeliveryDetails.map((product) => ({
-            id: product.id || -1,
-            productId: +product.productId,
-            quantity: parseFloat(product.quantity),
-            description: product.description || "",
-            action: product.action,
-          })),
+          ...values,
         };
         onSubmit && onSubmit(newValues);
       } catch (error) {}
@@ -290,23 +267,27 @@ const GoodsDeliveryNoteDetails = ({
 
   return (
     <Box className={classes.root}>
-      {values.status === ENUMS.GOOD_DELIVERY_STATUS.CANCELED && (
+      {values.status === ENUMS.GOOD_RECEIVING_RETURN_STATUS.CANCELED && (
         <Box clone mb={2}>
           <Alert severity="error">
             {parse(initialValues?.exceptionReason || "")}
           </Alert>
         </Box>
       )}
-      {values.id && <GoodsDeliveryNoteStatusStepper status={values.status} />}
-      {values.orderId && (
+      {values.id && (
+        <GoodsReceivingOfReturnDetailsStatusStepper status={values.status} />
+      )}
+      {values.merchandiseReturnProposalId && (
         <InputLabel className={classes.label} style={{ marginBottom: 16 }}>
-          Mã đơn hàng: {values.orderId}
+          Mã phiếu để nghị trả hàng: {values.merchandiseReturnProposalId}
           <Tooltip title="Thông tin đơn hàng">
             <IconButton
               size="small"
               style={{ marginLeft: 8 }}
               onClick={() =>
-                history.push(`/${MODULE_ORDERS}/${values.orderId}`)
+                history.push(
+                  `/${MODULE_MERCHANDISE}/${values.merchandiseReturnProposalId}`
+                )
               }
             >
               <InfoIcon />
@@ -317,50 +298,42 @@ const GoodsDeliveryNoteDetails = ({
 
       <Grid container spacing={3}>
         <Grid item className={clsx(classes.root, classes.leftSide)}>
-          {/* Product Deadline and Status */}
+          {/*Status */}
+          <GoodsReceivingOfReturnDetailsStatus
+            value={values.status}
+            onChange={handleChangeStatus}
+            classes={classes}
+            isEdit={isEdit && values.id}
+            style={{ width: 400, marginBottom: 16 }}
+          />
 
-          <Box
-            className={classes.productDescription}
-            display="flex"
-            justifyContent="space-between"
-          >
-            <GoodsDeliveryNoteStatus
-              value={values.status}
-              onChange={handleChangeStatus}
-              classes={classes}
-              isEdit={isEdit && values.id}
-              style={{ width: "35%", minWidth: 50 }}
-            />
+          <Box className={classes.productDescription}>
+            <InputLabel className={classes.label} style={{ marginBottom: 8 }}>
+              Mô tả phiếu nhập kho trả hàng
+            </InputLabel>
+            {isEdit ? (
+              <CKEditor
+                editor={Editor}
+                data={values.description || ""}
+                onInit={(editor) => {
+                  // You can store the "editor" and use when it is needed.
+                }}
+                onChange={(event, editor) => {
+                  const data = editor.getData();
+                  handleInputChange({
+                    target: { name: "description", value: data },
+                  });
+                }}
+                onBlur={(event, editor) => {}}
+                onFocus={(event, editor) => {}}
+              />
+            ) : (
+              <Box p={2} className="product__description" component={Paper}>
+                {parse(values.description || "")}
+              </Box>
+            )}
           </Box>
 
-          {(initialValues?.description || isEdit) && (
-            <Box className={classes.productDescription}>
-              <InputLabel className={classes.label} style={{ marginBottom: 8 }}>
-                Mô tả phiếu nhập hàng
-              </InputLabel>
-              {isEdit ? (
-                <CKEditor
-                  editor={Editor}
-                  data={values.description || ""}
-                  onInit={(editor) => {
-                    // You can store the "editor" and use when it is needed.
-                  }}
-                  onChange={(event, editor) => {
-                    const data = editor.getData();
-                    handleInputChange({
-                      target: { name: "description", value: data },
-                    });
-                  }}
-                  onBlur={(event, editor) => {}}
-                  onFocus={(event, editor) => {}}
-                />
-              ) : (
-                <Box p={2} className="product__description" component={Paper}>
-                  {parse(values.description || "")}
-                </Box>
-              )}
-            </Box>
-          )}
           {/* Actions Button */}
           {isEdit && (
             <Box className={classes.productDescription}>
@@ -388,39 +361,22 @@ const GoodsDeliveryNoteDetails = ({
                 <Button
                   className={clsx(classes.actionButton, "btn__cancel")}
                   component={Paper}
-                  onClick={() => history.push("/proposal")}
+                  onClick={() => history.push(`/${MODULE_NAME}`)}
                 >
                   {cancelLabel}
                 </Button>
               </Box>
             </Box>
           )}
-          {isEdit && canCreateMerchandiseReturnProposal() && (
-            <Box p={1.5} mr={1} clone>
-              <Button
-                style={{ width: "100%" }}
-                className={clsx(classes.actionButton)}
-                component={Paper}
-                onClick={() =>
-                  history.push(`/merchandiseReturnProposals/${values.id}/add`)
-                }
-              >
-                Tạo phiếu đề nghị trả hàng
-              </Button>
-            </Box>
-          )}
         </Grid>
         <Grid item className={clsx(classes.root, classes.rightSide)}>
           <Box className={classes.productDescription}>
-            {/* <InputLabel className={classes.label} style={{ marginBottom: 8 }}>
-              Danh sách sản phẩm
-            </InputLabel> */}
-            <ListGoodsDeliveryNoteProducts
-              listProduct={orderDetails}
-              isEdit={isEdit && values.status === ENUMS.PROPOSAL_STATUS.NEW}
-              status={GOOD_DELIVERY_STATUS}
-              data={values.goodsDeliveryDetails}
-              supplierId={values.supplierId}
+            <ListGoodsReceivingOfReturnProducts
+              listProduct={merchandiseDetails}
+              isEdit={
+                isEdit && values.status === GOOD_RECEIVING_RETURN_STATUS.NEW
+              }
+              data={values.goodsReceivingOfReturnDetails}
               errors={errors}
               onChange={handleInputChange}
             />
@@ -431,4 +387,4 @@ const GoodsDeliveryNoteDetails = ({
   );
 };
 
-export default GoodsDeliveryNoteDetails;
+export default GoodsReceivingOfReturnDetails;

@@ -27,6 +27,9 @@ import MerchandiseReturnProposalStatus from "./components/MerchandiseReturnPropo
 import ListMerchandiseReturnProposalProducts from "./components/ListMerchandiseReturnProposalProducts";
 import InfoIcon from "@material-ui/icons/Info";
 import { MODULE_NAME as MODULE_GOODS_DELIVERY_NOTES } from "../../GoodsDeliveryNotes/constants/models";
+import { MODULE_NAME as MODULE_AUTHOR } from "../../Author/constants/models";
+import { USER_ROLE } from "../../../common/constants/enums";
+import { useSelector } from "react-redux";
 
 const defaultValues = {
   creator: "231",
@@ -173,6 +176,8 @@ const MerchandiseReturnProposalDetails = ({
   const classes = useStyles();
   const history = useHistory();
   const confirm = useConfirm();
+  const { roleName } = useSelector((state) => state[MODULE_AUTHOR]);
+  
   const validate = (fieldValues = values) => {
     let temp = { ...errors };
     setErrors({
@@ -204,6 +209,17 @@ const MerchandiseReturnProposalDetails = ({
   useEffect(() => {
     handleResetValues();
   }, [initialValues]);
+
+  const canCreateGoodsReceivingOfReturn = () => {
+    return (
+      values.status === MERCHANDISE_RETURN_STATUS.PROCESSING &&
+      [
+        USER_ROLE.Boss,
+        USER_ROLE.WarehouseKeeper,
+        USER_ROLE.WarehouseKeeperManager,
+      ].indexOf(roleName) !== -1
+    );
+  };
 
   const handleResetValues = () => {
     if (initialValues) {
@@ -383,6 +399,20 @@ const MerchandiseReturnProposalDetails = ({
                   {cancelLabel}
                 </Button>
               </Box>
+            </Box>
+          )}
+          {isEdit && canCreateGoodsReceivingOfReturn() && (
+            <Box p={1.5} mr={1} clone>
+              <Button
+                style={{ width: "100%" }}
+                className={clsx(classes.actionButton)}
+                component={Paper}
+                onClick={() =>
+                  history.push(`/goodsReceivingOfReturns/${values.id}/add`)
+                }
+              >
+                Tạo phiếu nhập kho trả hàng
+              </Button>
             </Box>
           )}
         </Grid>

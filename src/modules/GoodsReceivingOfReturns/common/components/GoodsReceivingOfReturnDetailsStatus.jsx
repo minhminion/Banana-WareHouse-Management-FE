@@ -10,6 +10,7 @@ import { ENUMS } from "../../../../common/constants";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { MODULE_NAME as MODULE_AUTHOR } from "../../../Author/constants/models";
 import { useSelector } from "react-redux";
+import { GOOD_RECEIVING_RETURN_STATUS } from "../../../../common/constants/enums";
 
 const useStyles = makeStyles((theme) => ({
   select: {
@@ -31,14 +32,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MerchandiseReturnProposalStatus = ({
+const GoodsReceivingOfReturnDetailsStatus = ({
   classes: classesStyle,
   isEdit,
   style,
   value,
   onChange,
 }) => {
-  const MERCHANDISE_RETURN_STATUS = ENUMS.MERCHANDISE_RETURN_STATUS;
+  const GOOD_RECEIVING_RETURN_STATUS = ENUMS.GOOD_RECEIVING_RETURN_STATUS;
   const USER_ROLE = ENUMS.USER_ROLE;
   const classes = useStyles();
 
@@ -62,13 +63,15 @@ const MerchandiseReturnProposalStatus = ({
 
   const getMenuContent = (status) => {
     switch (status) {
-      case MERCHANDISE_RETURN_STATUS.NEW:
+      case GOOD_RECEIVING_RETURN_STATUS.NEW:
         return "Mới tạo";
-      case MERCHANDISE_RETURN_STATUS.PROCESSING:
+      case GOOD_RECEIVING_RETURN_STATUS.PENDING:
         return "Chờ xác nhận";
-      case MERCHANDISE_RETURN_STATUS.DONE:
+      case GOOD_RECEIVING_RETURN_STATUS.APPROVED:
+        return "Đã xác nhận";
+      case GOOD_RECEIVING_RETURN_STATUS.DONE:
         return "Hoàn tất";
-      case MERCHANDISE_RETURN_STATUS.CANCELED:
+      case GOOD_RECEIVING_RETURN_STATUS.CANCELED:
         return "Hủy";
       default:
         return "Unknown step";
@@ -76,31 +79,37 @@ const MerchandiseReturnProposalStatus = ({
   };
 
   const renderMenuItem = (status) => {
-    let listMenu = Object.values(MERCHANDISE_RETURN_STATUS);
+    let listMenu = Object.values(GOOD_RECEIVING_RETURN_STATUS);
     switch (status) {
-      case MERCHANDISE_RETURN_STATUS.NEW:
-        listMenu = [
-          MERCHANDISE_RETURN_STATUS.NEW,
-          MERCHANDISE_RETURN_STATUS.PROCESSING,
-          MERCHANDISE_RETURN_STATUS.CANCELED,
-        ];
+      case GOOD_RECEIVING_RETURN_STATUS.NEW:
+        listMenu = [GOOD_RECEIVING_RETURN_STATUS.NEW, GOOD_RECEIVING_RETURN_STATUS.PENDING];
         break;
-      case MERCHANDISE_RETURN_STATUS.PROCESSING:
+      case GOOD_RECEIVING_RETURN_STATUS.PENDING:
         if (
           [USER_ROLE.Boss, USER_ROLE.WarehouseKeeperManager].indexOf(
             roleName
           ) !== -1
         ) {
           listMenu = [
-            MERCHANDISE_RETURN_STATUS.PROCESSING,
-            MERCHANDISE_RETURN_STATUS.CANCELED,
+            GOOD_RECEIVING_RETURN_STATUS.NEW,
+            GOOD_RECEIVING_RETURN_STATUS.PENDING,
+            GOOD_RECEIVING_RETURN_STATUS.APPROVED,
+            GOOD_RECEIVING_RETURN_STATUS.CANCELED,
           ];
         } else {
           listMenu = [
-            MERCHANDISE_RETURN_STATUS.PROCESSING,
-            MERCHANDISE_RETURN_STATUS.CANCELED,
+            GOOD_RECEIVING_RETURN_STATUS.NEW,
+            GOOD_RECEIVING_RETURN_STATUS.PENDING,
+            GOOD_RECEIVING_RETURN_STATUS.CANCELED,
           ];
         }
+        break;
+      case GOOD_RECEIVING_RETURN_STATUS.APPROVED:
+        listMenu = [
+          GOOD_RECEIVING_RETURN_STATUS.APPROVED,
+          GOOD_RECEIVING_RETURN_STATUS.DONE,
+          GOOD_RECEIVING_RETURN_STATUS.CANCELED,
+        ];
         break;
       default:
         break;
@@ -125,8 +134,9 @@ const MerchandiseReturnProposalStatus = ({
       <Select
         disabled={
           !isEdit ||
-          value === MERCHANDISE_RETURN_STATUS.CANCELED ||
-          value === MERCHANDISE_RETURN_STATUS.DONE
+          (value !== GOOD_RECEIVING_RETURN_STATUS.NEW &&
+            value !== GOOD_RECEIVING_RETURN_STATUS.PENDING &&
+            value !== GOOD_RECEIVING_RETURN_STATUS.APPROVED)
         }
         disableUnderline
         name="status"
@@ -143,4 +153,4 @@ const MerchandiseReturnProposalStatus = ({
   );
 };
 
-export default MerchandiseReturnProposalStatus;
+export default GoodsReceivingOfReturnDetailsStatus;
