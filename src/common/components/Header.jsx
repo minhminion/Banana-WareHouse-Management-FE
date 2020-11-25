@@ -371,25 +371,6 @@ const Header = (props) => {
               </Link>
             </Grid>
             <Grid item>
-              <Tooltip title="Alerts • No alerts">
-                <IconButton
-                  color="inherit"
-                  onClick={handleToggleNotify}
-                  className={classes.iconButton}
-                >
-                  <Badge
-                    invisible={
-                      notifications && notifications.length > 0 ? false : true
-                    }
-                    variant="dot"
-                    color="secondary"
-                  >
-                    <NotificationsIcon color="disabled" />
-                  </Badge>
-                </IconButton>
-              </Tooltip>
-            </Grid>
-            <Grid item>
               <div
                 ref={anchorRef}
                 color="inherit"

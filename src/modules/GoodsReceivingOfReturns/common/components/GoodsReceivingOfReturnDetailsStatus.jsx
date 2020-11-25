@@ -129,7 +129,7 @@ const GoodsReceivingOfReturnDetailsStatus = ({
   return (
     <Box style={{ ...style }} className={classesStyle.productDescription}>
       <InputLabel className={classesStyle.label} style={{ marginBottom: 8 }}>
-        Tình trạng phiếu
+        Trạng thái phiếu
       </InputLabel>
       <Select
         disabled={

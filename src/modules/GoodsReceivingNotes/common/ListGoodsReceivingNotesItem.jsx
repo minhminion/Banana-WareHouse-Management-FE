@@ -153,7 +153,7 @@ const ListGoodsReceivingNotesItem = ({ row, onCancel }) => {
             <strong>{row.supplierName || "Min da poet"}</strong>
             {row.supplierId !== 0 && (
               <Typography variant="body2">
-                #{row.supplierId || "minhminion2015@gmail.com"}
+                 {`Mã NCC: ${row.supplierId}` || "Nhà cung cấp ngoài hệ thông"}
               </Typography>
             )}
           </div>

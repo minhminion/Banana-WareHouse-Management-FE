@@ -2,6 +2,8 @@ import React from "react";
 import { Select, MenuItem, makeStyles } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { USER_ROLE } from "../../../../common/constants/enums";
+import { useSelector } from "react-redux";
+import { MODULE_NAME as MODULE_AUTHOR } from "../../../Author/constants/models";
 
 const useStyles = makeStyles((theme) => ({
   select: {
@@ -32,6 +34,7 @@ const UserRole = ({
   onChange,
 }) => {
   const classes = useStyles();
+  const { roleName } = useSelector((state) => state[MODULE_AUTHOR]);
 
   const menuProps = {
     classes: {
@@ -49,14 +52,14 @@ const UserRole = ({
     getContentAnchorEl: null,
   };
 
-  const renderRoleName = (roleName) => {
+  const renderRoleName = (role) => {
     let name;
-    switch (roleName) {
+    switch (role) {
       case USER_ROLE.Boss:
         name = "Ban lãnh đạo";
         break;
       case USER_ROLE.SuperAdmin:
-        name = "Quản tri cấp cao";
+        name = "Quản trị cấp cao";
         break;
       case USER_ROLE.Admin:
         name = "Quản trị viên";
@@ -70,9 +73,6 @@ const UserRole = ({
       case USER_ROLE.WarehouseKeeperManager:
         name = "Thủ kho trưởng";
         break;
-      case USER_ROLE.Customer:
-        name = "Khách hàng";
-        break;
       default:
         name = "Người lạ";
         break;
@@ -81,7 +81,7 @@ const UserRole = ({
     return name;
   };
 
-  const renderMenuItem = () => {
+  const renderMenuItem = (roleName) => {
     let listMenu = Object.values(USER_ROLE);
 
     return listMenu.map((item) => (
@@ -97,9 +97,6 @@ const UserRole = ({
 
   return (
     <Select
-      // disabled={
-      //   !isEdit || (value !== USER_ROLE.NEW && value !== USER_ROLE.PROCESSING)
-      // }
       disableUnderline
       name="roleName"
       classes={{ root: classes.select }}
@@ -108,7 +105,7 @@ const UserRole = ({
       value={value}
       onChange={onChange}
     >
-      {renderMenuItem(value)}
+      {renderMenuItem(roleName)}
     </Select>
   );
 };

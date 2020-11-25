@@ -132,13 +132,14 @@ const InventoryRecordFormDetailsStatus = ({
   return (
     <Box style={{ ...style }} className={classesStyle.productDescription}>
       <InputLabel className={classesStyle.label} style={{ marginBottom: 8 }}>
-        Tình trạng phiếu
+        Trạng thái phiếu
       </InputLabel>
       <Select
         disabled={
           !isEdit ||
           (value !== INVENTORY_RECORD_STATUS.NEW &&
-            value !== INVENTORY_RECORD_STATUS.PENDING)
+            value !== INVENTORY_RECORD_STATUS.PENDING &&
+            value !== INVENTORY_RECORD_STATUS.APPROVED)
         }
         disableUnderline
         name="status"

@@ -228,7 +228,7 @@ const ListOrdersItem = ({ row, onCancel }) => {
                     <TableCell style={{ width: 200 }} align="center">
                       Mã phiếu xuất kho
                     </TableCell>
-                    <TableCell align="center">Tình trạng</TableCell>
+                    <TableCell align="center">Trạng thái</TableCell>
                     <TableCell align="center">Ngày tạo</TableCell>
                     <TableCell align="left">Tổng tiền (đ)</TableCell>
                     <TableCell align="left"></TableCell>

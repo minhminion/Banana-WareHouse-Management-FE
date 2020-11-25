@@ -55,7 +55,7 @@ const RevenueAndExpenditure = (props) => {
       />
       <CardHeader
         classes={classes}
-        title={`${formatNumberToVND(data?.expediture || 0)}đ`}
+        title={`${formatNumberToVND(data?.expenditure || 0)}đ`}
         subheader="Chi tiêu"
       />
     </Box>

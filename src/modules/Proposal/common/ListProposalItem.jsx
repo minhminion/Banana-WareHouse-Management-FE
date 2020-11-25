@@ -49,6 +49,10 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.common.white,
       background: theme.palette.error.main,
     },
+    "&.approved": {
+      color: theme.palette.common.white,
+      background: theme.palette.warning.main,
+    },
     "&.force__done": {
       color: theme.palette.common.white,
       background: "#b19cd9",
@@ -237,7 +241,7 @@ const ListProposalItem = ({ row, onCancel }) => {
                       Mã phiếu nhập kho
                     </TableCell>
                     <TableCell>Nhà cung cấp</TableCell>
-                    <TableCell align="center">Tình trạng</TableCell>
+                    <TableCell align="center">Trạng thái</TableCell>
                     <TableCell align="center">Ngày tạo</TableCell>
                     <TableCell align="left">Tổng tiền (đ)</TableCell>
                     <TableCell align="left"></TableCell>
@@ -249,13 +253,13 @@ const ListProposalItem = ({ row, onCancel }) => {
                       <TableRow key={note.id}>
                         <TableCell align="center">{note.id}</TableCell>
                         <TableCell>
-                          <div>
+                         <div>
                             <strong>
                               {note.supplierName || "Min da poet"}
                             </strong>
                             {note.supplierId !== 0 && (
                               <Typography variant="body2">
-                                #{note.supplierId || "minhminion2015@gmail.com"}
+                                {`Mã NCC: ${note.supplierId}` || "Nhà cung cấp ngoài hệ thông"}
                               </Typography>
                             )}
                           </div>

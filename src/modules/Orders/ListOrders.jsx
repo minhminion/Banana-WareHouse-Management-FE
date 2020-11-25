@@ -435,14 +435,7 @@ const ListOrders = (props) => {
                 Tạo đơn hàng
               </MenuItem>
             )}
-            <MenuItem onClick={handleClose}>
-              <PublishIcon style={{ marginRight: 8 }} />
-              Import XLS
-            </MenuItem>
-            <MenuItem onClick={handleClose}>
-              <GetAppIcon style={{ marginRight: 8 }} />
-              Export XLS
-            </MenuItem>
+            
           </Menu>
         </div>
       </Box>
@@ -456,7 +449,7 @@ const ListOrders = (props) => {
                 Mã đơn hàng
               </TableCell>
               <TableCell style={{ width: 120 }} align="left">
-                Người tạo phiếu
+                Người tạo
               </TableCell>
               <TableCell style={{ width: 180 }} align="left">
                 Tổng tiền (đ)

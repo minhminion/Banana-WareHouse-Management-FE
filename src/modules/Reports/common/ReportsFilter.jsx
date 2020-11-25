@@ -126,7 +126,7 @@ const ReportsFilter = ({ onSubmit }) => {
         />
       </Box>
       <Button variant="contained" onClick={handleSubmit}>
-        Thông kê
+        Thống kê
       </Button>
     </Box>
   );

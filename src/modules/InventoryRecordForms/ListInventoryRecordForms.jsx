@@ -438,14 +438,7 @@ const ListInventoryRecordForms = (props) => {
                 Tạo phiếu kiểm kho
               </MenuItem>
             )}
-            <MenuItem onClick={handleClose}>
-              <PublishIcon style={{ marginRight: 8 }} />
-              Import XLS
-            </MenuItem>
-            <MenuItem onClick={handleClose}>
-              <GetAppIcon style={{ marginRight: 8 }} />
-              Export XLS
-            </MenuItem>
+            
           </Menu>
         </div>
       </Box>

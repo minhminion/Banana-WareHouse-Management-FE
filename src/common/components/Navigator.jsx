@@ -41,29 +41,38 @@ const menus = [
     id: "Chung",
     showHeader: false,
     children: [
-      { id: "Thống kê", icon: <DashboardIcon />, link: "", isDefault: true },
-      { id: "Sản phẩm", icon: <ShoppingBasketIcon />, link: "products" },
       {
-        id: "Nhà cung cấp",
-        icon: <HomeWorkIcon />,
-        link: "suppliers",
+        id: "Thống kê",
+        icon: <DashboardIcon />,
+        link: "",
+        isDefault: true,
+        acceptRole: [USER_ROLE.Admin],
       },
+
       {
         id: "Báo cáo",
         icon: <ListAltIcon />,
         link: "reports",
+        acceptRole: [USER_ROLE.Admin],
+      },
+    ],
+  },
+  {
+    id: "Quản lý",
+    showHeader: false,
+    children: [
+      {
+        id: "Sản phẩm",
+        icon: <ShoppingBasketIcon />,
+        link: "products",
+        acceptRole: [USER_ROLE.Admin],
       },
       {
-        id: "Kiểm kê sản phẩm",
-        icon: <AssignmentTurnedInIcon />,
-        link: "inventoryRecordForms",
+        id: "Nhà cung cấp",
+        icon: <HomeWorkIcon />,
+        link: "suppliers",
+        acceptRole: [USER_ROLE.Admin],
       },
-      {
-        id: "Phiếu hủy sản phẩm",
-        icon: <DeleteSweepIcon />,
-        link: "productRemoveForms",
-      },
-
       {
         id: "Tài khoản",
         icon: <GroupIcon />,
@@ -73,14 +82,54 @@ const menus = [
     ],
   },
   {
+    id: "Kiểm kê",
+    showHeader: false,
+    children: [
+      {
+        id: "Kiểm kê sản phẩm",
+        icon: <AssignmentTurnedInIcon />,
+        link: "inventoryRecordForms",
+        acceptRole: [
+          USER_ROLE.WarehouseKeeper,
+          USER_ROLE.WarehouseKeeperManager,
+        ],
+      },
+      {
+        id: "Phiếu hủy sản phẩm",
+        icon: <DeleteSweepIcon />,
+        link: "productRemoveForms",
+        acceptRole: [
+          USER_ROLE.WarehouseKeeper,
+          USER_ROLE.WarehouseKeeperManager,
+        ],
+      },
+    ],
+  },
+  {
     id: "Nhập kho",
     showHeader: false,
     children: [
-      { id: "Đề nghị nhập hàng", icon: <AssignmentIcon />, link: "proposal" },
+      {
+        id: "Đề nghị nhập hàng",
+        icon: <AssignmentIcon />,
+        link: "proposal",
+        acceptRole: [
+          USER_ROLE.WarehouseKeeper,
+          USER_ROLE.WarehouseKeeperManager,
+          USER_ROLE.Sale,
+          USER_ROLE.Admin,
+        ],
+      },
       {
         id: "Phiếu nhập hàng",
         icon: <CallReceivedIcon />,
         link: "goodsReceivingNotes",
+        acceptRole: [
+          USER_ROLE.WarehouseKeeper,
+          USER_ROLE.WarehouseKeeperManager,
+          USER_ROLE.Sale,
+          USER_ROLE.Admin,
+        ],
       },
     ],
   },
@@ -92,31 +141,58 @@ const menus = [
         id: "Đơn hàng",
         icon: <ReceiptIcon />,
         link: "orders",
+        acceptRole: [
+          USER_ROLE.WarehouseKeeper,
+          USER_ROLE.WarehouseKeeperManager,
+          USER_ROLE.Sale,
+          USER_ROLE.Admin,
+        ],
       },
       {
         id: "Phiếu xuất kho",
         icon: <CallMadeIcon />,
         link: "goodsDeliveryNotes",
+        acceptRole: [
+          USER_ROLE.WarehouseKeeper,
+          USER_ROLE.WarehouseKeeperManager,
+          USER_ROLE.Sale,
+          USER_ROLE.Admin,
+        ],
       },
       {
-        id: "Đề nghỉ trả hàng",
+        id: "Đề nghị trả hàng",
         icon: <AssignmentReturnedIcon />,
         link: "merchandiseReturnProposals",
+        acceptRole: [
+          USER_ROLE.WarehouseKeeper,
+          USER_ROLE.WarehouseKeeperManager,
+          USER_ROLE.Sale,
+          USER_ROLE.Admin,
+        ],
       },
       {
         id: "Phiếu trả hàng",
         icon: <AssignmentReturnedIcon />,
         link: "goodsReceivingOfReturns",
+        acceptRole: [
+          USER_ROLE.WarehouseKeeper,
+          USER_ROLE.WarehouseKeeperManager,
+          USER_ROLE.Sale,
+          USER_ROLE.Admin,
+        ],
       },
     ],
   },
   {
-    id: "Chỉnh sửa",
-    showHeader: true,
+    id: "Quản lý",
+    showHeader: false,
     children: [
-      { id: "Analytics", icon: <SettingsIcon />, link: "analytics" },
-      { id: "Performance", icon: <TimerIcon />, link: "performance" },
-      { id: "Test Lab", icon: <PhonelinkSetupIcon />, link: "test-lab" },
+      {
+        id: "Tài khoản",
+        icon: <GroupIcon />,
+        link: "users",
+        acceptRole: [USER_ROLE.SuperAdmin, USER_ROLE.Admin],
+      },
     ],
   },
 ];
@@ -271,7 +347,9 @@ function Navigator(props) {
     const active =
       pathName.length > 0 ? pathName.split("/")[0] === link : isDefault;
     const count = 0;
-    const auth = acceptRole ? acceptRole.indexOf(roleName) !== -1 : true;
+    const auth = acceptRole
+      ? [...acceptRole, USER_ROLE.Boss].indexOf(roleName) !== -1
+      : true;
     return (
       auth && (
         <Fragment key={childId}>
@@ -354,7 +432,7 @@ function Navigator(props) {
                 src={`${process.env.PUBLIC_URL}/images/logo.svg`}
               />
             </ListItemIcon>
-            {!collapse && <ListItemText>Paperbase</ListItemText>}
+            {!collapse && <ListItemText>Banana Boys</ListItemText>}
           </ListItem>
         </Link>
       </List>

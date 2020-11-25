@@ -66,7 +66,7 @@ export const notifyError = (notify, messages) => {
       key: messages,
       variant: "error",
       preventDuplicate: true,
-      autoHideDuration: 3000,
+      autoHideDuration: 10000,
     });
   } else if (messageType === "object") {
     const listMessage = Object.values(messages);

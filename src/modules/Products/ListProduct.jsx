@@ -50,6 +50,7 @@ import { useSnackbar } from "notistack";
 import { ENUMS } from "../../common/constants";
 import { Form } from "../../common/hooks/useForm";
 import clsx from "clsx";
+import { USER_ROLE } from "../../common/constants/enums";
 
 const useStyles = makeStyles((theme) => ({
   select: {
@@ -423,11 +424,13 @@ const ListProduct = (props) => {
           <Box mr={1} clone>
             <Link
               to={`/products/${row.sku}${
-                roleName === ENUMS.USER_ROLE.Admin ? "/edit" : ""
+                [USER_ROLE.Admin, USER_ROLE.Boss].indexOf(roleName) !== -1
+                  ? "/edit"
+                  : ""
               }`}
             >
               <IconButton>
-                {roleName === ENUMS.USER_ROLE.Admin ? (
+                {[USER_ROLE.Admin, USER_ROLE.Boss].indexOf(roleName) !== -1 ? (
                   <EditIcon />
                 ) : (
                   <InfoIcon />
@@ -587,14 +590,6 @@ const ListProduct = (props) => {
                 Tạo sản phẩm mới
               </MenuItem>
             )}
-            <MenuItem onClick={handleClose}>
-              <PublishIcon style={{ marginRight: 8 }} />
-              Import XLS
-            </MenuItem>
-            <MenuItem onClick={handleClose}>
-              <GetAppIcon style={{ marginRight: 8 }} />
-              Export XLS
-            </MenuItem>
           </Menu>
         </div>
       </Box>
@@ -609,7 +604,7 @@ const ListProduct = (props) => {
               </TableCell>
               <TableCell>Tên sản phẩm</TableCell>
               <TableCell style={{ width: 100 }} align="center">
-                Tình trạng
+                Trạng thái
               </TableCell>
               <TableCell align="left" style={{ width: 100 }}>
                 Số lượng

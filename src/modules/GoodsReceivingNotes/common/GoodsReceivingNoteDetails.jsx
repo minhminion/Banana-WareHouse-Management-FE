@@ -56,13 +56,13 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   leftSide: {
-    width: "calc(100% - 700px)",
+    width: "calc(100% - 750px)",
     [theme.breakpoints.down("sm")]: {
       width: "100%",
     },
   },
   rightSide: {
-    width: 700,
+    width: 750,
     [theme.breakpoints.down("sm")]: {
       width: "100%",
     },
