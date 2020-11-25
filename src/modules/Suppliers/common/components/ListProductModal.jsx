@@ -181,6 +181,7 @@ const ListProductModal = (props) => {
         return result.concat({
           description: "",
           quantity: 1,
+          action: "created",
           price: product.price,
           productId: product.id,
           product: product,
@@ -358,7 +359,7 @@ const ListProductModal = (props) => {
                 </TableCell>
                 <TableCell>Tên sản phẩm</TableCell>
                 <TableCell style={{ width: 100 }} align="left">
-                  Tình trạng
+                  Trạng thái
                 </TableCell>
                 <TableCell align="left" style={{ width: 100 }}>
                   Số lượng

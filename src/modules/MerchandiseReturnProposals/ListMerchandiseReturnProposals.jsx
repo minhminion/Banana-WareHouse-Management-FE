@@ -404,14 +404,7 @@ const ListMerchandiseReturnProposals = (props) => {
               <AddIcon style={{ marginRight: 8 }} />
               Tạo phiếu để nghị trả hàng
             </MenuItem>
-            <MenuItem onClick={handleClose}>
-              <PublishIcon style={{ marginRight: 8 }} />
-              Import XLS
-            </MenuItem>
-            <MenuItem onClick={handleClose}>
-              <GetAppIcon style={{ marginRight: 8 }} />
-              Export XLS
-            </MenuItem>
+            
           </Menu>
         </div>
       </Box>
@@ -425,9 +418,9 @@ const ListMerchandiseReturnProposals = (props) => {
                 Mã phiếu
               </TableCell>
               <TableCell style={{ width: 150 }} align="center">Mã phiếu xuất kho</TableCell>
-              <TableCell>Người tạo phiếu</TableCell>
+              <TableCell>Người tạo</TableCell>
               <TableCell style={{ width: 200 }} align="center">
-                Tình trạng
+                Trạng thái
               </TableCell>
               <TableCell align="left" style={{ width: 200 }}>
                 Ngày tạo

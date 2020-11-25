@@ -253,10 +253,6 @@ const GoodsReceivingOfReturnDetails = ({
   const handleSubmit = () => {
     if (validate()) {
       try {
-        console.log(
-          "======== Bao Minh ~ file: GoodsReceivingOfReturnDetails.jsx ~ line 258 ~ handleSubmit ~ values",
-          values
-        );
         const newValues = {
           ...values,
         };

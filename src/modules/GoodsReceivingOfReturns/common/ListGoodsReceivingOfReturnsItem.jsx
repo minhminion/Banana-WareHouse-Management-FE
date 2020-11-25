@@ -13,7 +13,6 @@ import {
 import clsx from "clsx";
 
 import EditIcon from "@material-ui/icons/Edit";
-import BlockIcon from "@material-ui/icons/Block";
 import InfoIcon from "@material-ui/icons/Info";
 
 import { Link } from "react-router-dom";
@@ -86,9 +85,6 @@ const ListGoodsReceivingOfReturnsItem = ({ row, onCancel }) => {
     return isAuth;
   };
 
-  const isAbleToCancel = () => {
-    return isAuth;
-  };
 
   const renderStatus = (status) => {
     const GOOD_RECEIVING_RETURN_STATUS = ENUMS.GOOD_RECEIVING_RETURN_STATUS;
@@ -157,13 +153,6 @@ const ListGoodsReceivingOfReturnsItem = ({ row, onCancel }) => {
               </IconButton>
             </Link>
           </Box>
-          {isAbleToCancel() && (
-            <Box clone>
-              <IconButton color="secondary" onClick={() => onCancel(row)}>
-                <BlockIcon />
-              </IconButton>
-            </Box>
-          )}
         </TableCell>
       </TableRow>
     </TableBody>

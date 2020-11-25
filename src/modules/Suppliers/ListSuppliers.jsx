@@ -414,14 +414,7 @@ const ListSuppliers = (props) => {
               <AddIcon style={{ marginRight: 8 }} />
               Thêm nhà cung cấp
             </MenuItem>
-            <MenuItem onClick={handleClose}>
-              <PublishIcon style={{ marginRight: 8 }} />
-              Import XLS
-            </MenuItem>
-            <MenuItem onClick={handleClose}>
-              <GetAppIcon style={{ marginRight: 8 }} />
-              Export XLS
-            </MenuItem>
+            
           </Menu>
         </div>
       </Box>
@@ -485,7 +478,7 @@ const ListSuppliers = (props) => {
         fullWidth
         maxWidth="sm"
       >
-        <DialogTitle>Xác nhận hủy nhà cung cấp này ?</DialogTitle>
+        <DialogTitle>Xác nhận xóa nhà cung cấp này ?</DialogTitle>
         <DialogActions>
           <Button onClick={handleCloseCancelSuppliers}>Hủy</Button>
           <Button onClick={handleCancelSuppliers} color="primary">

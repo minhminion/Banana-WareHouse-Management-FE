@@ -34,6 +34,7 @@ const CreateSupplier = (props) => {
       representative: values.representative,
     });
     if (result.id) {
+      createSuccess = true;
       if (values.supplierProducts?.length > 0) {
         const res = await addProductToSupplier(
           result.id,
@@ -42,6 +43,7 @@ const CreateSupplier = (props) => {
         if (res === true) {
           createSuccess = true;
         } else {
+          createSuccess = false;
           error["addProducts"] = res;
         }
       }
@@ -61,7 +63,7 @@ const CreateSupplier = (props) => {
       supplierId,
       products.map((product) => ({
         productId: product.productId,
-        price: parseInt(formatVNDToNumber(product.price+"")),
+        price: parseInt(formatVNDToNumber(product.price + "")),
       }))
     );
   };

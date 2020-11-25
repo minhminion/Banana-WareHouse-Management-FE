@@ -45,6 +45,7 @@ import { useSnackbar } from "notistack";
 import ListUsersItem from "./common/ListUsersItem";
 import handler from "./constants/handler";
 import { ENUMS } from "../../common/constants";
+import { Form } from "../../common/hooks/useForm";
 
 const useStyles = makeStyles((theme) => ({
   select: {
@@ -180,6 +181,7 @@ const ListUsers = (props) => {
   const [selectDeleteUsers, setSelectDeleteUsers] = useState({});
   const [filter, setFilter] = useState({
     page: 1,
+    ...getQuery(location.search),
   });
   const classes = useStyles();
 
@@ -249,12 +251,51 @@ const ListUsers = (props) => {
     });
   };
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleFilter = (e, condition = "=") => {
+    const { name, value } = e.target;
+    let newFilter = filter;
+    let extendFilter = {};
+    if (value === 0) {
+      delete newFilter[`filters[${name}]`];
+      delete newFilter[`filterConditions[${name}]`];
+    } else {
+      extendFilter = {
+        [`filters[${name}]`]: name === "roleName" ? `"${value}"` : value,
+        [`filterConditions[${name}]`]: name === "roleName" ? "like" : "=",
+      };
+    }
+    history.push({
+      pathname: location.pathname,
+      search: `?${objectToQueryString({
+        ...newFilter,
+        page: 1,
+        ...extendFilter,
+      })}`,
+    });
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const { name, value } = e.target.getElementsByTagName("input")[0];
+    let newFilter = filter;
+    let extendFilter = {};
+    if (value.trim() === "") {
+      delete newFilter[`filters[${name}]`];
+      delete newFilter[`filterConditions[${name}]`];
+    } else {
+      extendFilter = {
+        [`filters[${name}]`]: `"${value}"`,
+        [`filterConditions[${name}]`]: "like",
+      };
+    }
+    history.push({
+      pathname: location.pathname,
+      search: `?${objectToQueryString({
+        ...newFilter,
+        page: 1,
+        ...extendFilter,
+      })}`,
+    });
   };
 
   const handleChangePagination = (e, newPage) => {
@@ -303,7 +344,7 @@ const ListUsers = (props) => {
         name = "Ban lãnh đạo";
         break;
       case USER_ROLE.SuperAdmin:
-        name = "Quản tri cấp cao";
+        name = "Quản trị cấp cao";
         break;
       case USER_ROLE.Admin:
         name = "Quản trị viên";
@@ -316,9 +357,6 @@ const ListUsers = (props) => {
         break;
       case USER_ROLE.WarehouseKeeperManager:
         name = "Thủ kho trưởng";
-        break;
-      case USER_ROLE.Customer:
-        name = "Khách hàng";
         break;
       default:
         name = "Người lạ";
@@ -346,10 +384,15 @@ const ListUsers = (props) => {
       <Box display="flex" justifyContent="space-between" mb={2}>
         <div style={{ display: "flex" }}>
           <Box mr={1} clone>
-            <Paper className={classes.input}>
+            <Paper
+              className={classes.input}
+              component={Form}
+              onSubmit={handleSearch}
+            >
               <InputBase
+                name="email"
                 className={classes.inputBase}
-                placeholder="Tên người dùng ..."
+                placeholder="Email người dùng ..."
                 inputProps={{ "aria-label": "search by creator" }}
               />
               <IconButton
@@ -365,10 +408,12 @@ const ListUsers = (props) => {
           <Box mr={1} clone>
             <Select
               disableUnderline
+              name="roleName"
               classes={{ root: classes.select }}
               MenuProps={menuProps}
               IconComponent={iconSelectComponent}
               defaultValue={0}
+              onChange={handleFilter}
             >
               <MenuItem value={0}>Tất cả quyền</MenuItem>
               {renderMenuItem()}
@@ -380,56 +425,19 @@ const ListUsers = (props) => {
             </IconButton>
           </Box>
         </div>
-        {[USER_ROLE.Sale, USER_ROLE.Boss].indexOf(roleName) !== -1 && (
-          <div>
-            <Box p={1.5} mr={1} clone>
-              <Button
-                // variant="contained"
-                className={classes.actionButton}
-                component={Paper}
-                onClick={handleClick}
-              >
-                <span>Thêm</span>
-                <ExpandMoreIcon
-                  style={{
-                    transform: anchorEl ? "rotate(180deg)" : "rotate(0deg)",
-                  }}
-                />
-              </Button>
-            </Box>
-
-            <Menu
-              id="simple-menu"
-              // classes={{ paper: downloadMenuClasses.paper }}
-              {...menuProps}
-              getContentAnchorEl={null}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "right",
-              }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              // keepMounted
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
+        {[USER_ROLE.Admin, USER_ROLE.SuperAdmin, USER_ROLE.Boss].indexOf(
+          roleName
+        ) !== -1 && (
+          <Box p={1.5} mr={1} clone>
+            <Button
+              // variant="contained"
+              className={classes.actionButton}
+              component={Paper}
+              onClick={() => history.push(`/${MODULE_NAME}/add`)}
             >
-              <MenuItem onClick={() => history.push("/proposal/add")}>
-                <AddIcon style={{ marginRight: 8 }} />
-                Tạo phiếu đề nghị
-              </MenuItem>
-              <MenuItem onClick={handleClose}>
-                <PublishIcon style={{ marginRight: 8 }} />
-                Import XLS
-              </MenuItem>
-              <MenuItem onClick={handleClose}>
-                <GetAppIcon style={{ marginRight: 8 }} />
-                Export XLS
-              </MenuItem>
-            </Menu>
-          </div>
+              <span>Tạo tài khoản</span>
+            </Button>
+          </Box>
         )}
       </Box>
       {/* Table */}

@@ -183,7 +183,7 @@ const ListProductRemoveFormProducts = ({
               </TableCell>
               <TableCell component="th" scope="row">
                 <strong>{product.name}</strong>
-                <Typography variant="subtitle1">#{product.id}</Typography>
+                <Typography variant="subtitle1">Mã sản phẩm: {product.id}</Typography>
               </TableCell>
               <TableCell align="left">
                 <Box display="flex">

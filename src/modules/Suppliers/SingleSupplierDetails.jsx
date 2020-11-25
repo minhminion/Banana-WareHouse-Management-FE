@@ -62,6 +62,10 @@ const SingleSupplierDetails = (props) => {
   };
 
   const updateSupplierProducts = async (products = []) => {
+    console.log(
+      "======== Bao Minh ~ file: SingleSupplierDetails.jsx ~ line 115 ~ updateSupplierProducts ~ products",
+      products
+    );
     let createProduct = [];
     let updateProduct = [];
     let deleteProduct = [];
@@ -87,7 +91,7 @@ const SingleSupplierDetails = (props) => {
     if (createProduct.length > 0) {
       const result = await addProductsSupplier(
         +supplierId,
-        products.map((product) => ({
+        createProduct.map((product) => ({
           productId: product.productId,
           price: parseInt(formatVNDToNumber(product.price + "")),
         }))

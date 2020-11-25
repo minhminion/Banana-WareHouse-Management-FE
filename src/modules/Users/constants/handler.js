@@ -25,6 +25,23 @@ export default (dispatch, props) => ({
     }
   },
 
+  
+  createUser: async (data) => {
+    try {
+      const response = await fetchAuth({
+        url: ENDPOINTS.apiUsers,
+        method: "POST",
+        data: data,
+      });
+      if (response.data && response.status === 201) {
+        return response.data.data;
+      } else {
+        return "Lỗi không xác định !";
+      }
+    } catch (error) {
+      return error?.response?.data;
+    }
+  },
   updateUser: async (data) => {
     try {
       const response = await fetchAuth({
@@ -33,7 +50,7 @@ export default (dispatch, props) => ({
         data: data,
       });
       if (response.status === 204) {
-        return data;
+        return true;
       } else {
         return "Lỗi không xác định !";
       }

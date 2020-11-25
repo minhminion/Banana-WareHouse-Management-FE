@@ -409,14 +409,7 @@ const ListGoodsReceivingNotes = (props) => {
               <AddIcon style={{ marginRight: 8 }} />
               Tạo phiếu phiếu nhập kho
             </MenuItem>
-            <MenuItem onClick={handleClose}>
-              <PublishIcon style={{ marginRight: 8 }} />
-              Import XLS
-            </MenuItem>
-            <MenuItem onClick={handleClose}>
-              <GetAppIcon style={{ marginRight: 8 }} />
-              Export XLS
-            </MenuItem>
+            
           </Menu>
         </div>
       </Box>
@@ -430,10 +423,10 @@ const ListGoodsReceivingNotes = (props) => {
                 Mã phiếu
               </TableCell>
               <TableCell style={{ width: 150 }} align="center">Mã phiếu đề nghị</TableCell>
-              <TableCell>Người tạo phiếu</TableCell>
+              <TableCell>Người tạo</TableCell>
               <TableCell>Nhà cung cấp</TableCell>
               <TableCell style={{ width: 200 }} align="center">
-                Tình trạng
+                Trạng thái
               </TableCell>
               <TableCell align="left" style={{ width: 200 }}>
                 Ngày tạo

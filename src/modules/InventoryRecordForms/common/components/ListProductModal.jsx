@@ -357,7 +357,7 @@ const ListProductModal = (props) => {
                 </TableCell>
                 <TableCell>Tên sản phẩm</TableCell>
                 <TableCell style={{ width: 100 }} align="left">
-                  Tình trạng
+                  Trạng thái
                 </TableCell>
                 <TableCell align="left" style={{ width: 100 }}>
                   Số lượng

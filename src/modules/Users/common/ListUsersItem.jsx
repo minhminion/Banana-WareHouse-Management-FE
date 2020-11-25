@@ -6,6 +6,7 @@ import {
   IconButton,
   makeStyles,
   Tooltip,
+  useTheme,
 } from "@material-ui/core";
 
 import LockIcon from "@material-ui/icons/Lock";
@@ -68,6 +69,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ListUsersItem = (props) => {
+  const theme = useTheme();
   const { row, onCancel, refetch } = props;
   const dispatch = useDispatch();
   const confirm = useConfirm();
@@ -180,7 +182,11 @@ const ListUsersItem = (props) => {
                 color="secondary"
                 onClick={() => handleBanUser(row, !row.status)}
               >
-                {row.status ? <LockOpenIcon /> : <LockIcon />}
+                {row.status ? (
+                  <LockIcon />
+                ) : (
+                  <LockOpenIcon style={{ color: theme.palette.success.main }} />
+                )}
               </IconButton>
             </Tooltip>
           </Box>

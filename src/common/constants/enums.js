@@ -5,7 +5,6 @@ export const USER_ROLE = {
   WarehouseKeeperManager: "WarehouseKeeperManager",
   Admin: "Admin",
   SuperAdmin: "SuperAdmin",
-  Customer: "Customer",
 };
 
 export const PRODUCT_STATUS = {

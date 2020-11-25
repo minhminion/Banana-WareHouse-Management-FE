@@ -59,16 +59,22 @@ import ReportsPage from "../pages/Reports/ReportsPage";
 
 // Statistics Pages
 import StatisticsPage from "../pages/StatisticsPage";
-import UsersPage from "../pages/UsersPage";
 
+// Users Pages
+import UsersPage from "../pages/Users/UsersPage";
+
+// Merchandise Return Proposal
 import ListMerchandiseReturnProposalsPage from "../pages/MerchandiseReturnProposals/ListMerchandiseReturnProposalsPage";
 import EditMerchandiseReturnProposalPage from "../pages/MerchandiseReturnProposals/EditMerchandiseReturnProposalPage";
 import AddMerchandiseReturnProposalPage from "../pages/MerchandiseReturnProposals/AddMerchandiseReturnProposalPage";
 import MerchandiseReturnProposalDetailsPage from "../pages/MerchandiseReturnProposals/MerchandiseReturnProposalDetailsPage";
+
+// Goods Receiving Of Return
 import GoodsReceivingOfReturnsPage from "../pages/GoodsReceivingOfReturns/GoodsReceivingOfReturnsPage";
 import CreateGoodsReceivingOfReturnPage from "../pages/GoodsReceivingOfReturns/CreateGoodsReceivingOfReturnPage";
 import EditGoodsReceivingOfReturnPage from "../pages/GoodsReceivingOfReturns/EditGoodsReceivingOfReturnPage";
 import GoodsReceivingOfReturnDetailsPage from "../pages/GoodsReceivingOfReturns/GoodsReceivingOfReturnDetailsPage";
+import CreateUserPage from "../pages/Users/CreateUserPage";
 
 const Routes = () => {
   const USER_ROLE = ENUMS.USER_ROLE;
@@ -79,7 +85,20 @@ const Routes = () => {
       <MainLayout>
         <AnimatedSwitch>
           <Route exact path="/" component={StatisticsPage} />
-          <Route exact path="/users" component={UsersPage} />
+          <AuthRoute
+            exact
+            path="/users"
+            component={UsersPage}
+            roleName={roleName}
+            acceptRoles={[USER_ROLE.Admin, USER_ROLE.SuperAdmin]}
+          />
+          <AuthRoute
+            exact
+            path="/users/add"
+            component={CreateUserPage}
+            roleName={roleName}
+            acceptRoles={[USER_ROLE.Admin, USER_ROLE.SuperAdmin]}
+          />
           {/* Product Pages */}
           <Route exact path="/products" component={ListProductPage} />
           <AuthRoute

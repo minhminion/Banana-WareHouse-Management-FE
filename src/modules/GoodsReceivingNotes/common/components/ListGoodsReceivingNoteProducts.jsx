@@ -322,9 +322,9 @@ const ListGoodsReceivingNoteProducts = ({
               <TableCell style={{ width: 80 }} align="left"></TableCell>
               <TableCell>Tên sản phẩm</TableCell>
               <TableCell align="left" style={{ width: 150 }}>
-                Đơn giá
+                Đơn giá (đ)
               </TableCell>
-              <TableCell align="left" style={{ width: 150 }}>
+              <TableCell align="left" style={{ width: 200 }}>
                 Số lượng mua
               </TableCell>
               <TableCell style={{ width: 130 }} align="center">
