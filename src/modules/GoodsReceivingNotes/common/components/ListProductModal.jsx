@@ -338,8 +338,8 @@ const ListProductModal = (props) => {
     return rows.map((row) => {
       const isItemSelected = selected[filter.page]
         ? selected[filter.page].findIndex(
-            (item) => item.productId === row.id
-          ) !== -1
+          (item) => item.productId === row.id
+        ) !== -1
         : false;
       const product = row;
       return (
@@ -457,10 +457,9 @@ const ListProductModal = (props) => {
         {/* Pagination */}
         <Box mb={5} display="flex" justifyContent="space-between">
           {data && (
-            <Typography>{`Hiển ${(currentPage - 1) * LIMIT_PER_PAGE + 1} -
-                ${(currentPage - 1) * LIMIT_PER_PAGE + data.length} trên ${
-              totalItems || 0
-            } kết quả`}</Typography>
+            <Typography>{`Hiện ${(currentPage - 1) * LIMIT_PER_PAGE + 1} -
+                ${(currentPage - 1) * LIMIT_PER_PAGE + data.length} trên ${totalItems || 0
+              } kết quả`}</Typography>
           )}
           <Pagination
             count={totalPages || 1}

@@ -423,18 +423,17 @@ const ListProduct = (props) => {
         <TableCell align="center">
           <Box mr={1} clone>
             <Link
-              to={`/products/${row.sku}${
-                [USER_ROLE.Admin, USER_ROLE.Boss].indexOf(roleName) !== -1
+              to={`/products/${row.sku}${[USER_ROLE.Admin, USER_ROLE.Boss].indexOf(roleName) !== -1
                   ? "/edit"
                   : ""
-              }`}
+                }`}
             >
               <IconButton>
                 {[USER_ROLE.Admin, USER_ROLE.Boss].indexOf(roleName) !== -1 ? (
                   <EditIcon />
                 ) : (
-                  <InfoIcon />
-                )}
+                    <InfoIcon />
+                  )}
               </IconButton>
             </Link>
           </Box>
@@ -585,11 +584,11 @@ const ListProduct = (props) => {
           >
             {[ENUMS.USER_ROLE.Boss, ENUMS.USER_ROLE.Admin].indexOf(roleName) !==
               -1 && (
-              <MenuItem onClick={() => history.push("/products/add")}>
-                <AddIcon style={{ marginRight: 8 }} />
+                <MenuItem onClick={() => history.push("/products/add")}>
+                  <AddIcon style={{ marginRight: 8 }} />
                 Tạo sản phẩm mới
-              </MenuItem>
-            )}
+                </MenuItem>
+              )}
           </Menu>
         </div>
       </Box>
@@ -629,10 +628,9 @@ const ListProduct = (props) => {
       {/* Pagination */}
       <Box mb={5} display="flex" justifyContent="space-between">
         {data && (
-          <Typography>{`Hiển ${(currentPage - 1) * LIMIT_PER_PAGE + 1} -
-                ${(currentPage - 1) * LIMIT_PER_PAGE + data.length} trên ${
-            totalItems || 0
-          } kết quả`}</Typography>
+          <Typography>{`Hiện ${(currentPage - 1) * LIMIT_PER_PAGE + 1} -
+                ${(currentPage - 1) * LIMIT_PER_PAGE + data.length} trên ${totalItems || 0
+            } kết quả`}</Typography>
         )}
         <Pagination
           count={totalPages || 1}

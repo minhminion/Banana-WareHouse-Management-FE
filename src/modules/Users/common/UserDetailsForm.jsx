@@ -209,12 +209,12 @@ const UserDetailsForm = ({
   } = useForm(
     initialValues
       ? {
-          ...defaultValues,
-          ...initialValues,
-        }
+        ...defaultValues,
+        ...initialValues,
+      }
       : {
-          ...defaultValues,
-        },
+        ...defaultValues,
+      },
     true,
     validate
   );
@@ -238,7 +238,7 @@ const UserDetailsForm = ({
           ...values,
         };
         onSubmit && onSubmit(newValues);
-      } catch (error) {}
+      } catch (error) { }
     }
   };
 
@@ -260,9 +260,9 @@ const UserDetailsForm = ({
                   padding: 12,
                 },
               }}
-              name="firstName"
+              name="lastName"
               onChange={handleInputChange}
-              value={values.firstName}
+              value={values.lastName}
               placeholder="Họ"
               classes={{
                 root: classes.inputRoot,
@@ -280,9 +280,9 @@ const UserDetailsForm = ({
                   padding: 12,
                 },
               }}
-              name="lastName"
+              name="firstName"
               onChange={handleInputChange}
-              value={values.lastName}
+              value={values.firstName}
               placeholder="Tên"
               classes={{
                 root: classes.inputRoot,

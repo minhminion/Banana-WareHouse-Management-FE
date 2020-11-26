@@ -150,7 +150,7 @@ const useStyles = makeStyles((theme) => ({
   },
   actionButton: {
     background: theme.palette.secondary.main,
-    width: 120,
+    minWidth: 120,
     color: theme.palette.common.white,
     justifyContent: "center",
     "&:hover": {

@@ -28,6 +28,7 @@ import CallMadeIcon from "@material-ui/icons/CallMade";
 import AssignmentReturnedIcon from "@material-ui/icons/AssignmentReturned";
 import ListAltIcon from "@material-ui/icons/ListAlt";
 import DeleteSweepIcon from "@material-ui/icons/DeleteSweep";
+import AssignmentReturnIcon from '@material-ui/icons/AssignmentReturn';
 
 import { useDispatch, useSelector } from "react-redux";
 import { toggleCollapseNavigator } from "../redux/actions/uiActions";
@@ -72,12 +73,6 @@ const menus = [
         icon: <HomeWorkIcon />,
         link: "suppliers",
         acceptRole: [USER_ROLE.Admin],
-      },
-      {
-        id: "Tài khoản",
-        icon: <GroupIcon />,
-        link: "users",
-        acceptRole: [USER_ROLE.SuperAdmin, USER_ROLE.Admin],
       },
     ],
   },
@@ -171,8 +166,8 @@ const menus = [
         ],
       },
       {
-        id: "Phiếu trả hàng",
-        icon: <AssignmentReturnedIcon />,
+        id: "Nhập kho trả hàng",
+        icon: <AssignmentReturnIcon />,
         link: "goodsReceivingOfReturns",
         acceptRole: [
           USER_ROLE.WarehouseKeeper,

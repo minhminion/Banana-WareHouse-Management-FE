@@ -438,12 +438,12 @@ const ListGoodsReceivingOfReturns = (props) => {
               USER_ROLE.WarehouseKeeperManager,
               USER_ROLE.Boss,
             ].indexOf(roleName) !== -1 && (
-              <MenuItem onClick={() => history.push(`/${MODULE_MERCHANDISE}`)}>
-                <AddIcon style={{ marginRight: 8 }} />
+                <MenuItem onClick={() => history.push(`/${MODULE_MERCHANDISE}`)}>
+                  <AddIcon style={{ marginRight: 8 }} />
                 Tạo phiếu hủy sản phẩm
-              </MenuItem>
-            )}
-            
+                </MenuItem>
+              )}
+
           </Menu>
         </div>
       </Box>
@@ -484,10 +484,9 @@ const ListGoodsReceivingOfReturns = (props) => {
       {/* Pagination */}
       <Box mb={5} display="flex" justifyContent="space-between">
         {data && (
-          <Typography>{`Hiển ${(currentPage - 1) * LIMIT_PER_PAGE + 1} -
-                ${(currentPage - 1) * LIMIT_PER_PAGE + data.length} trên ${
-            totalItems || 0
-          } kết quả`}</Typography>
+          <Typography>{`Hiện ${(currentPage - 1) * LIMIT_PER_PAGE + 1} -
+                ${(currentPage - 1) * LIMIT_PER_PAGE + data.length} trên ${totalItems || 0
+            } kết quả`}</Typography>
         )}
         <Pagination
           count={totalPages || 1}
@@ -501,7 +500,7 @@ const ListGoodsReceivingOfReturns = (props) => {
       <Dialog
         open={
           selectCancelGoodsReceivingOfReturns &&
-          selectCancelGoodsReceivingOfReturns.id
+            selectCancelGoodsReceivingOfReturns.id
             ? true
             : false
         }

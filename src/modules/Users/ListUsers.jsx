@@ -428,17 +428,17 @@ const ListUsers = (props) => {
         {[USER_ROLE.Admin, USER_ROLE.SuperAdmin, USER_ROLE.Boss].indexOf(
           roleName
         ) !== -1 && (
-          <Box p={1.5} mr={1} clone>
-            <Button
-              // variant="contained"
-              className={classes.actionButton}
-              component={Paper}
-              onClick={() => history.push(`/${MODULE_NAME}/add`)}
-            >
-              <span>Tạo tài khoản</span>
-            </Button>
-          </Box>
-        )}
+            <Box p={1.5} mr={1} clone>
+              <Button
+                // variant="contained"
+                className={classes.actionButton}
+                component={Paper}
+                onClick={() => history.push(`/${MODULE_NAME}/add`)}
+              >
+                <span>Tạo tài khoản</span>
+              </Button>
+            </Box>
+          )}
       </Box>
       {/* Table */}
       <TableContainer component={Box}>
@@ -476,10 +476,9 @@ const ListUsers = (props) => {
       {/* Pagination */}
       <Box mb={5} display="flex" justifyContent="space-between">
         {data && (
-          <Typography>{`Hiển ${(currentPage - 1) * LIMIT_PER_PAGE + 1} -
-                ${(currentPage - 1) * LIMIT_PER_PAGE + data.length} trên ${
-            totalItems || 0
-          } kết quả`}</Typography>
+          <Typography>{`Hiện ${(currentPage - 1) * LIMIT_PER_PAGE + 1} -
+                ${(currentPage - 1) * LIMIT_PER_PAGE + data.length} trên ${totalItems || 0
+            } kết quả`}</Typography>
         )}
         <Pagination
           count={totalPages || 1}
@@ -503,8 +502,8 @@ const ListUsers = (props) => {
             onInit={(editor) => {
               editorRef.current = editor;
             }}
-            onBlur={(event, editor) => {}}
-            onFocus={(event, editor) => {}}
+            onBlur={(event, editor) => { }}
+            onFocus={(event, editor) => { }}
           />
         </DialogContent>
         <DialogActions>
