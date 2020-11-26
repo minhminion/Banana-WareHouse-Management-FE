@@ -414,7 +414,7 @@ const ListSuppliers = (props) => {
               <AddIcon style={{ marginRight: 8 }} />
               Thêm nhà cung cấp
             </MenuItem>
-            
+
           </Menu>
         </div>
       </Box>
@@ -458,10 +458,9 @@ const ListSuppliers = (props) => {
       {/* Pagination */}
       <Box mb={5} display="flex" justifyContent="space-between">
         {data && (
-          <Typography>{`Hiển ${(currentPage - 1) * LIMIT_PER_PAGE + 1} -
-                ${(currentPage - 1) * LIMIT_PER_PAGE + data.length} trên ${
-            totalItems || 0
-          } kết quả`}</Typography>
+          <Typography>{`Hiện ${(currentPage - 1) * LIMIT_PER_PAGE + 1} -
+                ${(currentPage - 1) * LIMIT_PER_PAGE + data.length} trên ${totalItems || 0
+            } kết quả`}</Typography>
         )}
         <Pagination
           count={totalPages || 1}

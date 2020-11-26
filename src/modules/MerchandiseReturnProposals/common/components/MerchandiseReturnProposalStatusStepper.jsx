@@ -13,7 +13,7 @@ import { Check, Close } from "@material-ui/icons";
 import { ENUMS } from "../../../../common/constants";
 
 function getSteps() {
-  return ["Mới", "Chở xử lý", "Hoàn tất"];
+  return ["Mới", "Chở xác nhận", "Hoàn tất"];
 }
 
 const Connector = withStyles((theme) => ({

@@ -438,7 +438,7 @@ const ListInventoryRecordForms = (props) => {
                 Tạo phiếu kiểm kho
               </MenuItem>
             )}
-            
+
           </Menu>
         </div>
       </Box>
@@ -479,10 +479,9 @@ const ListInventoryRecordForms = (props) => {
       {/* Pagination */}
       <Box mb={5} display="flex" justifyContent="space-between">
         {data && (
-          <Typography>{`Hiển ${(currentPage - 1) * LIMIT_PER_PAGE + 1} -
-                ${(currentPage - 1) * LIMIT_PER_PAGE + data.length} trên ${
-            totalItems || 0
-          } kết quả`}</Typography>
+          <Typography>{`Hiện ${(currentPage - 1) * LIMIT_PER_PAGE + 1} -
+                ${(currentPage - 1) * LIMIT_PER_PAGE + data.length} trên ${totalItems || 0
+            } kết quả`}</Typography>
         )}
         <Pagination
           count={totalPages || 1}
@@ -496,7 +495,7 @@ const ListInventoryRecordForms = (props) => {
       <Dialog
         open={
           selectCancelInventoryRecordForms &&
-          selectCancelInventoryRecordForms.id
+            selectCancelInventoryRecordForms.id
             ? true
             : false
         }

@@ -261,19 +261,19 @@ const ListOrderProducts = ({ data, onChange, isEdit = false }) => {
                   >
                     {row.product.defaultUnit}
                   </p>
-                  isEdit && (
-                  <IconButton
-                    onClick={(e) =>
-                      handleOpenContext(e, {
-                        quantityNeed: row.quantityNeed || 0,
-                        quantitySold: row.quantitySold || 0,
-                        quantityReturned: row.quantityReturned || 0,
-                      })
-                    }
-                  >
-                    <ExpandMoreIcon />
-                  </IconButton>
-                  )
+                  {isEdit && (
+                    <IconButton
+                      onClick={(e) =>
+                        handleOpenContext(e, {
+                          quantityNeed: row.quantityNeed || 0,
+                          quantitySold: row.quantitySold || 0,
+                          quantityReturned: row.quantityReturned || 0,
+                        })
+                      }
+                    >
+                      <ExpandMoreIcon />
+                    </IconButton>
+                  )}
                 </Box>
               </TableCell>
               {/* Action on row */}

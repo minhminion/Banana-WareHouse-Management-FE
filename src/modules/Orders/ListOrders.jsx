@@ -435,7 +435,7 @@ const ListOrders = (props) => {
                 Tạo đơn hàng
               </MenuItem>
             )}
-            
+
           </Menu>
         </div>
       </Box>
@@ -480,10 +480,9 @@ const ListOrders = (props) => {
       {/* Pagination */}
       <Box mb={5} display="flex" justifyContent="space-between">
         {data && (
-          <Typography>{`Hiển ${(currentPage - 1) * LIMIT_PER_PAGE + 1} -
-                ${(currentPage - 1) * LIMIT_PER_PAGE + data.length} trên ${
-            totalItems || 0
-          } kết quả`}</Typography>
+          <Typography>{`Hiện ${(currentPage - 1) * LIMIT_PER_PAGE + 1} -
+                ${(currentPage - 1) * LIMIT_PER_PAGE + data.length} trên ${totalItems || 0
+            } kết quả`}</Typography>
         )}
         <Pagination
           count={totalPages || 1}
@@ -508,8 +507,8 @@ const ListOrders = (props) => {
             onInit={(editor) => {
               editorRef.current = editor;
             }}
-            onBlur={(event, editor) => {}}
-            onFocus={(event, editor) => {}}
+            onBlur={(event, editor) => { }}
+            onFocus={(event, editor) => { }}
           />
         </DialogContent>
         <DialogActions>
